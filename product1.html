@@ -775,8 +775,7 @@ h6{
     <div class="promo" id="promoCards">
      <div class="single"><img src="1000078564-min.jpg" alt=""></div>
       <div class="single"><img src="1000078420-min.jpg" alt=""></div>
-      <div class="single"><img
- src="1000078420-min.jpg" alt=""></div>
+      <div class="single"><img src="1000078420-min.jpg" alt=""></div>
       <div class="single"><img src="1000078564-min.jpg" alt=""></div>
       <div class="single"><img src="1000078420-min.jpg" alt=""></div>
       <div class="single"><img src="1000078564-min.jpg" alt=""></div>
@@ -873,8 +872,7 @@ h6{
      <div class="singlet"><img src="1000078564-min.jpg" alt="">
      <h1>items name</h1><p>$24.8⁷</p> <span>-14</span></div>
       <div class="singlet"><img src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$24.8⁷</p> <span>-14</span></div>
-      <div class="singlet"><img
- src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
       <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
       <div class="singlet"><img src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
       <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
@@ -1117,10 +1115,10 @@ function calculateDeliveryFee(country){
   const cart = getCart();
   const itemCount = cart.reduce((s,i)=>s+i.qty,0); if(itemCount===0) return 0;
   const c = (country||'').trim().toLowerCase();
-  let feePer2 = 30;
-  if(['ghana','nigeria','kenya','south africa','cameroon','tanzania','uganda','zambia','ethiopia','africa'].some(x=>c.includes(x))) feePer2=27;
+  let feePer2 = 20;
+  if(['ghana','nigeria','kenya','south africa','cameroon','tanzania','uganda','zambia','ethiopia','africa'].some(x=>c.includes(x))) feePer2=23;
   else if(['france','germany','italy','spain','uk','england','europe','sweden','netherlands'].some(x=>c.includes(x))) feePer2=18;
-  else if(['china','japan','india','thailand','philippines','asia','indonesia','malaysia','vietnam','pakistan'].some(x=>c.includes(x))) feePer2=25;
+  else if(['china','japan','india','thailand','philippines','asia','indonesia','malaysia','vietnam','pakistan'].some(x=>c.includes(x))) feePer2=21;
   else if(['usa','united states','canada','mexico','america','brazil','argentina'].some(x=>c.includes(x))) feePer2=15;
   else if(['turkey','greece','cyprus','mediterranean','israel','lebanon','morocco','tunisia','egypt'].some(x=>c.includes(x))) feePer2=22;
   return feePer2 * Math.ceil(itemCount/2);
