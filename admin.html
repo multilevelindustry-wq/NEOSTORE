@@ -16,10 +16,6 @@
 <body>
 
 <h1>ADMIN DASHBOARD</h1>
-  if(email === "admin@gmail.com" && password === "admin6500"){
-  window.location.href = "admin.html";
-  return;
-}
 
 <!-- 1 USERS -->
 <div class="card">
@@ -134,6 +130,11 @@ function approveUser(email){
   saveUsers(users);
   renderTables();
 }
+
+  if(email === "admin@gmail.com" && password === "admin6500"){
+  window.location.href = "admin.html";
+  return;
+  }
 
 // REJECT
 function rejectUser(email){
