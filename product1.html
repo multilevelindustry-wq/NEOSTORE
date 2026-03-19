@@ -564,7 +564,70 @@ h6{
   <div class="col-1"><img src="1000078420-min.jpg" alt=""><h1>items name</h1></div>
   <div class="col-1"><img src="IMG-20251024-WA0004.jpg" alt=""><h1>items name</h1></div>
 </div>
+<aside>
+        <div class="card">
+          <h3>Your Cart</h3>
+          <div class="cart-list" id="cart-list"></div>
+          <div style="margin-top:12px;display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div style="color:var(--muted)">Subtotal</div>
+              <div style="font-weight:700;font-size:18px" id="cart-subtotal">$0.00</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <button id="goto-cart" class="btn">Go to cart page</button>
+              <button id="checkout-now" class="btn ghost">Checkout (PayPal)</button>
+            </div>
+          </div>
+        </div>
+        
+      </aside>
+    </div>
+  </section>
+  <!-- Cart Page -->
+  <section id="page-cart" class="page hidden">
+    <div class="card">
+      <h2>Your Cart</h2>
+      <div id="cart-full-list" class="cart-list"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+        <div>
+          <div style="color:var(--muted)">Total</div>
+          <div style="font-weight:700;font-size:20px" id="cart-total">$0.00</div>
+        </div>
+        <div>
+          <div id="paypal-container"></div>
+          <div style="margin-top:8px"><button id="continue-shopping" class="btn ghost">Continue shopping</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
 
+  <!-- Login / Signup Page -->
+  <section id="page-login" class="page hidden">
+    <div class="card" style="max-width:480px;margin:auto">
+      <h2 id="auth-title">Sign Up</h2>
+      <form id="auth-form">
+        <input id="auth-name" type="text" placeholder="Full name (for sign up)">
+        <input id="auth-email" type="email" placeholder="Email" required>
+        <input id="auth-password" type="password" placeholder="Password" required>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button type="submit" class="btn">Submit</button>
+          <button type="button" id="auth-toggle" class="btn ghost">Switch to Login</button>
+        </div>
+        <div style="margin-top:8px;color:var(--muted)">Demo: passwords stored client-side (localStorage).</div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Dashboard Page -->
+  <section id="page-dashboard" class="page hidden">
+    <div class="card" style="max-width:700px;margin:auto">
+      <h2>Dashboard</h2>
+      <div id="dashboard-welcome">Welcome</div>
+      <div style="margin-top:12px"><button id="logout-btn" class="btn ghost">Logout</button></div>
+    </div>
+  </section>
+      </main>
+  
       
       
 <script>
