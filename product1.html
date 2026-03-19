@@ -427,7 +427,7 @@ h6{
             <li>Material: POLYESTER</li>
             <li>Shirts Type: Casual Shirts</li>
             <li>Item Type: SHIRTS</li>
-            <li>Gender: Men</li
+            <li>Gender: Men</li>
           </ul>
         </div>
       </div>
@@ -617,6 +617,10 @@ h6{
       </form>
     </div>
   </section>
+        <select id="auth-role">
+  <option value="buyer">Register as Buyer</option>
+  <option value="seller">Register as Seller</option>
+        </select>
 
   <!-- Dashboard Page -->
 <section id="page-dashboard" class="page hidden">
@@ -764,15 +768,27 @@ function signup(name,email,password,role){
   saveUsers(users);
   login(email,password);
 }
-function login(email,password){ const users = getUsers(); if(!users[email] || users[email].password !== password) throw new Error('Invalid credentials'); localStorage.setItem(SESSION_KEY, JSON.stringify({email,name:users[email].name,loggedAt:Date.now()})); renderUserUI(); }
-function logout(){ localStorage.removeItem(SESSION_KEY); renderUserUI(); showPage('product'); }
+  
+function login(email,password){
+  const users = getUsers();
+
+  if(!users[email] || users[email].password !== password){
+    throw new Error('Invalid credentials');
+  }
+
+  localStorage.setItem(SESSION_KEY, JSON.stringify({
+    email,
+    name: users[email].name,
+    role: users[email].role, // ✅ FIXED
+    loggedAt: Date.now()
+  }));
+
+  renderUserUI();
+  }
+  function logout(){ localStorage.removeItem(SESSION_KEY); renderUserUI(); showPage('product'); }
 function currentUser(){ return JSON.parse(localStorage.getItem(SESSION_KEY)||'null'); }
 
 // Auth form
-  <select id="auth-role">
-  <option value="buyer">Register as Buyer</option>
-  <option value="seller">Register as Seller</option>
-</select>
 const authForm = document.getElementById('auth-form');
 const authToggle = document.getElementById('auth-toggle');
 let authMode = 'signup';
@@ -836,15 +852,21 @@ if(!localStorage.getItem(INACT_KEY)) touchActivity();
 function renderPayPalButton(){
   const container = document.getElementById('paypal-container');
   container.innerHTML='';
-  
+
   const subtotal = cartSubtotal();
   const country = localStorage.getItem("neo_delivery_country_v1") || "Other";
   const deliveryFee = calculateDeliveryFee(country);
-  const total = subtotal + deliveryFee;   // ✅ include delivery fee
-  
+  const total = subtotal + deliveryFee;
+
   if(total <= 0) return;
 
   const user = currentUser();
+
+  if(user && user.role === "seller"){
+    alert("Seller accounts cannot buy. Create a buyer account.");
+    return;
+  }
+
   if(!user){
     const b = document.createElement('button');
     b.className = 'btn';
@@ -858,33 +880,27 @@ function renderPayPalButton(){
     createOrder: (data, actions) => actions.order.create({
       purchase_units: [{
         amount: {
-          value: total.toFixed(2),   // ✅ send subtotal + delivery fee to PayPal
+          value: total.toFixed(2),
           breakdown: {
             item_total: { value: subtotal.toFixed(2), currency_code: "USD" },
             shipping:   { value: deliveryFee.toFixed(2), currency_code: "USD" }
           }
-        },
-        description: "NEOSTORE Order (includes delivery)"
+        }
       }]
     }),
     onApprove: (data, actions) => actions.order.capture().then(details => {
-      alert('Payment completed by ' + (details.payer.name.given_name || 'Customer') + '. Order ID: ' + data.orderID);
+      alert('Payment successful!');
       localStorage.removeItem(CART_KEY);
       renderMiniCart();
       showPage('product');
     }),
     onError: err => {
+      alert('Payment failed');
       console.error(err);
-      alert('Payment failed: ' + err);
     }
   }).render('#paypal-container');
-  const user = currentUser();
+                         }
 
-if(user && user.role === "seller"){
-  alert("Seller accounts cannot buy. Create a buyer account.");
-  return;
-  }
-}
 
 
 /////////////////////////
