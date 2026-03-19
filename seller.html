@@ -1,47 +1,119 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Seller Dashboard</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+<title>Seller Dashboard - NEOSTORE</title>
 <style>
-body{font-family:Arial;background:#f1f5f9;padding:20px;}
-.card{background:#fff;padding:15px;border-radius:10px;margin:10px;}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+body{font-family:Arial;background:#f5f5f5;margin:0;padding:20px;}
+h1{margin-bottom:10px;}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;}
+.card{background:#fff;padding:15px;border-radius:10px;}
+table{width:100%;border-collapse:collapse;margin-top:10px;}
+td,th{padding:10px;border-bottom:1px solid #ddd;text-align:left;}
+button{padding:6px 10px;border:none;border-radius:6px;cursor:pointer;}
+.approve{background:green;color:#fff;}
+.reject{background:red;color:#fff;}
 </style>
 </head>
 
 <body>
 
-<h2>Seller Dashboard</h2>
+<h1>Seller Dashboard</h1>
 
 <div class="grid">
-<div class="card">💰 Total Sales: $0</div>
-<div class="card">📦 Orders: 0</div>
-<div class="card">🛍 Products: 0</div>
-<div class="card">💳 Wallet: $0</div>
-<div class="card">➕ Add Product</div>
-<div class="card">📋 Orders List</div>
-<div class="card">💬 Messages</div>
-<div class="card">🏧 Withdraw</div>
-<div class="card">📊 Sales Chart</div>
+
+<div class="card">👤 Name: <span id="s-name"></span></div>
+<div class="card">📧 Email: <span id="s-email"></span></div>
+<div class="card">💰 Wallet: $<span id="s-wallet">0</span></div>
+
+<div class="card">📦 Total Orders: <span id="s-orders">0</span></div>
+<div class="card">🛒 Products: <span id="s-products">0</span></div>
+<div class="card">📊 Status: Active</div>
+
+<div class="card">💵 Total Sales: $<span id="s-total">0</span></div>
+<div class="card">🚚 Pending Orders: <span id="s-pending">0</span></div>
+<div class="card">✔ Completed Orders: <span id="s-completed">0</span></div>
+
 </div>
 
-<canvas id="salesChart"></canvas>
+<div class="card">
+<h2>Incoming Orders</h2>
+<table id="ordersTable"></table>
+</div>
 
 <script>
-const ctx = document.getElementById('salesChart');
+const SESSION_KEY = 'neo_session_v1';
+const AUTH_KEY = 'neo_users_v1';
 
-new Chart(ctx, {
-  type: 'line',
-  data: {
-    labels: ['Mon','Tue','Wed','Thu','Fri','Sat'],
-    datasets: [{
-      label: 'Sales',
-      data: [12,19,3,5,2,3]
-    }]
-  }
-});
+function currentUser(){
+  return JSON.parse(localStorage.getItem(SESSION_KEY));
+}
+
+function getUsers(){
+  return JSON.parse(localStorage.getItem(AUTH_KEY));
+}
+
+function saveUsers(u){
+  localStorage.setItem(AUTH_KEY, JSON.stringify(u));
+}
+
+function renderSeller(){
+  const user = currentUser();
+  const users = getUsers();
+  const me = users[user.email];
+
+  document.getElementById('s-name').textContent = me.name;
+  document.getElementById('s-email').textContent = me.email;
+  document.getElementById('s-wallet').textContent = me.wallet || 0;
+
+  const sales = me.sales || [];
+
+  document.getElementById('s-orders').textContent = sales.length;
+  document.getElementById('s-products').textContent = (me.products||[]).length;
+
+  let total = 0, pending=0, completed=0;
+
+  let html = "<tr><th>ID</th><th>Buyer</th><th>Product</th><th>Qty</th><th>Total</th><th>Status</th><th>Action</th></tr>";
+
+  sales.forEach(o=>{
+    total += o.total;
+    if(o.status === "pending") pending++;
+    if(o.status === "approved") completed++;
+
+    html += `
+    <tr>
+      <td>${o.id}</td>
+      <td>${o.buyer}</td>
+      <td>${o.product}</td>
+      <td>${o.qty}</td>
+      <td>$${o.total}</td>
+      <td>${o.status}</td>
+      <td>
+        <button class="approve" onclick="updateOrder('${o.id}','approved')">Approve</button>
+        <button class="reject" onclick="updateOrder('${o.id}','rejected')">Reject</button>
+      </td>
+    </tr>`;
+  });
+
+  document.getElementById('ordersTable').innerHTML = html;
+
+  document.getElementById('s-total').textContent = total.toFixed(2);
+  document.getElementById('s-pending').textContent = pending;
+  document.getElementById('s-completed').textContent = completed;
+}
+
+function updateOrder(id,status){
+  const users = getUsers();
+
+  Object.values(users).forEach(u=>{
+    (u.sales||[]).forEach(o=>{ if(o.id===id) o.status=status; });
+    (u.orders||[]).forEach(o=>{ if(o.id===id) o.status=status; });
+  });
+
+  saveUsers(users);
+  renderSeller();
+}
+
+renderSeller();
 </script>
 
 </body>
