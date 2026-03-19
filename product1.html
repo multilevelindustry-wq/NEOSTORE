@@ -602,25 +602,36 @@ h6{
   </section>
 
   <!-- Login / Signup Page -->
-  <section id="page-login" class="page hidden">
-    <div class="card" style="max-width:480px;margin:auto">
-      <h2 id="auth-title">Sign Up</h2>
-      <form id="auth-form">
-        <input id="auth-name" type="text" placeholder="Full name (for sign up)">
-        <input id="auth-email" type="email" placeholder="Email" required>
-        <input id="auth-password" type="password" placeholder="Password" required>
-        <div style="display:flex;gap:8px;margin-top:8px">
-          <button type="submit" class="btn">Submit</button>
-          <button type="button" id="auth-toggle" class="btn ghost">Switch to Login</button>
-        </div>
-        <div style="margin-top:8px;color:var(--muted)">Demo: passwords stored client-side (localStorage).</div>
-      </form>
+<section id="page-login" class="page hidden">
+  <div class="card" style="max-width:480px;margin:auto">
+    <h2 id="auth-title">Sign Up</h2>
+
+    <form id="auth-form">
+
+      <input id="auth-name" type="text" placeholder="Full name (for sign up)">
+
+      <input id="auth-email" type="email" placeholder="Email" required>
+
+      <input id="auth-password" type="password" placeholder="Password" required>
+
+      <!-- ✅ ROLE SELECT INSIDE FORM -->
+      <select id="auth-role" style="width:100%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid #e5e7eb;">
+        <option value="buyer">Register as Buyer</option>
+        <option value="seller">Register as Seller</option>
+      </select>
+
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button type="submit" class="btn">Submit</button>
+        <button type="button" id="auth-toggle" class="btn ghost">Switch to Login</button>
+      </div>
+
+    </form>
+
+    <div style="margin-top:8px;color:var(--muted)">
+      Demo: passwords stored client-side (localStorage).
     </div>
-  </section>
-        <select id="auth-role">
-  <option value="buyer">Register as Buyer</option>
-  <option value="seller">Register as Seller</option>
-        </select>
+  </div>
+</section>
 
   <!-- Dashboard Page -->
 <section id="page-dashboard" class="page hidden">
@@ -798,6 +809,7 @@ authToggle.addEventListener('click', ()=>{
   document.getElementById('auth-name').style.display = authMode==='signup' ? 'block' : 'none';
   authToggle.textContent = authMode==='signup' ? 'Switch to Login' : 'Switch to Sign Up';
 });
+  
 authForm.addEventListener('submit', e=>{
   e.preventDefault();
 
@@ -807,29 +819,38 @@ authForm.addEventListener('submit', e=>{
   const role = document.getElementById('auth-role').value;
 
   try{
-    if(authMode==='signup'){
-      signup(name,email,pw,role);
+    if(authMode === 'signup'){
+
+      signup(name, email, pw, role);
 
       if(role === "seller"){
         window.location.href = "seller.html";
-      }else{
+      } else {
         showPage('dashboard');
       }
 
-    }else{
-      login(email,pw);
+    } else {
 
-      const user = currentUser();
+      login(email, pw);
+
+      // ✅ GET ROLE FROM USERS (NOT SESSION)
+      const users = getUsers();
+      const user = users[email];
 
       if(user.role === "seller"){
         window.location.href = "seller.html";
-      }else{
+      } else {
         showPage('dashboard');
       }
+
     }
 
-  }catch(err){ alert(err.message); }
+  } catch(err){
+    alert(err.message);
+  }
 });
+
+
 
 // User area
 document.getElementById('user-area').addEventListener('click', ()=>{ if(currentUser()) showPage('dashboard'); else showPage('login'); });
