@@ -66,6 +66,10 @@
 </div>
 
 <script>
+if(email === "admin@gmail.com" && password === "admin6500"){
+  window.location.href = "admin.html";
+  return;
+  
 const AUTH_KEY = 'neo_users_v1';
 
 function getUsers(){
@@ -131,10 +135,6 @@ function approveUser(email){
   renderTables();
 }
 
-  if(email === "admin@gmail.com" && password === "admin6500"){
-  window.location.href = "admin.html";
-  return;
-  }
 
 // REJECT
 function rejectUser(email){
@@ -166,6 +166,9 @@ function renderProducts(users){
 
 // LOAD
 renderTables();
+
+  
+        }
 </script>
 
 </body>
