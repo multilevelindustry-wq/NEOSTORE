@@ -619,13 +619,26 @@ h6{
   </section>
 
   <!-- Dashboard Page -->
-  <section id="page-dashboard" class="page hidden">
-    <div class="card" style="max-width:700px;margin:auto">
-      <h2>Dashboard</h2>
-      <div id="dashboard-welcome">Welcome</div>
-      <div style="margin-top:12px"><button id="logout-btn" class="btn ghost">Logout</button></div>
+<section id="page-dashboard" class="page hidden">
+  <div class="card">
+    <h2>Buyer Dashboard</h2>
+
+    <div id="dashboard-welcome"></div>
+
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:15px">
+
+      <div class="card">🛒 Orders: <span id="d-orders">0</span></div>
+      <div class="card">💰 Total Spent: $<span id="d-spent">0</span></div>
+      <div class="card">📦 Cart Items: <span id="d-cart">0</span></div>
+      <div class="card">🚚 Delivery Country: <span id="d-country">-</span></div>
+      <div class="card">⭐ Status: Active</div>
+      <div class="card">👤 Account Type: Buyer</div>
+
     </div>
-  </section>
+
+    <button id="logout-btn" class="btn ghost" style="margin-top:15px">Logout</button>
+  </div>
+</section>
       </main>
   
       
@@ -734,12 +747,32 @@ document.getElementById('buy-now').addEventListener('click',()=>{ addToCart(prod
 // Auth functions
 function getUsers(){ return JSON.parse(localStorage.getItem(AUTH_KEY)||'{}'); }
 function saveUsers(u){ localStorage.setItem(AUTH_KEY, JSON.stringify(u)); }
-function signup(name,email,password){ const users = getUsers(); if(users[email]) throw new Error('User exists'); users[email] = {name,email,password}; saveUsers(users); login(email,password);}
+function signup(name,email,password,role){
+  const users = getUsers();
+  if(users[email]) throw new Error('User exists');
+
+  users[email] = {
+    name,
+    email,
+    password,
+    role,
+    wallet: 0,
+    orders: [],
+    products: []
+  };
+
+  saveUsers(users);
+  login(email,password);
+}
 function login(email,password){ const users = getUsers(); if(!users[email] || users[email].password !== password) throw new Error('Invalid credentials'); localStorage.setItem(SESSION_KEY, JSON.stringify({email,name:users[email].name,loggedAt:Date.now()})); renderUserUI(); }
 function logout(){ localStorage.removeItem(SESSION_KEY); renderUserUI(); showPage('product'); }
 function currentUser(){ return JSON.parse(localStorage.getItem(SESSION_KEY)||'null'); }
 
 // Auth form
+  <select id="auth-role">
+  <option value="buyer">Register as Buyer</option>
+  <option value="seller">Register as Seller</option>
+</select>
 const authForm = document.getElementById('auth-form');
 const authToggle = document.getElementById('auth-toggle');
 let authMode = 'signup';
@@ -751,12 +784,34 @@ authToggle.addEventListener('click', ()=>{
 });
 authForm.addEventListener('submit', e=>{
   e.preventDefault();
+
   const name = document.getElementById('auth-name').value.trim();
   const email = document.getElementById('auth-email').value.trim();
   const pw = document.getElementById('auth-password').value;
+  const role = document.getElementById('auth-role').value;
+
   try{
-    if(authMode==='signup') signup(name,email,pw); else login(email,pw);
-    alert('Logged in'); showPage('dashboard');
+    if(authMode==='signup'){
+      signup(name,email,pw,role);
+
+      if(role === "seller"){
+        window.location.href = "seller.html";
+      }else{
+        showPage('dashboard');
+      }
+
+    }else{
+      login(email,pw);
+
+      const user = currentUser();
+
+      if(user.role === "seller"){
+        window.location.href = "seller.html";
+      }else{
+        showPage('dashboard');
+      }
+    }
+
   }catch(err){ alert(err.message); }
 });
 
@@ -823,13 +878,35 @@ function renderPayPalButton(){
       alert('Payment failed: ' + err);
     }
   }).render('#paypal-container');
+  const user = currentUser();
+
+if(user && user.role === "seller"){
+  alert("Seller accounts cannot buy. Create a buyer account.");
+  return;
+  }
 }
 
 
 /////////////////////////
 // Dashboard
-function renderDashboard(){ const u=currentUser(); document.getElementById('dashboard-welcome').textContent = u ? `Hello, ${u.name} (${u.email})` : 'Not logged in'; }
+function renderDashboard(){
+  const u = currentUser();
 
+  document.getElementById('dashboard-welcome').textContent =
+    `Hello, ${u.name}`;
+
+  document.getElementById('d-orders').textContent =
+    (u.orders || []).length;
+
+  document.getElementById('d-spent').textContent =
+    cartSubtotal().toFixed(2);
+
+  document.getElementById('d-cart').textContent =
+    getCart().length;
+
+  document.getElementById('d-country').textContent =
+    localStorage.getItem("neo_delivery_country_v1") || "Not set";
+}
 /////////////////////////
 // Cart icon click
 document.getElementById('cart-btn').addEventListener('click', ()=> showPage('cart'));
