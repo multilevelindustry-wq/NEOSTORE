@@ -933,22 +933,37 @@ function renderPayPalButton(){
 // Dashboard
 function renderDashboard(){
   const u = currentUser();
+  const users = getUsers();
+  const me = users[u.email];
 
-  document.getElementById('dashboard-welcome').textContent =
-    `Hello, ${u.name}`;
+  document.getElementById('dashboard-welcome').textContent = "Hello, " + me.name;
 
-  document.getElementById('d-orders').textContent =
-    (u.orders || []).length;
+  const orders = me.orders || [];
 
-  document.getElementById('d-spent').textContent =
-    cartSubtotal().toFixed(2);
+  document.getElementById('d-orders').textContent = orders.length;
+  document.getElementById('d-cart').textContent = getCart().length;
 
-  document.getElementById('d-cart').textContent =
-    getCart().length;
+  let total = 0;
+  let html = "<h3>Your Orders</h3>";
 
-  document.getElementById('d-country').textContent =
-    localStorage.getItem("neo_delivery_country_v1") || "Not set";
+  orders.forEach(o=>{
+    total += o.total;
+
+    html += `
+    <div class="card" style="margin-top:10px">
+      <b>${o.product}</b><br>
+      Qty: ${o.qty} <br>
+      Total: $${o.total} <br>
+      Status: <b>${o.status}</b><br>
+      Seller: ${o.seller}
+    </div>`;
+  });
+
+  document.getElementById('d-spent').textContent = total.toFixed(2);
+
+  document.getElementById('dashboard-welcome').innerHTML += html;
 }
+
 /////////////////////////
 // Cart icon click
 document.getElementById('cart-btn').addEventListener('click', ()=> showPage('cart'));
