@@ -143,29 +143,40 @@ function rejectUser(email){
 
 // ORDERS TABLE
 function renderOrders(users){
-  let html = "<tr><th>User</th><th>Total Orders</th></tr>";
+  let html = "<tr><th>ID</th><th>Buyer</th><th>Seller</th><th>Product</th><th>Total</th><th>Status</th><th>Action</th></tr>";
+
   Object.values(users).forEach(u=>{
-    html += `<tr><td>${u.email}</td><td>${(u.orders||[]).length}</td></tr>`;
+    (u.orders||[]).forEach(o=>{
+      html += `
+      <tr>
+        <td>${o.id}</td>
+        <td>${o.buyer}</td>
+        <td>${o.seller}</td>
+        <td>${o.product}</td>
+        <td>$${o.total}</td>
+        <td>${o.status}</td>
+        <td>
+          <button onclick="updateOrder('${o.id}','approved')">Approve</button>
+          <button onclick="updateOrder('${o.id}','rejected')">Reject</button>
+        </td>
+      </tr>`;
+    });
   });
+
   document.getElementById('ordersTable').innerHTML = html;
 }
 
-// PRODUCTS TABLE
-function renderProducts(users){
-  let html = "<tr><th>Seller</th><th>Products Count</th></tr>";
+function updateOrder(id,status){
+  const users = getUsers();
+
   Object.values(users).forEach(u=>{
-    if(u.role === "seller"){
-      html += `<tr><td>${u.email}</td><td>${(u.products||[]).length}</td></tr>`;
-    }
+    (u.sales||[]).forEach(o=>{ if(o.id===id) o.status=status; });
+    (u.orders||[]).forEach(o=>{ if(o.id===id) o.status=status; });
   });
-  document.getElementById('productsTable').innerHTML = html;
-}
 
-// LOAD
-renderTables();
-
-  
-        }
+  saveUsers(users);
+  renderTables();
+                                                        }
 </script>
 
 </body>
