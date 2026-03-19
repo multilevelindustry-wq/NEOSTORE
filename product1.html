@@ -767,14 +767,15 @@ function signup(name,email,password,role){
   if(users[email]) throw new Error('User exists');
 
   users[email] = {
-    name,
-    email,
-    password,
-    role,
-    wallet: 0,
-    orders: [],
-    products: []
-  };
+  name,
+  email,
+  password,
+  role,
+  wallet: 0,
+  orders: [],
+  products: [],
+  status: "pending" // 👈 VERY IMPORTANT
+};
 
   saveUsers(users);
   login(email,password);
@@ -787,15 +788,19 @@ function login(email,password){
     throw new Error('Invalid credentials');
   }
 
+  if(users[email].status !== "approved"){
+    throw new Error('Account not approved by admin');
+  }
+
   localStorage.setItem(SESSION_KEY, JSON.stringify({
     email,
     name: users[email].name,
-    role: users[email].role, // ✅ FIXED
     loggedAt: Date.now()
   }));
 
   renderUserUI();
-  }
+}
+  
   function logout(){ localStorage.removeItem(SESSION_KEY); renderUserUI(); showPage('product'); }
 function currentUser(){ return JSON.parse(localStorage.getItem(SESSION_KEY)||'null'); }
 
