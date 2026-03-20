@@ -369,7 +369,10 @@ h6{
     grid-template-columns: repeat(6, 1fr);
   }
 }
-
+a {
+  text-decoration: none;
+}
+  
 
 .col-1 h1 {
   font-size: 15px;
@@ -377,12 +380,6 @@ h6{
 }
 
 
-.logo a{
-  text-decoration: none;
-}
-.icon a{
-  text-decoration: none;
-}
 </style>
 </head>
 <body>
@@ -620,7 +617,7 @@ h6{
         <input id="auth-password" type="password" placeholder="Password" required>
         <div style="display:flex;gap:8px;margin-top:8px">
           <button type="submit" class="btn">Submit</button>
-          <button type="button" id="auth-toggle" class="btn ghost">Switch to Login</button>
+          <button type="button" id="auth-toggle" class="btn ghost">Switch too login</button>
         </div>
         <div style="margin-top:8px;color:var(--muted)">Demo: passwords stored client-side (localStorage).</div>
       </form>
@@ -632,7 +629,8 @@ h6{
     <div class="card" style="max-width:700px;margin:auto">
       <h2>Dashboard</h2>
       <div id="dashboard-welcome">Welcome</div>
-      <div style="margin-top:12px"><button id="logout-btn" class="btn ghost">Logout</button> <button><a href="index.html">GO SHOP NOW</a></button></div>
+      <div style="margin-top:12px"><button id="logout-btn" class="btn ghost">Logout</button></div>
+      <div style="margin-top:12px"><button class="btn ghost"><a href="index.html">GO SHOP NOW</a></div>
     </div>
   </section>
       </main>
