@@ -1638,12 +1638,10 @@ function renderPayPalButton(){
         description: "NEOSTORE Order (includes delivery)"
       }]
     }),
-    onApprove: (data, actions) => actions.order.capture().then(details => {
-      alert('Payment completed by ' + (details.payer.name.given_name || 'Customer') + '. Order ID: ' + data.orderID);
-      localStorage.removeItem(CART_KEY);
-      renderMiniCart();
-      showPage('product');
-    }),
+    
+   onApprove: (data, actions) => actions.order.capture().then(details => {
+  createOrder(); // 🔥 THIS IS THE KEY
+}), 
     onError: err => {
       console.error(err);
       alert('Payment failed: ' + err);
@@ -1949,7 +1947,54 @@ slider.addEventListener("touchend", () => running = true, { passive: true });
   startCountdown();
 
 
+/////////////////////////
+// CREATE ORDER SYSTEM
+function createOrder(){
 
+  const user = currentUser();
+  if(!user){
+    alert("Login first");
+    showPage('login');
+    return;
+  }
+
+  const cart = getCart();
+  if(cart.length === 0){
+    alert("Cart is empty");
+    return;
+  }
+
+  const users = getUsers();
+
+  const order = {
+    id: "ORD-" + Date.now(),
+    buyer: user.email,
+    items: cart,
+    total: cartSubtotal(),
+    status: "pending",
+    date: new Date().toLocaleString()
+  };
+
+  // Save to buyer
+  if(!users[user.email].orders){
+    users[user.email].orders = [];
+  }
+  users[user.email].orders.push(order);
+
+  // Save globally (for admin)
+  let allOrders = JSON.parse(localStorage.getItem("neo_orders") || "[]");
+  allOrders.push(order);
+  localStorage.setItem("neo_orders", JSON.stringify(allOrders));
+
+  saveUsers(users);
+
+  localStorage.removeItem(CART_KEY);
+  renderMiniCart();
+
+  alert("Order placed successfully!");
+
+  showPage('dashboard');
+  }
 
 
 
