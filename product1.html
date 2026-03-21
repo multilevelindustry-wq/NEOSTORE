@@ -1103,7 +1103,43 @@ function createOrder(){
   showPage('dashboard');
   }
 
+/*----flash sales timer---*/
 
+  // Select the countdown <span> inside your .flash-sale
+  const countdownSpan = document.querySelector('.flash-sale span');
+
+  function updateCountdownToMidnight() {
+    const now = new Date();
+
+    // Set target time to next midnight
+    const midnight = new Date();
+    midnight.setHours(24, 0, 0, 0);
+
+    // Calculate the remaining time
+    const diff = midnight - now; // milliseconds
+
+    // Convert to hours, minutes, seconds
+    const hours = Math.floor(diff / 1000 / 3600);
+    const minutes = Math.floor((diff / 1000 % 3600) / 60);
+    const seconds = Math.floor(diff / 1000 % 60);
+
+    // Display with leading zeros
+    countdownSpan.textContent = 
+      `${String(hours).padStart(2, '0')}h:${String(minutes).padStart(2, '0')}m:${String(seconds).padStart(2, '0')}s`;
+
+    // If somehow negative (past midnight), reset instantly
+    if (diff <= 0) {
+      setTimeout(startCountdown, 1000);
+    }
+  }
+
+  function startCountdown() {
+    updateCountdownToMidnight();
+    setInterval(updateCountdownToMidnight, 1000);
+  }
+
+  // Start timer when page loads
+  startCountdown();
 
 
   
