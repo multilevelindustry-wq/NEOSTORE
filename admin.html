@@ -1,65 +1,115 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>ADMIN PANEL</title>
+<title>ADMIN PANEL - NEOSTORE</title>
 
 <style>
 body{font-family:Arial;background:#f5f5f5;padding:20px;}
 .card{background:white;padding:15px;margin-bottom:20px;border-radius:10px;}
 table{width:100%;border-collapse:collapse;}
-th,td{padding:10px;border-bottom:1px solid #ddd;}
+th,td{padding:10px;border-bottom:1px solid #ddd;text-align:left;}
 button{padding:6px 10px;border:none;border-radius:6px;cursor:pointer;}
 .approve{background:green;color:white;}
 .reject{background:red;color:white;}
+.stats{display:flex;gap:15px;flex-wrap:wrap;}
+.stat-box{background:#111;color:#fff;padding:15px;border-radius:10px;flex:1;min-width:150px;}
+canvas{background:#fff;border-radius:10px;padding:10px;}
 </style>
 
 </head>
 <body>
 
-<h1>ADMIN PANEL</h1>
+<h1>ADMIN DASHBOARD</h1>
 
+<!-- 1 STATS -->
+<div class="stats">
+  <div class="stat-box">Total Users: <span id="totalUsers">0</span></div>
+  <div class="stat-box">Total Orders: <span id="totalOrders">0</span></div>
+  <div class="stat-box">Total Revenue: $<span id="totalRevenue">0</span></div>
+  <div class="stat-box">Pending Orders: <span id="pendingOrders">0</span></div>
+</div>
+
+<!-- 2 USERS -->
 <div class="card">
 <h2>Users</h2>
 <table id="usersTable"></table>
 </div>
 
+<!-- 3 ORDERS -->
 <div class="card">
 <h2>Orders</h2>
 <table id="ordersTable"></table>
 </div>
 
+<!-- 4 DELIVERY LOCATIONS -->
+<div class="card">
+<h2>Delivery Locations</h2>
+<table id="deliveryTable"></table>
+</div>
+
+<!-- 5 APPROVED ORDERS -->
+<div class="card">
+<h2>Approved Orders</h2>
+<table id="approvedTable"></table>
+</div>
+
+<!-- 6 REJECTED ORDERS -->
+<div class="card">
+<h2>Rejected Orders</h2>
+<table id="rejectedTable"></table>
+</div>
+
+<!-- 7 MONTHLY SALES -->
+<div class="card">
+<h2>Sales Per Month</h2>
+<canvas id="salesChart"></canvas>
+</div>
+
+<!-- 8 MONTHLY ORDERS -->
+<div class="card">
+<h2>Orders Per Month</h2>
+<canvas id="ordersChart"></canvas>
+</div>
+
+<!-- 9 SEARCH -->
+<div class="card">
+<h2>Search Orders</h2>
+<input type="text" id="searchBox" placeholder="Search by email or ID..." style="width:100%;padding:10px;">
+</div>
+
+<!-- 10 RECENT ACTIVITY -->
+<div class="card">
+<h2>Recent Orders</h2>
+<div id="recentOrders"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
 
 const AUTH_KEY = 'neo_users_v1';
 
-function getUsers(){
-  return JSON.parse(localStorage.getItem(AUTH_KEY)||'{}');
-}
+// STORAGE
+function getUsers(){ return JSON.parse(localStorage.getItem(AUTH_KEY)||'{}'); }
+function saveUsers(u){ localStorage.setItem(AUTH_KEY, JSON.stringify(u)); }
+function getOrders(){ return JSON.parse(localStorage.getItem("neo_orders")||"[]"); }
 
-function saveUsers(u){
-  localStorage.setItem(AUTH_KEY, JSON.stringify(u));
-}
-
-// USERS TABLE
+// ================= USERS =================
 function renderUsers(){
   const users = getUsers();
-
   let html = "<tr><th>Name</th><th>Email</th></tr>";
 
   Object.values(users).forEach(u=>{
-    html += `<tr>
-      <td>${u.name}</td>
-      <td>${u.email}</td>
-    </tr>`;
+    html += `<tr><td>${u.name}</td><td>${u.email}</td></tr>`;
   });
 
   document.getElementById("usersTable").innerHTML = html;
+  document.getElementById("totalUsers").textContent = Object.keys(users).length;
 }
 
-// ORDERS TABLE
+// ================= ORDERS =================
 function renderOrders(){
-
-  let orders = JSON.parse(localStorage.getItem("neo_orders") || "[]");
+  let orders = getOrders();
 
   let html = "<tr><th>ID</th><th>Buyer</th><th>Total</th><th>Status</th><th>Action</th></tr>";
 
@@ -74,27 +124,36 @@ function renderOrders(){
         <button class="approve" onclick="updateOrder('${o.id}','approved')">Approve</button>
         <button class="reject" onclick="updateOrder('${o.id}','rejected')">Reject</button>
       </td>
-    </tr>
-    `;
+    </tr>`;
   });
 
   document.getElementById("ordersTable").innerHTML = html;
+
+  document.getElementById("totalOrders").textContent = orders.length;
+
+  let revenue = orders.reduce((s,o)=> s + (o.status==="approved" ? o.total : 0),0);
+  document.getElementById("totalRevenue").textContent = revenue.toFixed(2);
+
+  document.getElementById("pendingOrders").textContent = orders.filter(o=>o.status==="pending").length;
+
+  renderApprovedRejected();
+  renderDelivery();
+  renderRecent();
+  renderCharts();
 }
 
-// UPDATE ORDER
+// ================= UPDATE =================
 function updateOrder(id,status){
-
-  let orders = JSON.parse(localStorage.getItem("neo_orders") || "[]");
+  let orders = getOrders();
   const users = getUsers();
 
   orders.forEach(o=>{
-    if(o.id === id){
+    if(o.id===id){
       o.status = status;
 
-      // update buyer copy
-      if(users[o.buyer] && users[o.buyer].orders){
+      if(users[o.buyer]?.orders){
         users[o.buyer].orders.forEach(x=>{
-          if(x.id === id) x.status = status;
+          if(x.id===id) x.status = status;
         });
       }
     }
@@ -102,8 +161,91 @@ function updateOrder(id,status){
 
   localStorage.setItem("neo_orders", JSON.stringify(orders));
   saveUsers(users);
-
   renderOrders();
+}
+
+// ================= APPROVED / REJECTED =================
+function renderApprovedRejected(){
+  let orders = getOrders();
+
+  let approved="", rejected="";
+
+  orders.forEach(o=>{
+    if(o.status==="approved"){
+      approved += `<tr><td>${o.id}</td><td>${o.buyer}</td><td>$${o.total}</td></tr>`;
+    }
+    if(o.status==="rejected"){
+      rejected += `<tr><td>${o.id}</td><td>${o.buyer}</td><td>$${o.total}</td></tr>`;
+    }
+  });
+
+  document.getElementById("approvedTable").innerHTML = approved || "No approved orders";
+  document.getElementById("rejectedTable").innerHTML = rejected || "No rejected orders";
+}
+
+// ================= DELIVERY =================
+function renderDelivery(){
+  let orders = getOrders();
+
+  let html = "<tr><th>Buyer</th><th>Country</th></tr>";
+
+  orders.forEach(o=>{
+    html += `<tr><td>${o.buyer}</td><td>${o.country || "N/A"}</td></tr>`;
+  });
+
+  document.getElementById("deliveryTable").innerHTML = html;
+}
+
+// ================= RECENT =================
+function renderRecent(){
+  let orders = getOrders().slice(-5).reverse();
+
+  let html = "";
+
+  orders.forEach(o=>{
+    html += `<div>${o.buyer} ordered $${o.total} (${o.status})</div>`;
+  });
+
+  document.getElementById("recentOrders").innerHTML = html;
+}
+
+// ================= SEARCH =================
+document.getElementById("searchBox").addEventListener("input", function(){
+  let val = this.value.toLowerCase();
+  let orders = getOrders();
+
+  let html = "<tr><th>ID</th><th>Buyer</th><th>Total</th><th>Status</th></tr>";
+
+  orders.filter(o=> o.buyer.toLowerCase().includes(val) || o.id.includes(val))
+  .forEach(o=>{
+    html += `<tr><td>${o.id}</td><td>${o.buyer}</td><td>$${o.total}</td><td>${o.status}</td></tr>`;
+  });
+
+  document.getElementById("ordersTable").innerHTML = html;
+});
+
+// ================= CHARTS =================
+function renderCharts(){
+  let orders = getOrders();
+
+  let months = {};
+  let orderCount = {};
+
+  orders.forEach(o=>{
+    let m = new Date(o.date || Date.now()).toLocaleString("default",{month:"short"});
+    months[m] = (months[m]||0) + o.total;
+    orderCount[m] = (orderCount[m]||0) + 1;
+  });
+
+  new Chart(document.getElementById("salesChart"),{
+    type:"bar",
+    data:{labels:Object.keys(months),datasets:[{label:"Sales",data:Object.values(months)}]}
+  });
+
+  new Chart(document.getElementById("ordersChart"),{
+    type:"line",
+    data:{labels:Object.keys(orderCount),datasets:[{label:"Orders",data:Object.values(orderCount)}]}
+  });
 }
 
 // INIT
