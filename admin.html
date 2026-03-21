@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ADMIN PANEL</title>
+
+<style>
+body{font-family:Arial;background:#f5f5f5;padding:20px;}
+.card{background:white;padding:15px;margin-bottom:20px;border-radius:10px;}
+table{width:100%;border-collapse:collapse;}
+th,td{padding:10px;border-bottom:1px solid #ddd;}
+button{padding:6px 10px;border:none;border-radius:6px;cursor:pointer;}
+.approve{background:green;color:white;}
+.reject{background:red;color:white;}
+</style>
+
+</head>
+<body>
+
+<h1>ADMIN PANEL</h1>
+
+<div class="card">
+<h2>Users</h2>
+<table id="usersTable"></table>
+</div>
+
+<div class="card">
+<h2>Orders</h2>
+<table id="ordersTable"></table>
+</div>
+
+<script>
+
+const AUTH_KEY = 'neo_users_v1';
+
+function getUsers(){
+  return JSON.parse(localStorage.getItem(AUTH_KEY)||'{}');
+}
+
+function saveUsers(u){
+  localStorage.setItem(AUTH_KEY, JSON.stringify(u));
+}
+
+// USERS TABLE
+function renderUsers(){
+  const users = getUsers();
+
+  let html = "<tr><th>Name</th><th>Email</th></tr>";
+
+  Object.values(users).forEach(u=>{
+    html += `<tr>
+      <td>${u.name}</td>
+      <td>${u.email}</td>
+    </tr>`;
+  });
+
+  document.getElementById("usersTable").innerHTML = html;
+}
+
+// ORDERS TABLE
+function renderOrders(){
+
+  let orders = JSON.parse(localStorage.getItem("neo_orders") || "[]");
+
+  let html = "<tr><th>ID</th><th>Buyer</th><th>Total</th><th>Status</th><th>Action</th></tr>";
+
+  orders.forEach(o=>{
+    html += `
+    <tr>
+      <td>${o.id}</td>
+      <td>${o.buyer}</td>
+      <td>$${o.total}</td>
+      <td>${o.status}</td>
+      <td>
+        <button class="approve" onclick="updateOrder('${o.id}','approved')">Approve</button>
+        <button class="reject" onclick="updateOrder('${o.id}','rejected')">Reject</button>
+      </td>
+    </tr>
+    `;
+  });
+
+  document.getElementById("ordersTable").innerHTML = html;
+}
+
+// UPDATE ORDER
+function updateOrder(id,status){
+
+  let orders = JSON.parse(localStorage.getItem("neo_orders") || "[]");
+  const users = getUsers();
+
+  orders.forEach(o=>{
+    if(o.id === id){
+      o.status = status;
+
+      // update buyer copy
+      if(users[o.buyer] && users[o.buyer].orders){
+        users[o.buyer].orders.forEach(x=>{
+          if(x.id === id) x.status = status;
+        });
+      }
+    }
+  });
+
+  localStorage.setItem("neo_orders", JSON.stringify(orders));
+  saveUsers(users);
+
+  renderOrders();
+}
+
+// INIT
+renderUsers();
+renderOrders();
+
+</script>
+
+</body>
+</html>
