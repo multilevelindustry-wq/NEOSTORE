@@ -369,25 +369,27 @@ h6{
     grid-template-columns: repeat(6, 1fr);
   }
 }
+.icon a{
+  text-decoration: none;
+  color: black;
+}
 
+.logo a{
+  text-decoration: none;
+  color: black;
+}
+.btn a{
+  color: #B2BEB5;
+  text-decoration: none;
+}
+  
 
 .col-1 h1 {
   font-size: 15px;
   text-align: center;
 }
 
-.logo a{
-      text-decoration:none;
-      color: black;
-  }
-  
-  .icon a{
-      color: black;
-  }
-  
-  #user-area a{
-      text-decoration: none;
-  }
+
 </style>
 </head>
 <body>
@@ -397,34 +399,30 @@ h6{
     <div class="menu-btn" id="menu-btn">&#9776;</div>
     <div class="logo"><a href="index.html">NEOSTORE</a></div>
   </div>
-      
-  
   <nav id="nav">
     <button class="close-btn hidden" id="close-btn">&times;</button>
-    <a href="#product">Neo Ship</a>
+    <a href="#product">Home</a>
     <a href="#product">Shop</a>
+    <a href="#about">About</a>
     <a href="#about">Contact</a>
   </nav>
   <div style="display:flex;align-items:center">
-    <div id="user-area" class="icon" title="Sign Up / Login">  <a href="register.html">
-        <i class="fa-solid fa-user"></i>
-    <span id="user-text-mini" style="margin-left:8px"></span></a></div>
+    <div id="user-area" class="icon" title="Sign Up / Login"><i class="fa-solid fa-user"></i> <span id="user-text-mini" style="margin-left:8px"></span></div>
     <div style="width:12px"></div>
-    
     <div id="cart-btn" class="icon" title="Cart"><a href="cart.html"><i class="fa-solid fa-cart-shopping"></i></a> <span id="cart-count" style="font-weight:600;margin-left:6px;color:black;border-radius:5px;"></span></div>
   </div>
 </header>
 
-<main>
+      <main>
   <!-- SPA pages placeholders -->
   <section id="page-product" class="page">
     <div class="grid">
       <div>
         <div class="card product">
-          <img id="product-image" src="landingpage_l (31).jpg" alt="product image">
-          <h1 id="product-title">Women Solide Folds... 163 Store</h1>
-          <div class="price" id="product-price">$19.89</div>
-          <p class="product-desc">Women Solid Folds UP Leather Button Turn Down Collar Bodycon Working Black Blouse Tops</p>
+          <img id="product-image" src="https://ae-pic-a1.aliexpress-media.com/kf/Scfc8f325cbde4bd1b2f25d903eb77db7i.jpg_960x960q75.jpg_.avif" alt="Cheapest Price 50000mah Power Bank in Nigeria and USA">
+          <h1 id="product-title">Men's Casual Short Sleeve Shirt</h1>
+          <div class="price" id="product-price">$20.96</div>
+          <p class="product-desc">Stripe Men's Shirt Flower 2025 3d Print Shirt Casual Short-sleeved Tops Beach Party Shirts Man Hawaiian Shirt Male Clothes Loose</p>
           <div style="margin-top:12px;display:flex;gap:10px">
             <button id="add-to-cart" class="btn">Add to cart</button>
             <button id="buy-now" class="btn ghost">Buy Now</button>
@@ -433,23 +431,25 @@ h6{
         <div style="margin-top:14px" class="card">
           <h3>Product details</h3>
           <ul style="color:var(--muted)">
-            <li>season: Autumn/Winter</li>
-            <li>Age: Middle Age</li>
-            <li>Model Number: 22095</li>
-            <li>Pattern Type: Geometric</li>
-            <li>Fabric Type: Jersey</li>
-            <li>Cloth Length: Regular</li>
-            <li>Sleeve style: Regular</li>
-            <li>Material: Polyester</li>
-            <li>Origin: Mainland China</li>
-            <li>Style: Office Lady</li>
-            <li>Gender: Women</li>
+            <li>whether full opening: Yes</li>
+            <li>High-concerned chemical: None</li>
+            <li>Craft of Weaving: Tatting</li>
+            <li>Applicable Season: Four Seasons </li>
+            <li>Applicable Scene: Beach</li>
+            <li>Place Of Origin: China (mainland)</li>
+            <li>Closure Type: Single Breastedg</li>
+            <li>Material: POLYESTER</li>
+            <li>Shirts Type: Casual Shirts</li>
+            <li>Item Type: SHIRTS</li>
+            <li>Gender: Men</li
           </ul>
         </div>
       </div>
+      
+     
 
       <div class="product-row">
-  <div class="col-1"><img src="1000086128-min.png.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><a href="product2.html"><img src="https://sc04.alicdn.com/kf/H003a83b019c84ac5b86ee05df0eaebd6I.png" alt="Affordable Power bank Store in Africa, American, USA, Nigeria"></a><h1>50000Mah Power bank</h1></div>
   <div class="col-1"><img src="1000086137-min.png.jpg" alt=""><h1>items name</h1></div>
   <div class="col-1"><img src="1000086143-min.png.jpg" alt=""><h1>items name</h1></div>
   <div class="col-1"><img src="images.jpg" alt=""><h1>items name</h1></div>
@@ -537,9 +537,7 @@ h6{
   <div class="col-1"><img src="IMG-20251024-WA0004.jpg" alt=""><h1>items name</h1></div>
 </div>
 <div>
-   
-   
-   <div class="flash-saller">
+     <div class="flash-saller">
           <h6>Top sellers</h6>
       <h4 class="more">
          <a href="#">See All</a>
@@ -627,7 +625,7 @@ h6{
         <input id="auth-password" type="password" placeholder="Password" required>
         <div style="display:flex;gap:8px;margin-top:8px">
           <button type="submit" class="btn">Submit</button>
-          <button type="button" id="auth-toggle" class="btn ghost">Switch to Login</button>
+          <button type="button" id="auth-toggle" class="btn ghost">Switch too login</button>
         </div>
         <div style="margin-top:8px;color:var(--muted)">Demo: passwords stored client-side (localStorage).</div>
       </form>
@@ -640,277 +638,132 @@ h6{
       <h2>Dashboard</h2>
       <div id="dashboard-welcome">Welcome</div>
       <div style="margin-top:12px"><button id="logout-btn" class="btn ghost">Logout</button></div>
+      <div style="margin-top:12px"><button class="btn ghost"><a href="index.html">GO SHOP NOW</a></div>
     </div>
   </section>
-</main>
+      </main>
 
+  <footer class="site-footer">
 
-<div class="promo-section">
-    <div class="promo-cards" id="promoCards">
-      <div class="singles"><a href="apparel.html"><img src="1000078420-min.jpg" alt=""></a></div>
-      <div class="singles"><a href="Electronics.html"><img src="images.jpg" alt=""></a></div>
-      <div class="singles"><a href="Automobile.html"><img src="1000078420-min.jpg" alt=""></a></div>
-      <div class="singles"><a href=""><img src="1000078564-min.jpg" alt=""></a></div>
-      <div class="singles"><a href=""><img src="1000078420-min.jpg" alt=""></a></div>
-      <div class="singles"><a href=""><img src="1000078564-min.jpg" alt=""></a></div>
-      <div class="singles"><a href=""><img src="1000078564-min.jpg" alt=""></a></div>
-       <div class="singles"><a href=""><img src="1000078564-min.jpg" alt=""></a></div>
-       <div class="singles"><a href=""><img src="1000078564-min.jpg" alt=""></a></div>
-       <div class="singles"><a href=""><img src="1000078564-min.jpg" alt=""></a></div>
-       <div class="singles"><a href=""><img src="1000078564-min.jpg" alt=""></a></div>
-       <div class="singles"><a href=""><img src="1000078564-min.jpg" alt=""></a></div>
-       <div class="singles"><a href=""><img src="1000078564-min.jpg" alt=""></a></div>
-       <div class="singles"><a href=""><img src="1000078564-min.jpg" alt=""></a></div>
-      </div>
-     </div>
+<div class="footer-container">
 
-    <!-- Progress Line -->
-    <div class="slide-progress">
-      <div class="progress-bar" id="progressBar"></div>
-    </div>
-  </div>
-  
-  <div class="promo-section">
-    <div class="promo-cards" id="promoCards">
-     <div class="single">
-       <div class="slider">
-  <img src="1000078564-min.jpg" alt="" class="slide from-left">
-  <img src="IMG-20251024-WA0004.jpg" alt="" class="slide from-top">
-  <img src="1000078515-min.jpg" alt="Free Shipping for Orders above $40" class="slide from-right">
-  <img src="1000078420-min.jpg" alt="best Online shopping for American" class="slide from-bottom"></div>
-  </div>
-  <div class="single">
-       <div class="slider">
-  <img src="1000078564-min.jpg" alt="" class="slide from-left">
-  <img src="IMG-20251024-WA0004.jpg" alt="" class="slide from-top">
-  <img src="1000078515-min.jpg" alt="Free Shipping for Orders above $40" class="slide from-right">
-  <img src="1000078420-min.jpg" alt="best Online shopping for American" class="slide from-bottom"></div>
-  </div>
-  
-  <div class="single">
-       <div class="slider">
-  <img src="1000078564-min.jpg" alt="" class="slide from-left">
-  <img src="IMG-20251024-WA0004.jpg" alt="" class="slide from-top">
-  <img src="1000078515-min.jpg" alt="Free Shipping for Orders above $40" class="slide from-right">
-  <img src="1000078420-min.jpg" alt="best Online shopping for American" class="slide from-bottom"></div>
-  </div>
-    <div class="single">
-    <div class="slider">
-  <img src="1000078564-min.jpg" alt="" class="slide from-left">
-  <img src="IMG-20251024-WA0004.jpg" alt="" class="slide from-top">
-  <img src="1000078515-min.jpg" alt="Free Shipping for Orders above $40" class="slide from-right">
-  <img src="1000078420-min.jpg" alt="best Online shopping for American" class="slide from-bottom"></div>
-    </div>
-  
-  <div class="single">
-    <div class="slider">
-  <img src="1000078564-min.jpg" alt="" class="slide from-left">
-  <img src="IMG-20251024-WA0004.jpg" alt="" class="slide from-top">
-  <img src="1000078515-min.jpg" alt="Free Shipping for Orders above $40" class="slide from-right">
-  <img src="1000078420-min.jpg" alt="best Online shopping for American" class="slide from-bottom"></div>
-    </div>
-    
-    <div class="single">
-    <div class="slider">
-  <img src="1000078564-min.jpg" alt="" class="slide from-left">
-  <img src="IMG-20251024-WA0004.jpg" alt="" class="slide from-top">
-  <img src="1000078515-min.jpg" alt="Free Shipping for Orders above $40" class="slide from-right">
-  <img src="1000078420-min.jpg" alt="best Online shopping for American" class="slide from-bottom"></div>
-    </div>
-    
-    <div class="single">
-    <div class="slider">
-  <img src="1000078564-min.jpg" alt="" class="slide from-left">
-  <img src="IMG-20251024-WA0004.jpg" alt="" class="slide from-top">
-  <img src="1000078515-min.jpg" alt="Free Shipping for Orders above $40" class="slide from-right">
-  <img src="1000078420-min.jpg" alt="best Online shopping for American" class="slide from-bottom"></div>
-     </div>
-     <div class="single">
-    <div class="slider">
-  <img src="1000078564-min.jpg" alt="" class="slide from-left">
-  <img src="IMG-20251024-WA0004.jpg" alt="" class="slide from-top">
-  <img src="1000078515-min.jpg" alt="Free Shipping for Orders above $40" class="slide from-right">
-  <img src="1000078420-min.jpg" alt="best Online shopping for American" class="slide from-bottom"></div>
-    </div>
-       <div class="single">
-    <div class="slider">
-  <img src="1000078564-min.jpg" alt="" class="slide from-left">
-  <img src="IMG-20251024-WA0004.jpg" alt="" class="slide from-top">
-  <img src="1000078515-min.jpg" alt="Free Shipping for Orders above $40" class="slide from-right">
-  <img src="1000078420-min.jpg" alt="best Online shopping for American" class="slide from-bottom"></div>
-    </div>
-    
-       <div class="single">
-    <div class="slider">
-  <img src="1000078564-min.jpg" alt="" class="slide from-left">
-  <img src="IMG-20251024-WA0004.jpg" alt="" class="slide from-top">
-  <img src="1000078515-min.jpg" alt="Free Shipping for Orders above $40" class="slide from-right">
-  <img src="1000078420-min.jpg" alt="best Online shopping for American" class="slide from-bottom"></div>
-    </div>
-    
-       <div class="single">
-    <div class="slider">
-  <img src="1000078564-min.jpg" alt="" class="slide from-left">
-  <img src="IMG-20251024-WA0004.jpg" alt="" class="slide from-top">
-  <img src="1000078515-min.jpg" alt="Free Shipping for Orders above $40" class="slide from-right">
-  <img src="1000078420-min.jpg" alt="best Online shopping for American" class="slide from-bottom"></div>
-    </div>
-    
-       <div class="single">
-    <div class="slider">
-  <img src="1000078564-min.jpg" alt="" class="slide from-left">
-  <img src="IMG-20251024-WA0004.jpg" alt="" class="slide from-top">
-  <img src="1000078515-min.jpg" alt="Free Shipping for Orders above $40" class="slide from-right">
-  <img src="1000078420-min.jpg" alt="best Online shopping for American" class="slide from-bottom"></div>
-    </div>
-    
-       <div class="single">
-    <div class="slider">
-  <img src="1000078564-min.jpg" alt="" class="slide from-left">
-  <img src="IMG-20251024-WA0004.jpg" alt="" class="slide from-top">
-  <img src="1000078515-min.jpg" alt="Free Shipping for Orders above $40" class="slide from-right">
-  <img src="1000078420-min.jpg" alt="best Online shopping for American" class="slide from-bottom"></div>
-    </div>
-    
-       <div class="single">
-    <div class="slider">
-  <img src="1000078564-min.jpg" alt="" class="slide from-left">
-  <img src="IMG-20251024-WA0004.jpg" alt="" class="slide from-top">
-  <img src="1000078515-min.jpg" alt="Free Shipping for Orders above $40" class="slide from-right">
-  <img src="1000078420-min.jpg" alt="best Online shopping for American" class="slide from-bottom"></div>
-    </div>
-    
-  </div>
- </div>
- </div>
- 
-      <div class="section">
-    <div class="promo" id="promoCards">
-     <div class="single"><img src="1000078564-min.jpg" alt=""></div>
-      <div class="single"><img src="1000078420-min.jpg" alt=""></div>
-      <div class="single"><img
- src="1000078420-min.jpg" alt=""></div>
-      <div class="single"><img src="1000078564-min.jpg" alt=""></div>
-      <div class="single"><img src="1000078420-min.jpg" alt=""></div>
-      <div class="single"><img src="1000078564-min.jpg" alt=""></div>
-      <div class="single"><img src="1000078564-min.jpg" alt=""></div>
-       <div class="single"><img src="1000078564-min.jpg" alt=""></div>
-      <div class="single"><img src="1000078564-min.jpg" alt=""></div>
-      <div class="single"><img src="1000078564-min.jpg" alt=""></div>
-      <div class="single"><img src="1000078420-min.jpg" alt=""></div>
-      <div class="single"><img src="1000078564-min.jpg" alt=""></div>
-      <div class="single"><img src="1000078564-min.jpg" alt=""></div>
-       <div class="single"><img src="1000078564-min.jpg" alt=""></div>
-      <div class="single"><img src="1000078564-min.jpg" alt=""></div>
-      <div class="single"><img src="1000078564-min.jpg" alt=""></div>
-      <div class="single"><img src="1000078564-min.jpg" alt=""></div>
-      <div class="single"><img src="1000078420-min.jpg" alt=""></div>
-      <div class="single"><img src="1000078564-min.jpg" alt=""></div>
-      <div class="single"><img src="1000078564-min.jpg" alt=""></div>
-       <div class="single"><img src="1000078564-min.jpg" alt=""></div>
-      <div class="single"><img src="1000078564-min.jpg" alt=""></div>
-    </div>
-       </div>
-      
-    <div class="deals">
-          <h6>Black Friday Deals <br> Up to 60% Off</h6>
-      <h4 class="more">
-         <a href="#">See All</a>
-      </h4>
-      </div>
-  </div>
+<div class="footer-box">
+<h3>About Us</h3>
+<p>
+Video Reward Hub is a platform where users earn money by watching ads,
+completing tasks, and inviting friends.
+</p>
+</div>
 
+<div class="footer-box">
+<h3>Quick Links</h3>
+<ul>
+<li><a href="#">Home</a></li>
+<li><a href="#">Dashboard</a></li>
+<li><a href="#">Watch Tasks</a></li>
+<li><a href="#">Withdraw</a></li>
+</ul>
+</div>
 
-  <div class="products-row">
-  <div class="col-1"><img src="1000078420-min.jpg" alt=""><h1>items name</h1></div>
-  <div class="col-1"><img src="IMG-20251024-WA0004.jpg" alt=""><h1>items name</h1></div>
-  <div class="col-1"><img src="1000078420-min.jpg" alt=""><h1>items name</h1></div>
-  <div class="col-1"><img src="IMG-20251024-WA0004.jpg" alt=""><h1>items name</h1></div>
-  <div class="col-1"><img src="1000078420-min.jpg" alt=""><h1>items name</h1></div>
-  <div class="col-1"><img src="IMG-20251024-WA0004.jpg" alt=""><h1>items name</h1></div>
-  <div class="col-1"><img src="1000078420-min.jpg" alt=""><h1>items name</h1></div>
-  <div class="col-1"><img src="IMG-20251024-WA0004.jpg" alt=""><h1>items name</h1></div>
-  <div class="col-1"><img src="IMG-20251024-WA0004.jpg" alt=""><h1>items name</h1></div>
-  <div class="col-1"><img src="1000078420-min.jpg" alt=""><h1>items name</h1></div>
-    <div class="col-1"><img src="1000078420-min.jpg" alt=""><h1>items name</h1></div>
-    
-    <div class="col-1"><img src="IMG-20251024-WA0004.jpg" alt=""><h1>items name</h1></div>
-  <div class="col-1"><img src="1000078420-min.jpg" alt=""><h1>items name</h1></div>
-  <div class="col-1"><img src="IMG-20251024-WA0004.jpg" alt=""><h1>items name</h1></div>
-  <div class="col-1"><img src="1000078420-min.jpg" alt=""><h1>items name</h1></div>
-  <div class="col-1"><img src="IMG-20251024-WA0004.jpg" alt=""><h1>items name</h1></div>
-  </div>
+<div class="footer-box">
+<h3>Earn Money</h3>
+<ul>
+<li><a href="#">Watch Ads</a></li>
+<li><a href="#">Referral Program</a></li>
+<li><a href="#">Daily Tasks</a></li>
+<li><a href="#">Leaderboard</a></li>
+</ul>
+</div>
 
-    <div class="deals">
-          <h6>Hisense and Maxi<br>Black Friday Deals</h6>
-      <h4 class="more">
-         <a href="#">See All</a>
-      </h4>
-      </div>
-  </div>
-  
-   <div class="promo-section">
-    <div class="promo-cards" id="promoCards">
-     <div class="singlet"><img src="1000078564-min.jpg" alt="">
-     <h1>items name</h1><p>$24.8⁷</p> <span>-14</span></div>
-      <div class="singlet"><img src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$24.8⁷</p> <span>-14</span></div>
-      <div class="singlet"><img
- src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
-      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
-      <div class="singlet"><img src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
-      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
-      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
-       <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
-      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
-      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
-      <div class="singlet"><img src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
-      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
-      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
-       <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
-      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
-      </div>
-    </div>
-    
-    
-      
-       <div class="deals">
-          <h6>Phone Deals <br>Black Friday Deals</h6>
-      <h4 class="more">
-         <a href="#">See All</a>
-      </h4>
-      </div>
-  </div>
-  
-   <div class="promo-section">
-    <div class="promo-cards" id="promoCards">
-     <div class="singlet"><img src="1000078564-min.jpg" alt="">
-     <h1>items name</h1><p>$24.8⁷</p> <span>-14</span></div>
-      <div class="singlet"><img src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$24.8⁷</p> <span>-14</span></div>
-      <div class="singlet"><img
- src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
-      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
-      <div class="singlet"><img src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
-      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
-      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
-       <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
-      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
-      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
-      <div class="singlet"><img src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
-      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
-      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
-       <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
-      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
-      </div>
-    </div>
-  
+<div class="footer-box">
+<h3>Support</h3>
+<ul>
+<li><a href="#">Help Center</a></li>
+<li><a href="#">Contact Us</a></li>
+<li><a href="#">FAQ</a></li>
+<li><a href="#">Report Issue</a></li>
+</ul>
+</div>
 
+<div class="footer-box">
+<h3>Legal</h3>
+<ul>
+<li><a href="#">Privacy Policy</a></li>
+<li><a href="#">Terms of Service</a></li>
+<li><a href="#">Cookie Policy</a></li>
+<li><a href="#">Disclaimer</a></li>
+</ul>
+</div>
 
+<div class="footer-box">
+<h3>Follow Us</h3>
+<ul>
+<li><a href="#">Facebook</a></li>
+<li><a href="#">Twitter</a></li>
+<li><a href="#">Instagram</a></li>
+<li><a href="#">Telegram</a></li>
+</ul>
+</div>
 
-<div id="modal-root" class="hidden"></div>
+</div>
 
-<footer>
-  NEOSTORE demo • Built with HTML/CSS/JS • Replace PayPal sandbox client-id before going live
+<div class="footer-bottom">
+<p>© 2026 Video Reward Hub. All Rights Reserved.</p>
+</div>
+
 </footer>
+
+
+<style>
+
+.site-footer{
+background:#111;
+color:#eee;
+margin-top:50px;
+}
+
+.footer-container{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+gap:25px;
+max-width:1100px;
+margin:auto;
+padding:40px 20px;
+}
+
+.footer-box h3{
+color:#fff;
+margin-bottom:10px;
+font-size:16px;
+}
+
+.footer-box ul{
+list-style:none;
+padding:0;
+}
+
+.footer-box ul li{
+margin:6px 0;
+}
+
+.footer-box a{
+color:#bbb;
+text-decoration:none;
+font-size:14px;
+}
+
+.footer-box a:hover{
+color:#fff;
+}
+
+.footer-bottom{
+text-align:center;
+padding:15px;
+background:#000;
+font-size:14px;
+}
+
+  </style>
 
 <script>
 /////////////////////////
@@ -946,9 +799,9 @@ showPage(location.hash.replace('#',''));
 
 // Product data
 const product = {
-  id: 'p2',
+  id: 'p1',
   title: document.getElementById('product-title').textContent,
-  price: 19.89,
+  price: 20.96,
   image: document.getElementById('product-image').src
 };
 document.getElementById('product-price').textContent = '$'+product.price.toFixed(2);
@@ -966,6 +819,7 @@ function addToCart(item){
 function removeFromCart(id){ let cart=getCart(); cart = cart.filter(i=>i.id!==id); saveCart(cart);}
 function updateQty(id, qty){ const cart = getCart(); const it = cart.find(i=>i.id===id); if(!it) return; it.qty = qty; if(it.qty<=0) removeFromCart(id); else saveCart(cart);}
 function cartSubtotal(){ return getCart().reduce((s,i)=>s+i.price*i.qty,0); }
+
 // Mini cart render
 const cartList = document.getElementById('cart-list');
 const cartCount = document.getElementById('cart-count');
@@ -1129,10 +983,10 @@ function calculateDeliveryFee(country){
   const cart = getCart();
   const itemCount = cart.reduce((s,i)=>s+i.qty,0); if(itemCount===0) return 0;
   const c = (country||'').trim().toLowerCase();
-  let feePer2 = 30;
-  if(['ghana','nigeria','kenya','south africa','cameroon','tanzania','uganda','zambia','ethiopia','africa'].some(x=>c.includes(x))) feePer2=27;
+  let feePer2 = 20;
+  if(['ghana','nigeria','kenya','south africa','cameroon','tanzania','uganda','zambia','ethiopia','africa'].some(x=>c.includes(x))) feePer2=23;
   else if(['france','germany','italy','spain','uk','england','europe','sweden','netherlands'].some(x=>c.includes(x))) feePer2=18;
-  else if(['china','japan','india','thailand','philippines','asia','indonesia','malaysia','vietnam','pakistan'].some(x=>c.includes(x))) feePer2=25;
+  else if(['china','japan','india','thailand','philippines','asia','indonesia','malaysia','vietnam','pakistan'].some(x=>c.includes(x))) feePer2=21;
   else if(['usa','united states','canada','mexico','america','brazil','argentina'].some(x=>c.includes(x))) feePer2=15;
   else if(['turkey','greece','cyprus','mediterranean','israel','lebanon','morocco','tunisia','egypt'].some(x=>c.includes(x))) feePer2=22;
   return feePer2 * Math.ceil(itemCount/2);
@@ -1177,31 +1031,4 @@ const slider = document.getElementById("promoCards");
 let speed = 0.8; // lower = slower, higher = faster
 let running = true;
 
-function autoScroll() {
-  if (running) {
-    slider.scrollLeft += speed;
-    // when reach end, restart from beginning
-    if (slider.scrollLeft + slider.clientWidth >= slider.scrollWidth) {
-      slider.scrollLeft = 0;
-    }
-  }
-  requestAnimationFrame(autoScroll);
-}
-
-// Start auto sliding
-requestAnimationFrame(autoScroll);
-
-// Pause when hover or touch
-slider.addEventListener("mouseenter", () => running = false);
-slider.addEventListener("mouseleave", () => running = true);
-slider.addEventListener("touchstart", () => running = false, { passive: true });
-slider.addEventListener("touchend", () => running = true, { passive: true });
-  
-  
-
-</script>
-
-<!-- Font Awesome -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-</body>
-</html>
+function autoS
