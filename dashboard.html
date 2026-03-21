@@ -58,7 +58,40 @@ else{
 }
 
 document.getElementById('logout-btn').addEventListener('click', logout);
-</script>
 
+
+  function renderDashboard(){
+
+  const u = currentUser();
+  if(!u) return;
+
+  const users = getUsers();
+  const my = users[u.email];
+
+  let html = `<h3>Hello, ${u.name}</h3>`;
+  html += `<h4>Your Orders</h4>`;
+
+  if(!my.orders || my.orders.length === 0){
+    html += "<p>No orders yet</p>";
+  }else{
+    my.orders.forEach(o=>{
+      html += `
+      <div style="border:1px solid #ddd;padding:10px;margin-top:10px;border-radius:8px">
+        <b>Order ID:</b> ${o.id}<br>
+        <b>Total:</b> $${o.total}<br>
+        <b>Status:</b> <span style="color:${o.status==='approved'?'green':o.status==='rejected'?'red':'orange'}">${o.status}</span><br>
+        <b>Date:</b> ${o.date}
+      </div>
+      `;
+    });
+  }
+
+  document.getElementById('dashboard-welcome').innerHTML = html;
+}
+
+
+
+  
+</script>
 </body>
 </html>
