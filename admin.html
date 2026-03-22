@@ -121,9 +121,11 @@ function renderOrders(){
       <td>$${o.total}</td>
       <td>${o.status}</td>
       <td>
-        <button class="approve" onclick="updateOrder('${o.id}','approved')">Approve</button>
-        <button class="reject" onclick="updateOrder('${o.id}','rejected')">Reject</button>
-      </td>
+  <button class="approve" onclick="updateOrder('${o.id}','approved')">Approve</button>
+  <button onclick="updateOrder('${o.id}','shipped')">Ship</button>
+  <button onclick="updateOrder('${o.id}','delivered')">Deliver</button>
+  <button class="reject" onclick="updateOrder('${o.id}','rejected')">Reject</button>
+</td>
     </tr>`;
   });
 
