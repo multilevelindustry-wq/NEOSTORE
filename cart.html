@@ -385,6 +385,55 @@ function renderPayPalButton(){
         description: "NEOSTORE Order (includes delivery)"
       }]
     }),
+onApprove: (data, actions) => actions.order.capture().then(details => {
+
+  const user = currentUser();
+  const cart = getCart();
+  const subtotal = cartSubtotal();
+  const country = localStorage.getItem("neo_delivery_country_v1") || "Other";
+  const deliveryFee = calculateDeliveryFee(country);
+  const totalAmount = subtotal + deliveryFee;
+
+  // ✅ SAVE ORDER FOR ADMIN
+  let orders = JSON.parse(localStorage.getItem("neo_orders") || "[]");
+
+  const orderId = "ORD" + Date.now();
+
+  orders.push({
+    id: orderId,
+    buyer: user.email,
+    items: cart,
+    total: totalAmount,
+    status: "pending",
+    date: new Date().toISOString(),
+    country: country
+  });
+
+  localStorage.setItem("neo_orders", JSON.stringify(orders));
+
+  // ✅ SAVE ORDER FOR BUYER DASHBOARD
+  let users = getUsers();
+  if(!users[user.email].orders) users[user.email].orders = [];
+
+  users[user.email].orders.push({
+    id: orderId,
+    total: totalAmount,
+    status: "pending"
+  });
+
+  saveUsers(users);
+
+  // ✅ CLEAR CART
+  localStorage.removeItem(CART_KEY);
+
+  alert("Order placed successfully! Waiting for admin approval.");
+
+  renderMiniCart();
+  showPage('dashboard');
+
+})
+
+  
     onApprove: (data, actions) => actions.order.capture().then(details => {
       alert('Payment completed by ' + (details.payer.name.given_name || 'Customer') + '. Order ID: ' + data.orderID);
       localStorage.removeItem(CART_KEY);
