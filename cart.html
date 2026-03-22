@@ -385,6 +385,7 @@ function renderPayPalButton(){
         description: "NEOSTORE Order (includes delivery)"
       }]
     }),
+    
 onApprove: (data, actions) => actions.order.capture().then(details => {
 
   const user = currentUser();
@@ -434,22 +435,7 @@ onApprove: (data, actions) => actions.order.capture().then(details => {
 })
 
   
-    onApprove: (data, actions) => actions.order.capture().then(details => {
-      alert('Payment completed by ' + (details.payer.name.given_name || 'Customer') + '. Order ID: ' + data.orderID);
-      localStorage.removeItem(CART_KEY);
-      renderMiniCart();
-      showPage('product');
-    }),
-    onError: err => {
-      console.error(err);
-      alert('Payment failed: ' + err);
-    }
-  }).render('#paypal-container');
-}
-
-
-
-
+    
 /////////////////////////
 // Dashboard
 function renderDashboard(){ const u=currentUser(); document.getElementById('dashboard-welcome').textContent = u ? `Hello, ${u.name} (${u.email})` : 'Not logged in'; }
