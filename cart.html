@@ -351,14 +351,14 @@ setInterval(checkInactivity,10000);
 if(!localStorage.getItem(INACT_KEY)) touchActivity();
 
 //////////////////////////
-function renderPayPalButton(){
+  function renderPayPalButton(){
   const container = document.getElementById('paypal-container');
   container.innerHTML='';
   
   const subtotal = cartSubtotal();
   const country = localStorage.getItem("neo_delivery_country_v1") || "Other";
   const deliveryFee = calculateDeliveryFee(country);
-  const total = subtotal + deliveryFee;   // ✅ include delivery fee
+  const total = subtotal + deliveryFee;
   
   if(total <= 0) return;
 
@@ -367,75 +367,76 @@ function renderPayPalButton(){
     const b = document.createElement('button');
     b.className = 'btn';
     b.textContent = 'Login to checkout';
-    b.addEventListener('click', ()=> showPage('login'));
+    b.onclick = ()=> showPage('login');
     container.appendChild(b);
     return;
   }
 
   paypal.Buttons({
+
     createOrder: (data, actions) => actions.order.create({
       purchase_units: [{
         amount: {
-          value: total.toFixed(2),   // ✅ send subtotal + delivery fee to PayPal
+          value: total.toFixed(2),
           breakdown: {
             item_total: { value: subtotal.toFixed(2), currency_code: "USD" },
-            shipping:   { value: deliveryFee.toFixed(2), currency_code: "USD" }
+            shipping: { value: deliveryFee.toFixed(2), currency_code: "USD" }
           }
-        },
-        description: "NEOSTORE Order (includes delivery)"
+        }
       }]
     }),
+
+    onApprove: (data, actions) => actions.order.capture().then(details => {
+
+      const user = currentUser();
+      const cart = getCart();
+      const totalAmount = total;
+
+      let orders = JSON.parse(localStorage.getItem("neo_orders") || "[]");
+
+      const orderId = "ORD" + Date.now();
+
+      orders.push({
+        id: orderId,
+        buyer: user.email,
+        items: cart,
+        total: totalAmount,
+        status: "pending",
+        date: new Date().toISOString(),
+        country: country
+      });
+
+      localStorage.setItem("neo_orders", JSON.stringify(orders));
+
+      let users = getUsers();
+      if(!users[user.email].orders) users[user.email].orders = [];
+
+      users[user.email].orders.push({
+        id: orderId,
+        total: totalAmount,
+        status: "pending"
+      });
+
+      saveUsers(users);
+
+      localStorage.removeItem(CART_KEY);
+
+      alert("Order placed successfully! Waiting for admin approval.");
+
+      renderMiniCart();
+      showPage('dashboard');
+
+    }),
+
+    onError: err => {
+      console.error(err);
+      alert('Payment failed');
+    }
+
+  }).render('#paypal-container'); // ✅ VERY IMPORTANT
     
-onApprove: (data, actions) => actions.order.capture().then(details => {
-
-  const user = currentUser();
-  const cart = getCart();
-  const subtotal = cartSubtotal();
-  const country = localStorage.getItem("neo_delivery_country_v1") || "Other";
-  const deliveryFee = calculateDeliveryFee(country);
-  const totalAmount = subtotal + deliveryFee;
-
-  // ✅ SAVE ORDER FOR ADMIN
-  let orders = JSON.parse(localStorage.getItem("neo_orders") || "[]");
-
-  const orderId = "ORD" + Date.now();
-
-  orders.push({
-    id: orderId,
-    buyer: user.email,
-    items: cart,
-    total: totalAmount,
-    status: "pending",
-    date: new Date().toISOString(),
-    country: country
-  });
-
-  localStorage.setItem("neo_orders", JSON.stringify(orders));
-
-  // ✅ SAVE ORDER FOR BUYER DASHBOARD
-  let users = getUsers();
-  if(!users[user.email].orders) users[user.email].orders = [];
-
-  users[user.email].orders.push({
-    id: orderId,
-    total: totalAmount,
-    status: "pending"
-  });
-
-  saveUsers(users);
-
-  // ✅ CLEAR CART
-  localStorage.removeItem(CART_KEY);
-
-  alert("Order placed successfully! Waiting for admin approval.");
-
-  renderMiniCart();
-  showPage('dashboard');
-
-})
-
+  }
   
-    
 /////////////////////////
 // Dashboard
 function renderDashboard(){ const u=currentUser(); document.getElementById('dashboard-welcome').textContent = u ? `Hello, ${u.name} (${u.email})` : 'Not logged in'; }
