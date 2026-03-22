@@ -34,6 +34,9 @@
 <div class="card">
   <h2>Dashboard</h2>
   <div id="dashboard-welcome">Loading...</div>
+
+  <h3 style="margin-top:20px">Your Orders</h3>
+<div id="user-orders"></div>
   <div style="margin-top:12px">
     <button id="logout-btn" class="ghost">Logout</button>
     
@@ -61,34 +64,77 @@ document.getElementById('logout-btn').addEventListener('click', logout);
 
 
   function renderDashboard(){
-
   const u = currentUser();
-  if(!u) return;
-
-  const users = getUsers();
-  const my = users[u.email];
-
-  let html = `<h3>Hello, ${u.name}</h3>`;
-  html += `<h4>Your Orders</h4>`;
-
-  if(!my.orders || my.orders.length === 0){
-    html += "<p>No orders yet</p>";
-  }else{
-    my.orders.forEach(o=>{
-      html += `
-      <div style="border:1px solid #ddd;padding:10px;margin-top:10px;border-radius:8px">
-        <b>Order ID:</b> ${o.id}<br>
-        <b>Total:</b> $${o.total}<br>
-        <b>Status:</b> <span style="color:${o.status==='approved'?'green':o.status==='rejected'?'red':'orange'}">${o.status}</span><br>
-        <b>Date:</b> ${o.date}
-      </div>
-      `;
-    });
+  
+  if(!u){
+    document.getElementById('dashboard-welcome').textContent = 'Not logged in';
+    return;
   }
 
-  document.getElementById('dashboard-welcome').innerHTML = html;
-}
+  document.getElementById('dashboard-welcome').textContent =
+    `Hello, ${u.name} (${u.email})`;
 
+  const users = getUsers();
+  const userData = users[u.email];
+
+  const container = document.getElementById("user-orders");
+
+  if(!userData.orders || userData.orders.length === 0){
+    container.innerHTML = "<p>No orders yet</p>";
+    return;
+  }
+
+  let html = "";
+
+  userData.orders.forEach(o => {
+
+    html += `
+    <div style="background:#fff;padding:15px;margin-top:15px;border-radius:10px">
+      <div><strong>Order ID:</strong> ${o.id}</div>
+      <div><strong>Total:</strong> $${o.total}</div>
+      <div><strong>Status:</strong> ${o.status}</div>
+
+      <div style="margin-top:10px">
+        ${renderTrackingBar(o.status)}
+      </div>
+    </div>
+    `;
+  });
+
+  container.innerHTML = html;
+  }
+
+function renderTrackingBar(status){
+
+  const steps = ["pending","approved","shipped","delivered"];
+
+  let html = `<div style="display:flex;justify-content:space-between;font-size:12px">`;
+
+  steps.forEach(step => {
+
+    let color = "#ccc";
+
+    if(step === status) color = "orange";
+
+    if(steps.indexOf(step) < steps.indexOf(status)) color = "green";
+
+    html += `
+      <div style="text-align:center;flex:1">
+        <div style="
+          width:20px;height:20px;
+          margin:auto;
+          border-radius:50%;
+          background:${color}">
+        </div>
+        <div>${step}</div>
+      </div>
+    `;
+  });
+
+  html += `</div>`;
+
+  return html;
+  }
 
 
   
