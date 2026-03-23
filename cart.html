@@ -332,8 +332,46 @@ document.getElementById('buy-now').addEventListener('click',()=>{ addToCart(prod
 // Auth functions
 function getUsers(){ return JSON.parse(localStorage.getItem(AUTH_KEY)||'{}'); }
 function saveUsers(u){ localStorage.setItem(AUTH_KEY, JSON.stringify(u)); }
-function signup(name,email,password){ const users = getUsers(); if(users[email]) throw new Error('User exists'); users[email] = {name,email,password}; saveUsers(users); login(email,password);}
-function login(email,password){ const users = getUsers(); if(!users[email] || users[email].password !== password) throw new Error('Invalid credentials'); localStorage.setItem(SESSION_KEY, JSON.stringify({email,name:users[email].name,loggedAt:Date.now()})); renderUserUI(); }
+function signup(name,email,password){  
+  return createUserWithEmailAndPassword(auth, email, password)  
+    .then(userCredential=>{  
+    const user = userCredential.user;  
+  
+      return setDoc(doc(db, "users", user.uid), {  
+  name: name,  
+  email: email,  
+  createdAt: Date.now()  
+  }).then(()=>{  
+      localStorage.setItem(SESSION_KEY, JSON.stringify({  
+        uid:user.uid,  
+        name:name,  
+        email:email  
+      }));  
+    });  
+  });  
+  window.location.href = "index.html#cart";
+}  
+  
+function login(email,password){  
+  return signInWithEmailAndPassword(auth, email, password)  
+  .then(userCredential=>{  
+    const user = userCredential.user;  
+  
+    return getDoc(doc(db, "users", user.uid))  
+    .then(doc=>{  
+      const data = doc.data();  
+  
+      localStorage.setItem(SESSION_KEY, JSON.stringify({  
+        uid:user.uid,  
+        name:data.name,  
+        email:data.email  
+      }));  
+    });  
+  });
+  window.location.href = "index.html#cart";
+  }  
+
+  
 function logout(){ localStorage.removeItem(SESSION_KEY); renderUserUI(); showPage('product'); }
 function currentUser(){ return JSON.parse(localStorage.getItem(SESSION_KEY)||'null'); }
 
