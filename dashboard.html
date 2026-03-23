@@ -15,7 +15,7 @@ body{
 .card{
   background:white;
   padding:20px;
-  max-width:700px;
+  max-width:900px;
   margin:auto;
   border-radius:12px;
   box-shadow:0 6px 18px rgba(2,6,23,0.06);
@@ -27,6 +27,20 @@ button{
   cursor:pointer;
 }
 .ghost{background:transparent;border:1px solid #e5e7eb;color:#6b7280;}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+}
+th, td{
+  border:1px solid #e5e7eb;
+  padding:10px;
+  text-align:left;
+}
+th{
+  background:#f1f5f9;
+}
 </style>
 </head>
 
@@ -56,7 +70,6 @@ button{
   </div>
 </div>
 
-<!-- ✅ FIREBASE FULL SETUP -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
@@ -81,18 +94,13 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// make global
-window.db = db;
-window.auth = auth;
-window.getDocs = getDocs;
-window.collection = collection;
-window.query = query;
-window.where = where;
-
-// load dashboard
 loadDashboard();
 
+// 🔥 AUTO UPDATE EVERY 5 SECONDS
+setInterval(loadDashboard, 5000);
+
 async function loadDashboard(){
+
   const SESSION_KEY = 'neo_session_v1';
   const user = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
 
@@ -101,23 +109,25 @@ async function loadDashboard(){
     return;
   }
 
-  // welcome
   document.getElementById('dashboard-welcome').textContent =
     `Hello, ${user.name} (${user.email})`;
 
   //////////////////////////
-  // USER DETAILS (5)
+  // USER DETAILS TABLE
   //////////////////////////
   document.getElementById("user-details").innerHTML = `
-    <div><strong>Name:</strong> ${user.name}</div>
-    <div><strong>Email:</strong> ${user.email}</div>
-    <div><strong>User ID:</strong> ${user.uid}</div>
-    <div><strong>Status:</strong> Active</div>
-    <div><strong>Login Time:</strong> ${new Date().toLocaleString()}</div>
+  <table>
+    <tr><th>Field</th><th>Value</th></tr>
+    <tr><td>Name</td><td>${user.name}</td></tr>
+    <tr><td>Email</td><td>${user.email}</td></tr>
+    <tr><td>User ID</td><td>${user.uid}</td></tr>
+    <tr><td>Status</td><td>Active</td></tr>
+    <tr><td>Login Time</td><td>${new Date().toLocaleString()}</td></tr>
+  </table>
   `;
 
   //////////////////////////
-  // FETCH ORDERS FROM FIREBASE
+  // ORDERS FROM FIREBASE
   //////////////////////////
   const ordersDiv = document.getElementById("user-orders");
 
@@ -133,36 +143,46 @@ async function loadDashboard(){
   if(orders.length === 0){
     ordersDiv.innerHTML = "<p>No orders yet</p>";
   } else {
-    let html = "";
+
+    let html = `
+    <table>
+      <tr>
+        <th>Order ID</th>
+        <th>Total ($)</th>
+        <th>Status</th>
+        <th>Tracking</th>
+      </tr>
+    `;
 
     orders.forEach(o=>{
       html += `
-      <div style="background:#fff;padding:15px;margin-top:15px;border-radius:10px">
-        <div><strong>Order ID:</strong> ${o.id}</div>
-        <div><strong>Total:</strong> $${o.total}</div>
-        <div><strong>Status:</strong> ${o.status}</div>
-
-        <div style="margin-top:10px">
-          ${renderTrackingBar(o.status)}
-        </div>
-      </div>
+      <tr>
+        <td>${o.id}</td>
+        <td>${o.total}</td>
+        <td>${o.status}</td>
+        <td>${renderTrackingBar(o.status)}</td>
+      </tr>
       `;
     });
 
+    html += `</table>`;
     ordersDiv.innerHTML = html;
   }
 
   //////////////////////////
-  // ACTIVITIES (5)
+  // LIVE CART + ACTIVITIES
   //////////////////////////
   const cart = JSON.parse(localStorage.getItem("neo_cart_v1") || "[]");
 
   document.getElementById("user-activities").innerHTML = `
-    <div>🛒 Cart Items: ${cart.length}</div>
-    <div>📦 Orders Placed: ${orders.length}</div>
-    <div>💰 Total Spent: $${orders.reduce((s,o)=>s+(o.total||0),0)}</div>
-    <div>🚚 Last Order Status: ${orders.length ? orders[orders.length-1].status : "None"}</div>
-    <div>⏱️ Last Activity: ${new Date().toLocaleTimeString()}</div>
+  <table>
+    <tr><th>Activity</th><th>Value</th></tr>
+    <tr><td>Cart Items</td><td>${cart.reduce((s,i)=>s+i.qty,0)}</td></tr>
+    <tr><td>Orders Placed</td><td>${orders.length}</td></tr>
+    <tr><td>Total Spent</td><td>$${orders.reduce((s,o)=>s+(o.total||0),0)}</td></tr>
+    <tr><td>Last Order Status</td><td>${orders.length ? orders[orders.length-1].status : "None"}</td></tr>
+    <tr><td>Last Activity</td><td>${new Date().toLocaleTimeString()}</td></tr>
+  </table>
   `;
 }
 
@@ -170,7 +190,7 @@ async function loadDashboard(){
 function renderTrackingBar(status){
   const steps = ["pending","approved","shipped","delivered"];
 
-  let html = `<div style="display:flex;justify-content:space-between;font-size:12px">`;
+  let html = `<div style="display:flex;gap:4px">`;
 
   steps.forEach(step=>{
     let color = "#ccc";
@@ -178,19 +198,14 @@ function renderTrackingBar(status){
     if(step === status) color = "orange";
     if(steps.indexOf(step) < steps.indexOf(status)) color = "green";
 
-    html += `
-      <div style="text-align:center;flex:1">
-        <div style="width:20px;height:20px;margin:auto;border-radius:50%;background:${color}"></div>
-        <div>${step}</div>
-      </div>
-    `;
+    html += `<div style="width:10px;height:10px;border-radius:50%;background:${color}"></div>`;
   });
 
   html += `</div>`;
   return html;
 }
 
-// logout
+// LOGOUT
 document.getElementById('logout-btn').addEventListener('click', ()=>{
   localStorage.removeItem('neo_session_v1');
   window.location.href = 'index.html';
@@ -199,4 +214,3 @@ document.getElementById('logout-btn').addEventListener('click', ()=>{
 
 </body>
 </html>
-
