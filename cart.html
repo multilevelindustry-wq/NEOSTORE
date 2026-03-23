@@ -210,12 +210,13 @@
       Copyright ©️ 2025 | NEOSTORE
 </footer>
   
-<script>
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification } 
+from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
 
-// 🔥 ADD THESE
-import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, query, where } 
+from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAC3qCkDfdS2X8YA6deg01lXif7qAStfQQ",
@@ -228,25 +229,21 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-
-// 🔥 ADD THIS
-const db = getFirestore(app);
-
-// 🔥 MAKE GLOBAL (VERY IMPORTANT)
-window.db = db;
-window.collection = collection;
-window.addDoc = addDoc;
-  
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } 
-from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
 
 const auth = getAuth(app);
+const db = getFirestore(app);
 
 // make global
 window.auth = auth;
+window.db = db;
 window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
 window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+window.sendEmailVerification = sendEmailVerification;
+window.collection = collection;
+window.addDoc = addDoc;
+window.getDocs = getDocs;
+window.query = query;
+window.where = where;
 </script>
 
   
