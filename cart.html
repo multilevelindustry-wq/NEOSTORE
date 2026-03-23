@@ -388,14 +388,17 @@ if(!localStorage.getItem(INACT_KEY)) touchActivity();
   if(total <= 0) return;
 
   const user = currentUser();
-  if(!user){
-    const b = document.createElement('button');
-    b.className = 'btn';
-    b.textContent = 'Login to checkout';
-    b.onclick = ()=> showPage('login');
-    container.appendChild(b);
-    return;
-  }
+if(!user){
+  const b = document.createElement('button');
+  b.className = 'btn';
+  b.textContent = 'Login to checkout';
+  b.onclick = () => {
+    window.location.href = "register.html";
+  };
+  container.appendChild(b);
+  return;
+}
+    
 
   paypal.Buttons({
 
