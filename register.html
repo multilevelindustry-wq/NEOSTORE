@@ -300,10 +300,10 @@ function saveCart(cart){
 
   const user = currentUser();
   if(user && user.uid){
-    db.collection("carts").doc(user.uid).set({
-      items: cart,
-      updatedAt: Date.now()
-    });
+    setDoc(doc(db, "carts", user.uid), {
+  items: cart,
+  updatedAt: Date.now()
+});
   }
                                }
 
@@ -373,11 +373,11 @@ function signup(name,email,password){
     .then(userCredential=>{
     const user = userCredential.user;
 
-    return db.collection("users").doc(user.uid).set({
-      name:name,
-      email:email,
-      createdAt: Date.now()
-    }).then(()=>{
+      return setDoc(doc(db, "users", user.uid), {
+  name: name,
+  email: email,
+  createdAt: Date.now()
+  }).then(()=>{
       localStorage.setItem(SESSION_KEY, JSON.stringify({
         uid:user.uid,
         name:name,
@@ -392,7 +392,7 @@ function signup(name,email,password){
   .then(userCredential=>{
     const user = userCredential.user;
 
-    return db.collection("users").doc(user.uid).get()
+    return getDoc(doc(db, "users", user.uid))
     .then(doc=>{
       const data = doc.data();
 
@@ -409,10 +409,6 @@ function logout(){ localStorage.removeItem(SESSION_KEY); renderUserUI(); showPag
 function currentUser(){ return JSON.parse(localStorage.getItem(SESSION_KEY)||'null'); }
 
 
-
-
-
-
 // Auth form
 const authForm = document.getElementById('auth-form');
 const authToggle = document.getElementById('auth-toggle');
@@ -425,23 +421,26 @@ authToggle.addEventListener('click', ()=>{
 });
 
 // Modify only one thing: after login redirect to new dashboard page
-authForm.addEventListener('submit', e => {
-e.preventDefault();
-const name = document.getElementById('auth-name').value.trim();
-const email = document.getElementById('auth-email').value.trim();
-const pw = document.getElementById('auth-password').value;
-try{
-if(authMode==='signup') signup(name,email,pw); else login(email,pw);
-alert('Logged in');
-window.location.href = 'dashboard.html'; // ✅ new redirect
-}catch(err){ alert(err.message); }
-});
+authForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
 
+  const name = document.getElementById('auth-name').value.trim();
+  const email = document.getElementById('auth-email').value.trim();
+  const pw = document.getElementById('auth-password').value;
 
-// User icon click: go to dashboard.html
-document.getElementById('user-area').addEventListener('click',()=>{
-if(currentUser()) window.location.href = 'dashboard.html';
-else showPage('login');
+  try{
+    if(authMode==='signup'){
+      await signup(name,email,pw);
+    }else{
+      await login(email,pw);
+    }
+
+    alert('Logged in');
+    window.location.href = 'dashboard.html';
+
+  }catch(err){
+    alert(err.message);
+  }
 });
 
 // User area
@@ -449,19 +448,6 @@ document.getElementById('user-area').addEventListener('click', ()=>{ if(currentU
 function renderUserUI(){ const u=currentUser(); document.getElementById('user-text-mini').textContent = u ? u.name : 'Sign in'; }
 renderUserUI();
 document.getElementById('logout-btn').addEventListener('click', ()=>{ logout(); });
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /////////////////////////
 // Auto-logout
