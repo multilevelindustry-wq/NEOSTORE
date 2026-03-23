@@ -247,7 +247,7 @@ const pages = {
   product: document.getElementById('page-product'),
   cart: document.getElementById('page-cart'),
   login: document.getElementById('page-login'),
-  
+  dashboard: document.getElementById('page-dashboard')
 };
 
 // Show SPA page
@@ -256,7 +256,7 @@ function showPage(name){
   pages[name].classList.remove('hidden');
   location.hash = '#'+name;
   if(name==='cart') renderCartFull();
-  
+  if(name==='dashboard') renderDashboard();
 }
 
 // Init page
