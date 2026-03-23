@@ -457,49 +457,48 @@ if(!user){
         }
       }]
     }),
+onApprove: (data, actions) => actions.order.capture().then(details => {
 
-    onApprove: (data, actions) => actions.order.capture().then(details => {
+  const user = currentUser();
+  const cart = getCart();
+  const totalAmount = total;
 
-      const user = currentUser();
-      const cart = getCart();
-      const totalAmount = total;
+  let orders = JSON.parse(localStorage.getItem("neo_orders") || "[]");
+  const orderId = "ORD" + Date.now();
 
-      let orders = JSON.parse(localStorage.getItem("neo_orders") || "[]");
+  // LOCAL STORAGE (keep this)
+  orders.push({
+    id: orderId,
+    buyer: user.email,
+    items: cart,
+    total: totalAmount,
+    status: "pending",
+    date: new Date().toISOString(),
+    country: country
+  });
 
-      const orderId = "ORD" + Date.now();
+  localStorage.setItem("neo_orders", JSON.stringify(orders));
 
-      orders.push({
-        id: orderId,
-        buyer: user.email,
-        items: cart,
-        total: totalAmount,
-        status: "pending",
-        date: new Date().toISOString(),
-        country: country
-      });
+  // 🔥 FIREBASE (ADD THIS HERE)
+  addDoc(collection(db, "orders"), {
+    userId: user.uid,
+    email: user.email,
+    items: cart,
+    total: totalAmount,
+    status: "pending",
+    createdAt: Date.now(),
+    country: country
+  });
 
-      localStorage.setItem("neo_orders", JSON.stringify(orders));
+  // CLEAR CART
+  localStorage.removeItem(CART_KEY);
 
-      let users = getUsers();
-      if(!users[user.email].orders) users[user.email].orders = [];
+  alert("Order placed successfully!");
 
-      users[user.email].orders.push({
-        id: orderId,
-        total: totalAmount,
-        status: "pending"
-      });
+  renderMiniCart();
+  showPage('dashboard');
 
-      saveUsers(users);
-
-      localStorage.removeItem(CART_KEY);
-
-      alert("Order placed successfully! Waiting for admin approval.");
-
-      renderMiniCart();
-      showPage('dashboard');
-
-    }),
-
+});
     onError: err => {
       console.error(err);
       alert('Payment failed');
