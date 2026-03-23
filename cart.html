@@ -209,31 +209,47 @@
 <footer>
       Copyright ©️ 2025 | NEOSTORE
 </footer>
-
-  <script type="module">
-  // Import the functions you need from the SDKs you need
+  
+<script>
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyAC3qCkDfdS2X8YA6deg01lXif7qAStfQQ",
-    authDomain: "neostore-81b57.firebaseapp.com",
-    projectId: "neostore-81b57",
-    storageBucket: "neostore-81b57.firebasestorage.app",
-    messagingSenderId: "760637387702",
-    appId: "1:760637387702:web:3c7c231c34a3513d1a4717",
-    measurementId: "G-1PBBK48DCK"
-  };
+// 🔥 ADD THESE
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-  </script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAC3qCkDfdS2X8YA6deg01lXif7qAStfQQ",
+  authDomain: "neostore-81b57.firebaseapp.com",
+  projectId: "neostore-81b57",
+  storageBucket: "neostore-81b57.firebasestorage.app",
+  messagingSenderId: "760637387702",
+  appId: "1:760637387702:web:3c7c231c34a3513d1a4717",
+  measurementId: "G-1PBBK48DCK"
+};
 
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
+// 🔥 ADD THIS
+const db = getFirestore(app);
+
+// 🔥 MAKE GLOBAL (VERY IMPORTANT)
+window.db = db;
+window.collection = collection;
+window.addDoc = addDoc;
+  
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } 
+from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+
+const auth = getAuth(app);
+
+// make global
+window.auth = auth;
+window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+</script>
+
+  
 <script>
 /////////////////////////
 // Constants
@@ -442,71 +458,65 @@ if(!user){
   container.appendChild(b);
   return;
 }
-    
 
-  paypal.Buttons({
+paypal.Buttons({
 
-    createOrder: (data, actions) => actions.order.create({
-      purchase_units: [{
-        amount: {
-          value: total.toFixed(2),
-          breakdown: {
-            item_total: { value: subtotal.toFixed(2), currency_code: "USD" },
-            shipping: { value: deliveryFee.toFixed(2), currency_code: "USD" }
-          }
-        }
-      }]
-    }),
-onApprove: (data, actions) => actions.order.capture().then(details => {
+  createOrder: (data, actions) => actions.order.create({
+    purchase_units: [{
+      amount: {
+        value: total.toFixed(2)
+      }
+    }]
+  }),
 
-  const user = currentUser();
-  const cart = getCart();
-  const totalAmount = total;
+  onApprove: (data, actions) => actions.order.capture().then(async (details) => {
 
-  let orders = JSON.parse(localStorage.getItem("neo_orders") || "[]");
-  const orderId = "ORD" + Date.now();
+    const user = currentUser();
+    const cart = getCart();
 
-  // LOCAL STORAGE (keep this)
-  orders.push({
-    id: orderId,
-    buyer: user.email,
-    items: cart,
-    total: totalAmount,
-    status: "pending",
-    date: new Date().toISOString(),
-    country: country
-  });
+    // SAVE TO FIREBASE
+    await addDoc(collection(db, "orders"), {
+      userId: user.uid,
+      email: user.email,
+      items: cart,
+      total: total,
+      status: "pending",
+      createdAt: Date.now(),
+      country: country
+    });
 
-  localStorage.setItem("neo_orders", JSON.stringify(orders));
+    // SAVE LOCAL (optional)
+    let orders = JSON.parse(localStorage.getItem("neo_orders") || "[]");
 
-  // 🔥 FIREBASE (ADD THIS HERE)
-  addDoc(collection(db, "orders"), {
-    userId: user.uid,
-    email: user.email,
-    items: cart,
-    total: totalAmount,
-    status: "pending",
-    createdAt: Date.now(),
-    country: country
-  });
+    orders.push({
+      id: "ORD" + Date.now(),
+      buyer: user.email,
+      items: cart,
+      total: total,
+      status: "pending"
+    });
 
-  // CLEAR CART
-  localStorage.removeItem(CART_KEY);
+    localStorage.setItem("neo_orders", JSON.stringify(orders));
 
-  alert("Order placed successfully!");
+    localStorage.removeItem(CART_KEY);
 
-  renderMiniCart();
-  showPage('dashboard');
+    alert("Order placed successfully!");
 
-});
-    onError: err => {
-      console.error(err);
-      alert('Payment failed');
-    }
+    renderMiniCart();
+    showPage('dashboard');
 
-  }).render('#paypal-container'); // ✅ VERY IMPORTANT
+  }),
+
+  onError: err => {
+    console.error(err);
+    alert('Payment failed');
+  }
+
+}).render('#paypal-container'); // ✅ VERY IMPORTANT
     
   }
+
+
   
 /////////////////////////
 // Dashboard
