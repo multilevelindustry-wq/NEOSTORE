@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>NEOSTORE — Product / Cart / Auth Demo</title>
+
+<script src="https://www.paypal.com/sdk/js?client-id=Aey_vJzSIErk6JUHmkIU41JQ4W1vA2FlfBNf5Vtkg7j4YLaWHkFtw4WSPI0SWiCzhaNKqPt2oGuVIF1n&components=buttons&currency=USD"></script>
+
+<style>
+:root {--accent:#0ea5a4; --muted:#6b7280; --bg:#f8fafc;}
+*{box-sizing:border-box;}
+body{font-family:Arial;margin:0;background:var(--bg);}
+.hidden{display:none;}
+.card{background:white;padding:20px;border-radius:12px;max-width:900px;margin:auto;}
+table{width:100%;border-collapse:collapse;margin-top:10px;}
+th,td{border:1px solid #e5e7eb;padding:10px;}
+th{background:#f1f5f9;}
+button{padding:10px;border-radius:8px;border:0;cursor:pointer;}
+.btn{background:var(--accent);color:white;}
+.ghost{background:transparent;border:1px solid #ddd;}
+</style>
+</head>
+
+<body>
+
+<header style="display:flex;justify-content:space-between;padding:15px;background:white;">
+  <div><b>NEOSTORE</b></div>
+  <div>
+    <span id="user-area">👤 <span id="user-text-mini"></span></span>
+    🛒 <span id="cart-count"></span>
+  </div>
+</header>
+
+<main>
+
+<!-- PRODUCT -->
+<section id="page-product">
+  <div class="card">
+    <h2 id="product-title">Vitamin</h2>
+    <p>$<span id="product-price"></span></p>
+    <button id="add-to-cart" class="btn">Add to cart</button>
+    <button id="buy-now" class="ghost">Buy Now</button>
+  </div>
+</section>
+
+<!-- CART -->
+<section id="page-cart" class="hidden">
+  <div class="card">
+    <h2>Cart</h2>
+    <div id="cart-full-list"></div>
+    <div id="cart-total"></div>
+    <div id="paypal-container"></div>
+  </div>
+</section>
+
+<!-- LOGIN -->
+<section id="page-login" class="hidden">
+  <div class="card">
+    <h2 id="auth-title">Sign Up</h2>
+    <form id="auth-form">
+      <input id="auth-name" placeholder="Name"><br>
+      <input id="auth-email" placeholder="Email"><br>
+      <input id="auth-password" placeholder="Password"><br>
+      <button class="btn">Submit</button>
+      <button type="button" id="auth-toggle">Switch</button>
+    </form>
+  </div>
+</section>
+
+<!-- DASHBOARD -->
+<section id="page-dashboard" class="hidden">
+  <div class="card">
+    <h2>Dashboard</h2>
+    <div id="dashboard-welcome"></div>
+    <div id="user-details"></div>
+    <div id="user-orders"></div>
+    <div id="user-activities"></div>
+    <button id="logout-btn">Logout</button>
+  </div>
+</section>
+
+</main>
+
+<script>
+///////////////////////
+// STORAGE KEYS
+const CART_KEY='neo_cart_v1';
+const SESSION_KEY='neo_session_v1';
+
+///////////////////////
+// PAGE SWITCH
+const pages={
+product:document.getElementById('page-product'),
+cart:document.getElementById('page-cart'),
+login:document.getElementById('page-login'),
+dashboard:document.getElementById('page-dashboard')
+};
+
+function showPage(p){
+Object.values(pages).forEach(x=>x.classList.add('hidden'));
+pages[p].classList.remove('hidden');
+}
+
+///////////////////////
+// PRODUCT
+const product={id:'p1',title:'Vitamin',price:24.99};
+document.getElementById('product-price').textContent=product.price;
+
+///////////////////////
+// CART
+function getCart(){return JSON.parse(localStorage.getItem(CART_KEY)||'[]');}
+function saveCart(c){localStorage.setItem(CART_KEY,JSON.stringify(c));renderCart();}
+
+function addToCart(){
+let c=getCart();
+let f=c.find(i=>i.id==='p1');
+if(f)f.qty++; else c.push({...product,qty:1});
+saveCart(c);
+}
+
+function renderCart(){
+let c=getCart();
+document.getElementById('cart-count').textContent=c.reduce((s,i)=>s+i.qty,0);
+let html='';
+c.forEach(i=>{
+html+=`<div>${i.title} x ${i.qty}</div>`;
+});
+document.getElementById('cart-full-list').innerHTML=html;
+document.getElementById('cart-total').textContent='$'+c.reduce((s,i)=>s+i.price*i.qty,0);
+}
+
+///////////////////////
+// AUTH
+function currentUser(){return JSON.parse(localStorage.getItem(SESSION_KEY)||'null');}
+
+document.getElementById('auth-form').addEventListener('submit',e=>{
+e.preventDefault();
+const name=auth-name.value;
+const email=auth-email.value;
+
+localStorage.setItem(SESSION_KEY,JSON.stringify({name,email}));
+
+showPage('dashboard');
+renderDashboard();
+});
+
+///////////////////////
+// DASHBOARD
+function renderDashboard(){
+const u=currentUser();
+if(!u)return showPage('login');
+
+document.getElementById('dashboard-welcome').innerHTML=`Hello ${u.name}`;
+
+document.getElementById('user-details').innerHTML=`
+<table>
+<tr><td>Name</td><td>${u.name}</td></tr>
+<tr><td>Email</td><td>${u.email}</td></tr>
+</table>`;
+}
+
+///////////////////////
+// EVENTS
+document.getElementById('add-to-cart').onclick=()=>addToCart();
+document.getElementById('buy-now').onclick=()=>{addToCart();showPage('cart');renderCart();}
+document.getElementById('user-area').onclick=()=> currentUser()?showPage('dashboard'):showPage('login');
+document.getElementById('logout-btn').onclick=()=>{localStorage.removeItem(SESSION_KEY);showPage('login');};
+
+///////////////////////
+// INIT
+renderCart();
+showPage('product');
+
+</script>
+
+</body>
+</html>
