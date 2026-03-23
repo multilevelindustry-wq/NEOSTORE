@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Track Order - NEOSTORE</title>
+<style>
+body{font-family:Arial;background:#f5f5f5;padding:20px;}
+.card{background:white;padding:20px;border-radius:10px;max-width:600px;margin:auto;}
+.order{border-bottom:1px solid #ddd;padding:10px 0;}
+.status{font-weight:bold;}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+<h2>Your Orders</h2>
+<div id="orders"></div>
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+import { getFirestore, collection, getDocs, query, where } 
+from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSy...",
+  authDomain: "neostore-81b57.firebaseapp.com",
+  projectId: "neostore-81b57"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// LOAD ORDERS
+async function loadOrders(){
+  const user = auth.currentUser;
+
+  if(!user){
+    document.getElementById("orders").innerHTML = "Login first";
+    return;
+  }
+
+  const q = query(collection(db,"orders"), where("userId","==",user.uid));
+  const snapshot = await getDocs(q);
+
+  let html = "";
+
+  snapshot.forEach(doc=>{
+    const o = doc.data();
+
+    html += `
+    <div class="order">
+      <div>ID: ${o.orderId}</div>
+      <div>Total: $${o.total}</div>
+      <div class="status">Status: ${o.status}</div>
+    </div>`;
+  });
+
+  document.getElementById("orders").innerHTML = html || "No orders found";
+}
+
+// wait for auth
+setTimeout(loadOrders,2000);
+
+</script>
+
+</body>
+</html>
