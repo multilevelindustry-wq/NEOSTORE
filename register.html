@@ -285,7 +285,22 @@ document.getElementById('product-price').textContent = '$'+product.price.toFixed
 /////////////////////////
 // Cart functions
 function getCart(){ return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); }
-function saveCart(cart){ localStorage.setItem(CART_KEY, JSON.stringify(cart)); renderMiniCart(); updateDeliveryTotalDisplay(); }
+function saveCart(cart){
+  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  renderMiniCart();
+  updateDeliveryTotalDisplay();
+
+  const user = currentUser();
+  if(user && user.uid){
+    db.collection("carts").doc(user.uid).set({
+      items: cart,
+      updatedAt: Date.now()
+    });
+  }
+                               }
+
+  
+  
 function addToCart(item){
   const cart = getCart();
   const found = cart.find(i=>i.id===item.id);
@@ -489,7 +504,20 @@ function renderPayPalButton(){
     }),
     onApprove: (data, actions) => actions.order.capture().then(details => {
       alert('Payment completed by ' + (details.payer.name.given_name || 'Customer') + '. Order ID: ' + data.orderID);
-      localStorage.removeItem(CART_KEY);
+      const user = currentUser();
+const cart = getCart();
+
+if(user && user.uid){
+  db.collection("orders").add({
+    userId: user.uid,
+    items: cart,
+    total: total,
+    createdAt: Date.now(),
+    status: "pending"
+  });
+}
+
+localStorage.removeItem(CART_KEY);
       renderMiniCart();
       showPage('product');
     }),
