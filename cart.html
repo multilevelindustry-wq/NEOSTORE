@@ -503,7 +503,7 @@ paypal.Buttons({
     alert("Order placed successfully!");
 
     renderMiniCart();
-    showPage('dashboard');
+    window.location.href = "success.html?order=" + orderId;
 
   }),
 
