@@ -86,122 +86,104 @@ canvas{background:#fff;border-radius:10px;padding:10px;}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+import { getFirestore, collection, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyAC3qCkDfdS2X8YA6deg01lXif7qAStfQQ",
-    authDomain: "neostore-81b57.firebaseapp.com",
-    projectId: "neostore-81b57",
-    storageBucket: "neostore-81b57.firebasestorage.app",
-    messagingSenderId: "760637387702",
-    appId: "1:760637387702:web:3c7c231c34a3513d1a4717",
-    measurementId: "G-1PBBK48DCK"
-  };
+// Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyAC3qCkDfdS2X8YA6deg01lXif7qAStfQQ",
+  authDomain: "neostore-81b57.firebaseapp.com",
+  projectId: "neostore-81b57",
+  storageBucket: "neostore-81b57.firebasestorage.app",
+  messagingSenderId: "760637387702",
+  appId: "1:760637387702:web:3c7c231c34a3513d1a4717"
+};
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-  </script>
-
-<script>
-
-const AUTH_KEY = 'neo_users_v1';
-
-// STORAGE
-function getUsers(){ return JSON.parse(localStorage.getItem(AUTH_KEY)||'{}'); }
-function saveUsers(u){ localStorage.setItem(AUTH_KEY, JSON.stringify(u)); }
-function getOrders(){ return JSON.parse(localStorage.getItem("neo_orders")||"[]"); }
+// Init
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 // ================= USERS =================
-function renderUsers(){
-  const users = getUsers();
-  let html = "<tr><th>Name</th><th>Email</th></tr>";
+async function renderUsers(){
+  const snapshot = await getDocs(collection(db, "users"));
 
-  Object.values(users).forEach(u=>{
+  let html = "<tr><th>Name</th><th>Email</th></tr>";
+  let count = 0;
+
+  snapshot.forEach(doc=>{
+    const u = doc.data();
     html += `<tr><td>${u.name}</td><td>${u.email}</td></tr>`;
+    count++;
   });
 
   document.getElementById("usersTable").innerHTML = html;
-  document.getElementById("totalUsers").textContent = Object.keys(users).length;
+  document.getElementById("totalUsers").textContent = count;
 }
 
 // ================= ORDERS =================
-function renderOrders(){
-  let orders = getOrders();
+async function renderOrders(){
+  const snapshot = await getDocs(collection(db, "orders"));
 
-  let html = "<tr><th>ID</th><th>Buyer</th><th>Total</th><th>Status</th><th>Action</th></tr>";
+  let html = "<tr><th>ID</th><th>Email</th><th>Total</th><th>Status</th><th>Action</th></tr>";
 
-  orders.forEach(o=>{
+  let orders = [];
+  let revenue = 0;
+  let pending = 0;
+
+  snapshot.forEach(docSnap=>{
+    const o = docSnap.data();
+    const id = docSnap.id;
+
+    orders.push({id, ...o});
+
+    if(o.status === "approved") revenue += o.total;
+    if(o.status === "pending") pending++;
+
     html += `
     <tr>
-      <td>${o.id}</td>
-      <td>${o.buyer}</td>
+      <td>${id}</td>
+      <td>${o.email || "N/A"}</td>
       <td>$${o.total}</td>
       <td>${o.status}</td>
       <td>
-  <button class="approve" onclick="updateOrder('${o.id}','approved')">Approve</button>
-  <button onclick="updateOrder('${o.id}','shipped')">Ship</button>
-  <button onclick="updateOrder('${o.id}','delivered')">Deliver</button>
-  <button class="reject" onclick="updateOrder('${o.id}','rejected')">Reject</button>
-</td>
+        <button class="approve" onclick="updateOrder('${id}','approved')">Approve</button>
+        <button onclick="updateOrder('${id}','shipped')">Ship</button>
+        <button onclick="updateOrder('${id}','delivered')">Deliver</button>
+        <button class="reject" onclick="updateOrder('${id}','rejected')">Reject</button>
+      </td>
     </tr>`;
   });
 
   document.getElementById("ordersTable").innerHTML = html;
-
   document.getElementById("totalOrders").textContent = orders.length;
-
-  let revenue = orders.reduce((s,o)=> s + (o.status==="approved" ? o.total : 0),0);
   document.getElementById("totalRevenue").textContent = revenue.toFixed(2);
+  document.getElementById("pendingOrders").textContent = pending;
 
-  document.getElementById("pendingOrders").textContent = orders.filter(o=>o.status==="pending").length;
-
-  renderApprovedRejected();
-  renderDelivery();
-  renderRecent();
-  renderCharts();
+  renderApprovedRejected(orders);
+  renderDelivery(orders);
+  renderRecent(orders);
+  renderCharts(orders);
 }
 
-// ================= UPDATE =================
-function updateOrder(id,status){
-  let orders = getOrders();
-  const users = getUsers();
+// ================= UPDATE ORDER =================
+window.updateOrder = async function(id, status){
+  const orderRef = doc(db, "orders", id);
 
-  orders.forEach(o=>{
-    if(o.id===id){
-      o.status = status;
+  await updateDoc(orderRef, { status });
 
-      if(users[o.buyer]?.orders){
-        users[o.buyer].orders.forEach(x=>{
-          if(x.id===id) x.status = status;
-        });
-      }
-    }
-  });
-
-  localStorage.setItem("neo_orders", JSON.stringify(orders));
-  saveUsers(users);
   renderOrders();
-}
+};
 
 // ================= APPROVED / REJECTED =================
-function renderApprovedRejected(){
-  let orders = getOrders();
-
+function renderApprovedRejected(orders){
   let approved="", rejected="";
 
   orders.forEach(o=>{
     if(o.status==="approved"){
-      approved += `<tr><td>${o.id}</td><td>${o.buyer}</td><td>$${o.total}</td></tr>`;
+      approved += `<tr><td>${o.id}</td><td>${o.email}</td><td>$${o.total}</td></tr>`;
     }
     if(o.status==="rejected"){
-      rejected += `<tr><td>${o.id}</td><td>${o.buyer}</td><td>$${o.total}</td></tr>`;
+      rejected += `<tr><td>${o.id}</td><td>${o.email}</td><td>$${o.total}</td></tr>`;
     }
   });
 
@@ -210,57 +192,36 @@ function renderApprovedRejected(){
 }
 
 // ================= DELIVERY =================
-function renderDelivery(){
-  let orders = getOrders();
-
-  let html = "<tr><th>Buyer</th><th>Country</th></tr>";
+function renderDelivery(orders){
+  let html = "<tr><th>Email</th><th>Country</th></tr>";
 
   orders.forEach(o=>{
-    html += `<tr><td>${o.buyer}</td><td>${o.country || "N/A"}</td></tr>`;
+    html += `<tr><td>${o.email}</td><td>${o.country || "N/A"}</td></tr>`;
   });
 
   document.getElementById("deliveryTable").innerHTML = html;
 }
 
 // ================= RECENT =================
-function renderRecent(){
-  let orders = getOrders().slice(-5).reverse();
-
+function renderRecent(orders){
   let html = "";
 
-  orders.forEach(o=>{
-    html += `<div>${o.buyer} ordered $${o.total} (${o.status})</div>`;
+  orders.slice(-5).reverse().forEach(o=>{
+    html += `<div>${o.email} ordered $${o.total} (${o.status})</div>`;
   });
 
   document.getElementById("recentOrders").innerHTML = html;
 }
 
-// ================= SEARCH =================
-document.getElementById("searchBox").addEventListener("input", function(){
-  let val = this.value.toLowerCase();
-  let orders = getOrders();
-
-  let html = "<tr><th>ID</th><th>Buyer</th><th>Total</th><th>Status</th></tr>";
-
-  orders.filter(o=> o.buyer.toLowerCase().includes(val) || o.id.includes(val))
-  .forEach(o=>{
-    html += `<tr><td>${o.id}</td><td>${o.buyer}</td><td>$${o.total}</td><td>${o.status}</td></tr>`;
-  });
-
-  document.getElementById("ordersTable").innerHTML = html;
-});
-
 // ================= CHARTS =================
-function renderCharts(){
-  let orders = getOrders();
-
+function renderCharts(orders){
   let months = {};
-  let orderCount = {};
+  let count = {};
 
   orders.forEach(o=>{
-    let m = new Date(o.date || Date.now()).toLocaleString("default",{month:"short"});
+    let m = new Date(o.createdAt || Date.now()).toLocaleString("default",{month:"short"});
     months[m] = (months[m]||0) + o.total;
-    orderCount[m] = (orderCount[m]||0) + 1;
+    count[m] = (count[m]||0) + 1;
   });
 
   new Chart(document.getElementById("salesChart"),{
@@ -270,15 +231,22 @@ function renderCharts(){
 
   new Chart(document.getElementById("ordersChart"),{
     type:"line",
-    data:{labels:Object.keys(orderCount),datasets:[{label:"Orders",data:Object.values(orderCount)}]}
+    data:{labels:Object.keys(count),datasets:[{label:"Orders",data:Object.values(count)}]}
   });
 }
 
-// INIT
+// ================= INIT =================
 renderUsers();
 renderOrders();
 
-</script>
+// 🔥 AUTO REFRESH EVERY 5s
+setInterval(()=>{
+  renderUsers();
+  renderOrders();
+},5000);
+
+  </script>
+  
 
 </body>
 </html>
