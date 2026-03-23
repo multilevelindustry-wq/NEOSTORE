@@ -66,13 +66,35 @@
       text-decoration:none;
       color: black;
   }
+  .card{
+  background:white;
+  padding:20px;
+  max-width:900px;
+  margin:auto;
+  border-radius:12px;
+  box-shadow:0 6px 18px rgba(2,6,23,0.06);
+}
+button{
+  padding:10px 14px;
+  border-radius:8px;
+  border:0;
+  cursor:pointer;
+}
+.ghost{background:transparent;border:1px solid #e5e7eb;color:#6b7280;}
 
-  .reg a{
-      background:transparent;
-      border:1px solid #e5e7eb;
-      color:#6b7280;
-      text-decoration:none;
-  }
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+}
+th, td{
+  border:1px solid #e5e7eb;
+  padding:10px;
+  text-align:left;
+}
+th{
+  background:#f1f5f9;
+       }
 
     
 </style>
@@ -195,6 +217,31 @@
   </section>
 
   <!-- Dashboard Page -->
+<div class="card">
+  <h2>Dashboard</h2>
+  <div id="dashboard-welcome">Loading...</div>
+
+  <!-- USER DETAILS -->
+  <h3 style="margin-top:20px">User Details</h3>
+  <div id="user-details"></div>
+
+  <!-- ORDERS -->
+  <h3 style="margin-top:20px">Your Orders</h3>
+  <div id="user-orders"></div>
+
+  <!-- ACTIVITIES -->
+  <h3 style="margin-top:20px">Activities</h3>
+  <div id="user-activities"></div>
+
+  <div style="margin-top:12px">
+    <button id="logout-btn" class="ghost">Logout</button>
+    <a href="index.html">
+      <button class="ghost">GO SHOP NOW</button>
+    </a>
+  </div>
+</div>
+
+  
   <section id="page-dashboard" class="page hidden">
     <div class="card" style="max-width:700px;margin:auto">
       <h2>Dashboard</h2>
@@ -531,6 +578,123 @@ function updateDeliveryTotalDisplay(){
 const originalShowPage = showPage;
 showPage = function(name){ originalShowPage(name); if(name==='cart') setTimeout(updateDeliveryTotalDisplay,300); };
 
+
+
+// 🔥 AUTO UPDATE EVERY 5 SECONDS
+setInterval(loadDashboard, 5000);
+
+async function loadDashboard(){
+
+  const SESSION_KEY = 'neo_session_v1';
+  const user = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+
+  if(!user){
+    window.location.href = 'index.html#login';
+    return;
+  }
+
+  document.getElementById('dashboard-welcome').textContent =
+    `Hello, ${user.name} (${user.email})`;
+
+  //////////////////////////
+  // USER DETAILS TABLE
+  //////////////////////////
+  document.getElementById("user-details").innerHTML = `
+  <table>
+    <tr><th>Field</th><th>Value</th></tr>
+    <tr><td>Name</td><td>${user.name}</td></tr>
+    <tr><td>Email</td><td>${user.email}</td></tr>
+    <tr><td>User ID</td><td>${user.uid}</td></tr>
+    <tr><td>Status</td><td>Active</td></tr>
+    <tr><td>Login Time</td><td>${new Date().toLocaleString()}</td></tr>
+  </table>
+  `;
+
+  //////////////////////////
+  // ORDERS FROM FIREBASE
+  //////////////////////////
+  const ordersDiv = document.getElementById("user-orders");
+
+  const q = query(collection(db, "orders"), where("userId", "==", user.uid));
+  const snapshot = await getDocs(q);
+
+  let orders = [];
+
+  snapshot.forEach(doc => {
+    orders.push({ id: doc.id, ...doc.data() });
+  });
+
+  if(orders.length === 0){
+    ordersDiv.innerHTML = "<p>No orders yet</p>";
+  } else {
+
+    let html = `
+    <table>
+      <tr>
+        <th>Order ID</th>
+        <th>Total ($)</th>
+        <th>Status</th>
+        <th>Tracking</th>
+      </tr>
+    `;
+
+    orders.forEach(o=>{
+      html += `
+      <tr>
+        <td>${o.id}</td>
+        <td>${o.total}</td>
+        <td>${o.status}</td>
+        <td>${renderTrackingBar(o.status)}</td>
+      </tr>
+      `;
+    });
+
+    html += `</table>`;
+    ordersDiv.innerHTML = html;
+  }
+
+  //////////////////////////
+  // LIVE CART + ACTIVITIES
+  //////////////////////////
+  const cart = JSON.parse(localStorage.getItem("neo_cart_v1") || "[]");
+
+  document.getElementById("user-activities").innerHTML = `
+  <table>
+    <tr><th>Activity</th><th>Value</th></tr>
+    <tr><td>Cart Items</td><td>${cart.reduce((s,i)=>s+i.qty,0)}</td></tr>
+    <tr><td>Orders Placed</td><td>${orders.length}</td></tr>
+    <tr><td>Total Spent</td><td>$${orders.reduce((s,o)=>s+(o.total||0),0)}</td></tr>
+    <tr><td>Last Order Status</td><td>${orders.length ? orders[orders.length-1].status : "None"}</td></tr>
+    <tr><td>Last Activity</td><td>${new Date().toLocaleTimeString()}</td></tr>
+  </table>
+  `;
+}
+
+// TRACKING BAR
+function renderTrackingBar(status){
+  const steps = ["pending","approved","shipped","delivered"];
+
+  let html = `<div style="display:flex;gap:4px">`;
+
+  steps.forEach(step=>{
+    let color = "#ccc";
+
+    if(step === status) color = "orange";
+    if(steps.indexOf(step) < steps.indexOf(status)) color = "green";
+
+    html += `<div style="width:10px;height:10px;border-radius:50%;background:${color}"></div>`;
+  });
+
+  html += `</div>`;
+  return html;
+}
+
+// LOGOUT
+document.getElementById('logout-btn').addEventListener('click', ()=>{
+  localStorage.removeItem('neo_session_v1');
+  window.location.href = 'index.html';
+});
+  
 </script>
 
 <!-- Font Awesome -->
