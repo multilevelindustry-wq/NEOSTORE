@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order Successful - NEOSTORE</title>
+
+<style>
+body{
+  font-family: Arial;
+  background:#f5f5f5;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  margin:0;
+}
+
+.card{
+  background:white;
+  padding:30px;
+  border-radius:12px;
+  text-align:center;
+  width:90%;
+  max-width:400px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+
+.check{
+  font-size:60px;
+  color:green;
+}
+
+h1{
+  margin:10px 0;
+}
+
+p{
+  color:#666;
+}
+
+.order-id{
+  background:#f1f1f1;
+  padding:10px;
+  border-radius:8px;
+  margin:15px 0;
+  font-weight:bold;
+}
+
+.btn{
+  display:block;
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:16px;
+}
+
+.home{
+  background:#0ea5a4;
+  color:white;
+}
+
+.track{
+  background:#111;
+  color:white;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  
+  <div class="check">✔️</div>
+  
+  <h1>Order Successful</h1>
+  
+  <p>Your order has been placed successfully 🎉</p>
+  
+  <div class="order-id" id="orderId">
+    Order ID: Loading...
+  </div>
+  
+  <p>You will receive updates via your email.</p>
+
+  <button class="btn home" onclick="goHome()">Continue Shopping</button>
+  <button class="btn track" onclick="trackOrder()">Track Order</button>
+
+</div>
+
+<script>
+
+// GET ORDER ID FROM URL
+const params = new URLSearchParams(window.location.search);
+const orderId = params.get("order");
+
+// DISPLAY ORDER ID
+if(orderId){
+  document.getElementById("orderId").innerText = "Order ID: " + orderId;
+}else{
+  document.getElementById("orderId").innerText = "Order ID: Not available";
+}
+
+// BUTTON ACTIONS
+function goHome(){
+  window.location.href = "index.html";
+}
+
+function trackOrder(){
+  window.location.href = "track.html"; // you can create this later
+}
+
+</script>
+
+</body>
+</html>
