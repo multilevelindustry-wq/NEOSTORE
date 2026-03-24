@@ -186,57 +186,53 @@
   NEOSTORE   
 </footer> 
   
-  <script type="module">  
-  // Firebase Core  
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";  
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";  
-  
-  // Firebase Auth  
-  import {   
-    getAuth,   
-    createUserWithEmailAndPassword,   
-    signInWithEmailAndPassword   
-  } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";  
-  
-  // Firestore  
-  import {   
-    getFirestore,   
-    doc,   
-    setDoc,   
-    getDoc,   
-    collection,   
-    addDoc   
-  } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";  
-  
-  // Firebase Config  
-  const firebaseConfig = {  
-    apiKey: "AIzaSyAC3qCkDfdS2X8YA6deg01lXif7qAStfQQ",  
-    authDomain: "neostore-81b57.firebaseapp.com",  
-    projectId: "neostore-81b57",  
-    storageBucket: "neostore-81b57.firebasestorage.app",  
-    messagingSenderId: "760637387702",  
-    appId: "1:760637387702:web:3c7c231c34a3513d1a4717",  
-    measurementId: "G-1PBBK48DCK"  
-  };  
-  
-  // Initialize Firebase  
-  const app = initializeApp(firebaseConfig);  
-  const analytics = getAnalytics(app);  
-  
-  // Initialize Services  
-  const auth = getAuth(app);  
-  const db = getFirestore(app);  
-  
-  // 🔥 MAKE THEM GLOBAL (VERY IMPORTANT)  
-  window.auth = auth;  
-  window.db = db;  
-  window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;  
-  window.signInWithEmailAndPassword = signInWithEmailAndPassword;  
-  window.setDoc = setDoc;  
-  window.getDoc = getDoc;  
-  window.doc = doc;  
-  window.collection = collection;  
-  window.addDoc = addDoc;  
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
+
+import { 
+  getAuth, 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword,
+  sendEmailVerification
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+
+import { 
+  getFirestore, 
+  doc, 
+  setDoc, 
+  getDoc, 
+  collection, 
+  addDoc 
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "YOUR_KEY",
+  authDomain: "neostore-81b57.firebaseapp.com",
+  projectId: "neostore-81b57",
+  storageBucket: "neostore-81b57.firebasestorage.app",
+  messagingSenderId: "760637387702",
+  appId: "1:760637387702:web:3c7c231c34a3513d1a4717",
+  measurementId: "G-1PBBK48DCK"
+};
+
+const app = initializeApp(firebaseConfig);
+getAnalytics(app);
+
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// MAKE GLOBAL
+window.auth = auth;
+window.db = db;
+window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+window.sendEmailVerification = sendEmailVerification;
+window.setDoc = setDoc;
+window.getDoc = getDoc;
+window.doc = doc;
+window.collection = collection;
+window.addDoc = addDoc;
 </script>
   
   <script>  
@@ -358,46 +354,44 @@ document.getElementById('buy-now').addEventListener('click',()=>{ addToCart(prod
 // Auth functions  
 function getUsers(){ return JSON.parse(localStorage.getItem(AUTH_KEY)||'{}'); }  
 function saveUsers(u){ localStorage.setItem(AUTH_KEY, JSON.stringify(u)); }  
-function signup(name,email,password){  
-  return createUserWithEmailAndPassword(auth, email, password)  
-  .then(async userCredential=>{  
-    const user = userCredential.user;
+// SIGNUP
+async function signup(name, email, password){
+  const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+  const user = userCredential.user;
 
-    // 🔥 SEND VERIFICATION EMAIL
-    await sendEmailVerification(user);
+  // send verification email
+  await sendEmailVerification(user);
 
-    // SAVE USER TO FIREBASE
-    await addDoc(collection(db,"users"),{
-      uid:user.uid,
-      name:name,
-      email:email,
-      verified:false,
-      createdAt:Date.now()
-    });
-
-    alert("Verification email sent! Check your email.");
-
+  // save user in firestore
+  await setDoc(doc(db, "users", user.uid), {
+    name: name,
+    email: email,
+    verified: false,
+    createdAt: Date.now()
   });
+
+  alert("Verification email sent! Check your email.");
+
+  // redirect to track page
+  window.location.href = "dashboard.html";
+}
+
+// LOGIN
+async function login(email, password){
+  const userCredential = await signInWithEmailAndPassword(auth, email, password);
+  const user = userCredential.user;
+
+  const snap = await getDoc(doc(db, "users", user.uid));
+  const data = snap.data();
+
+  localStorage.setItem("neo_session_v1", JSON.stringify({
+    uid: user.uid,
+    name: data.name,
+    email: data.email
+  }));
+
+  window.location.href = "dashboard.html";
     }
-    
-                                                                                                function signup(name,email,password){  
-function login(email,password){  
-  return signInWithEmailAndPassword(auth, email, password)  
-  .then(userCredential=>{  
-    const user = userCredential.user;  
-  
-    return getDoc(doc(db, "users", user.uid))  
-    .then(doc=>{  
-      const data = doc.data();  
-  
-      localStorage.setItem(SESSION_KEY, JSON.stringify({  
-        uid:user.uid,  
-        name:data.name,  
-        email:data.email  
-      }));  
-    });  
-  });  
-  }  
     
 function logout(){ localStorage.removeItem(SESSION_KEY); renderUserUI(); showPage('product'); }  
 function currentUser(){ return JSON.parse(localStorage.getItem(SESSION_KEY)||'null'); }  
@@ -415,27 +409,23 @@ authToggle.addEventListener('click', ()=>{
 });  
   
 // Modify only one thing: after login redirect to new dashboard page  
-authForm.addEventListener('submit', async (e) => {  
-  e.preventDefault();  
-  
-  const name = document.getElementById('auth-name').value.trim();  
-  const email = document.getElementById('auth-email').value.trim();  
-  const pw = document.getElementById('auth-password').value;  
-  
-  try{  
-    if(authMode==='signup'){  
-      await signup(name,email,pw);  
-    }else{  
-      await login(email,pw);  
-    }  
-  
-    alert('Logged in');  
-    window.location.href = 'dashboard.html';  
-  
-  }catch(err){  
-    alert(err.message);  
-  }  
-});  
+authForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const name = document.getElementById('auth-name').value.trim();
+  const email = document.getElementById('auth-email').value.trim();
+  const pw = document.getElementById('auth-password').value;
+
+  try{
+    if(authMode === 'signup'){
+      await signup(name, email, pw);
+    } else {
+      await login(email, pw);
+    }
+  } catch(err){
+    alert(err.message);
+  }
+});
   
 // User area  
 document.getElementById('user-area').addEventListener('click', ()=>{ if(currentUser()) showPage('product'); else showPage('login'); });  
@@ -491,25 +481,36 @@ function renderPayPalButton(){
         description: "NEOSTORE Order (includes delivery)"
       }]
     }),
-    onApprove: (data, actions) => actions.order.capture().then(details => {
-      alert('Payment completed by ' + (details.payer.name.given_name || 'Customer') + '. Order ID: ' + data.orderID);
-      const user = currentUser();
-const cart = getCart();
+onApprove: (data, actions) => actions.order.capture().then(async (details) => {
 
-if(user && user.uid){
-  db.collection("orders").add({
+  alert('Payment completed by ' + (details.payer.name.given_name || 'Customer'));
+
+  const user = currentUser();
+  const cart = getCart();
+
+  const orderId = "ORD" + Date.now(); // ✅ create order ID
+
+  // ✅ SAVE TO FIREBASE (ONLY ONCE)
+  await addDoc(collection(db, "orders"), {
+    orderId: orderId,
     userId: user.uid,
+    email: user.email,
     items: cart,
     total: total,
-    createdAt: Date.now(),
-    status: "pending"
+    status: "pending",
+    createdAt: Date.now()
   });
-}
 
-localStorage.removeItem(CART_KEY);
-      renderMiniCart();
-      showPage('product');
-    }),
+  // ✅ CLEAR CART
+  localStorage.removeItem(CART_KEY);
+
+  renderMiniCart();
+
+  // ✅ REDIRECT TO SUCCESS PAGE
+  window.location.href = "success.html?order=" + orderId;
+
+}),
+      
     onError: err => {
       console.error(err);
       alert('Payment failed: ' + err);
