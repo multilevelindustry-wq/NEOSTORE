@@ -466,44 +466,50 @@ paypal.Buttons({
     }]
   }),
 
-  onApprove: (data, actions) => actions.order.capture().then(async (details) => {
+onApprove: (data, actions) => actions.order.capture().then(async (details) => {
 
-    const user = currentUser();
-    const cart = getCart();
+  const user = currentUser();
+  const cart = getCart();
 
-    // SAVE TO FIREBASE
-    await addDoc(collection(db, "orders"), {
-      userId: user.uid,
-      email: user.email,
-      items: cart,
-      total: total,
-      status: "pending",
-      createdAt: Date.now(),
-      country: country
-    });
+  // ✅ CREATE ORDER ID FIRST
+  const orderId = "ORD" + Date.now();
 
-    // SAVE LOCAL (optional)
-    let orders = JSON.parse(localStorage.getItem("neo_orders") || "[]");
+  // ✅ SAVE TO FIREBASE
+  await addDoc(collection(db, "orders"), {
+    orderId: orderId,
+    userId: user.uid,
+    email: user.email,
+    items: cart,
+    total: total,
+    status: "pending",
+    createdAt: Date.now(),
+    country: country
+  });
 
-    orders.push({
-      id: "ORD" + Date.now(),
-      buyer: user.email,
-      items: cart,
-      total: total,
-      status: "pending"
-    });
+  // ✅ SAVE LOCAL (optional)
+  let orders = JSON.parse(localStorage.getItem("neo_orders") || "[]");
 
-    localStorage.setItem("neo_orders", JSON.stringify(orders));
+  orders.push({
+    id: orderId,
+    buyer: user.email,
+    items: cart,
+    total: total,
+    status: "pending"
+  });
 
-    localStorage.removeItem(CART_KEY);
+  localStorage.setItem("neo_orders", JSON.stringify(orders));
 
-    alert("Order placed successfully!");
+  // ✅ CLEAR CART
+  localStorage.removeItem(CART_KEY);
 
-    renderMiniCart();
-    window.location.href = "success.html?order=" + orderId;
+  alert("Order placed successfully!");
 
-  }),
+  renderMiniCart();
 
+  // ✅ REDIRECT WITH ORDER ID
+  window.location.href = "success.html?order=" + orderId;
+
+}),
   onError: err => {
     console.error(err);
     alert('Payment failed');
