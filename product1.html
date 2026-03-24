@@ -640,7 +640,7 @@ h6{
       <h2>Dashboard</h2>
       <div id="dashboard-welcome">Welcome</div>
       <div style="margin-top:12px"><button id="logout-btn" class="btn ghost">Logout</button></div>
-      <div style="margin-top:12px"><button class="btn ghost"><a href="index.html">GO SHOP NOW</a></div>
+      <div style="margin-top:12px"><button class="btn ghost"><a href="index.html"> SHOP NOW</a></div>
     </div>
   </section>
       </main>
@@ -929,7 +929,7 @@ authForm.addEventListener('submit', e=>{
   const pw = document.getElementById('auth-password').value;
   try{
     if(authMode==='signup') signup(name,email,pw); else login(email,pw);
-    alert('Logged in'); showPage('dashboard');
+    alert('Logged in'); window.location.href = "dashboard.html";
   }catch(err){ alert(err.message); }
 });
 
