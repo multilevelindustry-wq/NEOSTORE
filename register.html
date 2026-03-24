@@ -184,7 +184,9 @@
     </div>  
   </section>  <div id="modal-root" class="hidden"></div>  <footer>  
   NEOSTORE   
-</footer>  <script type="module">  
+</footer> 
+  
+  <script type="module">  
   // Firebase Core  
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";  
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";  
@@ -235,7 +237,9 @@
   window.doc = doc;  
   window.collection = collection;  
   window.addDoc = addDoc;  
-</script>  <script>  
+</script>
+  
+  <script>  
 /////////////////////////  
 // Constants  
 const CART_KEY = 'neo_cart_v1';  
@@ -356,22 +360,27 @@ function getUsers(){ return JSON.parse(localStorage.getItem(AUTH_KEY)||'{}'); }
 function saveUsers(u){ localStorage.setItem(AUTH_KEY, JSON.stringify(u)); }  
 function signup(name,email,password){  
   return createUserWithEmailAndPassword(auth, email, password)  
-    .then(userCredential=>{  
-    const user = userCredential.user;  
-  
-      return setDoc(doc(db, "users", user.uid), {  
-  name: name,  
-  email: email,  
-  createdAt: Date.now()  
-  }).then(()=>{  
-      localStorage.setItem(SESSION_KEY, JSON.stringify({  
-        uid:user.uid,  
-        name:name,  
-        email:email  
-      }));  
-    });  
-  });  
-}  
+  .then(async userCredential=>{  
+    const user = userCredential.user;
+
+    // 🔥 SEND VERIFICATION EMAIL
+    await sendEmailVerification(user);
+
+    // SAVE USER TO FIREBASE
+    await addDoc(collection(db,"users"),{
+      uid:user.uid,
+      name:name,
+      email:email,
+      verified:false,
+      createdAt:Date.now()
+    });
+
+    alert("Verification email sent! Check your email.");
+
+  });
+    }
+    
+                                                                                                function signup(name,email,password){  
 function login(email,password){  
   return signInWithEmailAndPassword(auth, email, password)  
   .then(userCredential=>{  
