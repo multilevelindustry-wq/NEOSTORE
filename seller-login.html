@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seller Login - NEOSTORE</title>
+
+<style>
+body{
+  font-family:Arial;
+  background:#f5f5f5;
+  padding:20px;
+}
+.container{
+  max-width:400px;
+  margin:auto;
+  background:#fff;
+  padding:20px;
+  border-radius:10px;
+  box-shadow:0 5px 20px rgba(0,0,0,0.1);
+}
+input,button{
+  width:100%;
+  padding:10px;
+  margin:10px 0;
+  border-radius:6px;
+  border:1px solid #ddd;
+}
+button{
+  background:#0ea5a4;
+  color:white;
+  border:none;
+  cursor:pointer;
+}
+h2{text-align:center;}
+.link{
+  text-align:center;
+  margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h2>Seller Login</h2>
+
+<input type="email" id="email" placeholder="Email" required>
+<input type="password" id="password" placeholder="Password" required>
+
+<button onclick="loginSeller()">Login</button>
+
+<div class="link">
+  <p>Don't have an account?</p>
+  <a href="seller.html">Register as Seller</a>
+</div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+
+import { 
+  getAuth, 
+  signInWithEmailAndPassword 
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+
+import { 
+  getFirestore, 
+  doc, 
+  getDoc 
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+// 🔥 CONFIG
+const firebaseConfig = {
+  apiKey: "AIzaSyAC3qCkDfdS2X8YA6deg01lXif7qAStfQQ",
+  authDomain: "neostore-81b57.firebaseapp.com",
+  projectId: "neostore-81b57",
+  storageBucket: "neostore-81b57.firebasestorage.app",
+  messagingSenderId: "760637387702",
+  appId: "1:760637387702:web:3c7c231c34a3513d1a4717"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// LOGIN FUNCTION
+window.loginSeller = async function(){
+
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  if(!email || !password){
+    alert("Please fill all fields");
+    return;
+  }
+
+  try {
+
+    // 🔥 LOGIN AUTH
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    // 🔥 GET SELLER DATA FROM FIRESTORE
+    const sellerRef = doc(db, "sellers", user.uid);
+    const sellerSnap = await getDoc(sellerRef);
+
+    if(!sellerSnap.exists()){
+      alert("You are not registered as a seller!");
+      return;
+    }
+
+    const seller = sellerSnap.data();
+
+    // 🔥 SAVE sellerId
+    localStorage.setItem("sellerId", user.uid);
+
+    // 🔥 CHECK APPROVAL STATUS
+    if(seller.status !== "approved"){
+      alert("Your account is pending approval");
+      window.location.href = "seller-dashboard.html";
+      return;
+    }
+
+    alert("Login successful!");
+
+    // 🔥 REDIRECT TO DASHBOARD
+    window.location.href = "seller-dashboard.html";
+
+  } catch (error) {
+
+    console.error("LOGIN ERROR:", error);
+
+    if(error.code === "auth/user-not-found"){
+      alert("User not found!");
+    }
+    else if(error.code === "auth/wrong-password"){
+      alert("Wrong password!");
+    }
+    else{
+      alert(error.message);
+    }
+
+  }
+
+};
+
+</script>
+
+</body>
+</html>
+
+
