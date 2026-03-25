@@ -35,6 +35,12 @@ canvas{background:#fff;border-radius:10px;padding:10px;}
 <table id="usersTable"></table>
 </div>
 
+  <!-- 11 SELLERS -->
+<div class="card">
+  <h2>All Sellers</h2>
+  <table id="sellersTable"></table>
+</div>
+
 <!-- 3 ORDERS -->
 <div class="card">
 <h2>Orders</h2>
@@ -308,6 +314,75 @@ async function loadOrders(){
     }
   });
     }
+
+
+  // ================= SELLERS WITH APPROVE/REJECT =================
+async function renderSellers() {
+  const snapshot = await getDocs(collection(db, "sellers"));
+
+  // Table headers
+  let html = `<tr>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Phone</th>
+    <th>Business</th>
+    <th>Store</th>
+    <th>Product Type</th>
+    <th>Bank Name</th>
+    <th>Account Number</th>
+    <th>Account Name</th>
+    <th>ID Number</th>
+    <th>Country</th>
+    <th>Address</th>
+    <th>Status</th>
+    <th>Action</th>
+  </tr>`;
+
+  snapshot.forEach(doc => {
+    const s = doc.data();
+    html += `<tr>
+      <td>${s.name}</td>
+      <td>${s.email}</td>
+      <td>${s.phone}</td>
+      <td>${s.business}</td>
+      <td>${s.storeName}</td>
+      <td>${s.productType}</td>
+      <td>${s.bankName}</td>
+      <td>${s.accountNumber}</td>
+      <td>${s.accountName}</td>
+      <td>${s.idNumber}</td>
+      <td>${s.country}</td>
+      <td>${s.address}</td>
+      <td>${s.status}</td>
+      <td>
+        <button class="approve" onclick="updateSellerStatus('${doc.id}','approved')">Approve</button>
+        <button class="reject" onclick="updateSellerStatus('${doc.id}','rejected')">Reject</button>
+      </td>
+    </tr>`;
+  });
+
+  document.getElementById("sellersTable").innerHTML = html;
+                     }
+
+    renderSellers();
+
+// Optional: auto-refresh every 5s to keep data updated
+setInterval(renderSellers, 5000);
+
+    // ================= UPDATE SELLER STATUS =================
+import { doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+window.updateSellerStatus = async function(sellerId, status){
+  try {
+    const sellerRef = doc(db, "sellers", sellerId);
+    await updateDoc(sellerRef, { status: status });
+    alert(`Seller ${status}!`);
+    renderSellers(); // refresh table
+  } catch(err){
+    console.error("Error updating seller:", err);
+    alert("Failed to update status.");
+  }
+};
   </script>
   
 
