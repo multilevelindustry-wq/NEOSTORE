@@ -226,6 +226,37 @@ window.logout = function(){
   window.location.href = "seller-login.html";
 };
 
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+async function verifySeller(){
+  const sellerId = localStorage.getItem("sellerId");
+
+  if(!sellerId){
+    window.location.href = "seller-login.html";
+    return;
+  }
+
+  const snap = await getDoc(doc(db,"sellers",sellerId));
+
+  if(!snap.exists()){
+    localStorage.removeItem("sellerId");
+    window.location.href = "seller-login.html";
+  }
+}
+
+verifySeller();
+
+
+  // Auto logout after 30 minutes
+setTimeout(() => {
+  localStorage.removeItem("sellerId");
+  alert("Session expired. Login again.");
+  window.location.href = "seller-login.html";
+}, 30 * 60 * 1000); // 30 minutes
+
+
+  const sellerId = localStorage.getItem("sellerId");
+
 
 </script>
 
