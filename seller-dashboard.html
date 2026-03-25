@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seller Dashboard - NEOSTORE</title>
+
+<!-- Styles -->
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+  margin: 0;
+  padding: 20px;
+}
+.container {
+  max-width: 1000px;
+  margin: auto;
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+h2 { text-align: center; margin-bottom: 20px; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 15px;
+}
+.card {
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+.card h3 {
+  margin: 0 0 8px 0;
+  font-size: 1rem;
+}
+.card p { margin: 4px 0; font-size: 0.95rem; }
+.sales-chart {
+  width: 100%;
+  height: 300px;
+  margin-top: 30px;
+}
+</style>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+import { getFirestore, doc, getDoc, collection, query, where, getDocs } 
+from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+// 🔥 Your Firebase Config
+const firebaseConfig = {
+  apiKey: "YOUR_KEY",
+  authDomain: "YOUR_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_BUCKET",
+  messagingSenderId: "YOUR_ID",
+  appId: "YOUR_APP_ID"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// Get sellerId from localStorage
+const sellerId = localStorage.getItem("sellerId");
+if (!sellerId) {
+  alert("Seller not found. Please log in.");
+  window.location.href = "seller.html";
+}
+
+// Fetch seller data
+async function loadSeller() {
+  const docRef = doc(db, "sellers", sellerId);
+  const docSnap = await getDoc(docRef);
+  if (!docSnap.exists()) {
+    alert("Seller not found!");
+    return;
+  }
+  const seller = docSnap.data();
+
+  // Display seller details
+  const grid = document.getElementById("seller-details");
+  const fields = [
+    {label:"Full Name", value:seller.name},
+    {label:"Email", value:seller.email},
+    {label:"Phone", value:seller.phone},
+    {label:"Business Name", value:seller.business},
+    {label:"Country", value:seller.country},
+    {label:"Address", value:seller.address},
+    {label:"Bank Name", value:seller.bankName},
+    {label:"Account Number", value:seller.accountNumber},
+    {label:"Account Name", value:seller.accountName},
+    {label:"ID Number", value:seller.idNumber},
+    {label:"Product Type", value:seller.productType},
+    {label:"Store Name", value:seller.storeName}
+  ];
+
+  fields.forEach(f => {
+    const card = document.createElement("div");
+    card.classList.add("card");
+    card.innerHTML = `<h3>${f.label}</h3><p>${f.value}</p>`;
+    grid.appendChild(card);
+  });
+
+  // Load business metrics (6 extra info)
+  await loadBusinessMetrics();
+}
+
+// Load business metrics
+async function loadBusinessMetrics() {
+  const metricsGrid = document.getElementById("business-metrics");
+
+  // 1. Total Products Listed
+  const productsQuery = query(collection(db, "products"), where("sellerId", "==", sellerId));
+  const productsSnap = await getDocs(productsQuery);
+  const totalProducts = productsSnap.size;
+
+  // 2. Total Orders
+  const ordersQuery = query(collection(db, "orders"), where("sellerId", "==", sellerId));
+  const ordersSnap = await getDocs(ordersQuery);
+  const totalOrders = ordersSnap.size;
+
+  // 3. Pending Orders
+  const pendingOrdersSnap = await getDocs(query(collection(db, "orders"), where("sellerId","==",sellerId), where("status","==","pending")));
+  const pendingOrders = pendingOrdersSnap.size;
+
+  // 4. Approved Orders
+  const approvedOrdersSnap = await getDocs(query(collection(db, "orders"), where("sellerId","==",sellerId), where("status","==","approved")));
+  const approvedOrders = approvedOrdersSnap.size;
+
+  // 5. Total Revenue
+  let revenue = 0;
+  ordersSnap.forEach(doc => {
+    const o = doc.data();
+    if(o.status === "approved") revenue += o.price || 0;
+  });
+
+  // 6. Average Order Value
+  const avgOrder = totalOrders > 0 ? (revenue/totalOrders).toFixed(2) : 0;
+
+  const metrics = [
+    {label:"Total Products", value: totalProducts},
+    {label:"Total Orders", value: totalOrders},
+    {label:"Pending Orders", value: pendingOrders},
+    {label:"Approved Orders", value: approvedOrders},
+    {label:"Total Revenue ($)", value: revenue},
+    {label:"Avg Order Value ($)", value: avgOrder}
+  ];
+
+  metrics.forEach(m => {
+    const card = document.createElement("div");
+    card.classList.add("card");
+    card.innerHTML = `<h3>${m.label}</h3><p>${m.value}</p>`;
+    metricsGrid.appendChild(card);
+  });
+
+  // Draw sales chart
+  drawSalesChart(ordersSnap);
+}
+
+// Draw chart
+function drawSalesChart(ordersSnap) {
+  const ctx = document.getElementById("salesChart").getContext("2d");
+  const orderData = {};
+
+  ordersSnap.forEach(doc => {
+    const o = doc.data();
+    const date = new Date(o.createdAt).toLocaleDateString();
+    if (!orderData[date]) orderData[date] = 0;
+    orderData[date] += o.price || 0;
+  });
+
+  const labels = Object.keys(orderData).sort();
+  const data = labels.map(l => orderData[l]);
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Revenue Over Time',
+        data: data,
+        fill: false,
+        borderColor: '#0ea5a4',
+        tension: 0.2
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: true } },
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+}
+
+// Init
+loadSeller();
+</script>
+
+<div class="container">
+<h2>Seller Dashboard</h2>
+
+<h3>Seller Details</h3>
+<div class="grid" id="seller-details"></div>
+
+<h3>Business Metrics</h3>
+<div class="grid" id="business-metrics"></div>
+
+<h3>Sales Chart</h3>
+<canvas id="salesChart" class="sales-chart"></canvas>
+
+</div>
+</body>
+</html>
