@@ -49,13 +49,13 @@ h2 { text-align: center; margin-bottom: 20px; }
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <!-- Firebase -->
-<script type="module">
+    <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 import { getFirestore, doc, getDoc, collection, query, where, getDocs } 
 from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
-// 🔥 USE REAL CONFIG (VERY IMPORTANT)
+// 🔥 CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyAC3qCkDfdS2X8YA6deg01lXif7qAStfQQ",
   authDomain: "neostore-81b57.firebaseapp.com",
@@ -68,123 +68,121 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-  
-
-// WAIT FOR PAGE LOAD ✅
-window.addEventListener("DOMContentLoaded", () => {
+// ================= START =================
+window.addEventListener("DOMContentLoaded", async () => {
 
   const sellerId = localStorage.getItem("sellerId");
 
-if (!sellerId) {
-  alert("Session expired. Please login again.");
-  window.location.href = "seller-login.html";
-}
+  if (!sellerId) {
+    alert("Session expired. Login again.");
+    window.location.href = "seller-login.html";
+    return; // 🔥 VERY IMPORTANT
+  }
 
-  loadSeller(sellerId);
+  await verifySeller(sellerId);
+  await loadSeller(sellerId);
 
 });
 
+// ================= VERIFY =================
+async function verifySeller(sellerId){
+  const snap = await getDoc(doc(db,"sellers",sellerId));
+
+  if(!snap.exists()){
+    localStorage.removeItem("sellerId");
+    window.location.href = "seller-login.html";
+  }
+}
+
 // ================= LOAD SELLER =================
 async function loadSeller(sellerId) {
-  try {
 
-    const docRef = doc(db, "sellers", sellerId);
-    const docSnap = await getDoc(docRef);
+  const docSnap = await getDoc(doc(db, "sellers", sellerId));
 
-    if (!docSnap.exists()) {
-      alert("Seller not found!");
-      return;
-    }
-
-    const seller = docSnap.data();
-
-    // 🔥 CLEAR BEFORE ADDING (IMPORTANT)
-    const grid = document.getElementById("seller-details");
-    grid.innerHTML = "";
-
-    const fields = [
-      {label:"Full Name", value:seller.name},
-      {label:"Email", value:seller.email},
-      {label:"Phone", value:seller.phone},
-      {label:"Business Name", value:seller.business},
-      {label:"Country", value:seller.country},
-      {label:"Address", value:seller.address},
-      {label:"Bank Name", value:seller.bankName},
-      {label:"Account Number", value:seller.accountNumber},
-      {label:"Account Name", value:seller.accountName},
-      {label:"ID Number", value:seller.idNumber},
-      {label:"Product Type", value:seller.productType},
-      {label:"Store Name", value:seller.storeName}
-    ];
-
-    fields.forEach(f => {
-      const card = document.createElement("div");
-      card.classList.add("card");
-      card.innerHTML = `<h3>${f.label}</h3><p>${f.value}</p>`;
-      grid.appendChild(card);
-    });
-
-    // LOAD METRICS
-    await loadBusinessMetrics(sellerId);
-
-  } catch (error) {
-    console.error("ERROR loading seller:", error);
-    alert("Error loading seller data");
+  if (!docSnap.exists()) {
+    alert("Seller not found!");
+    return;
   }
+
+  const seller = docSnap.data();
+
+  const grid = document.getElementById("seller-details");
+  grid.innerHTML = "";
+
+  const fields = [
+    {label:"Full Name", value:seller.name},
+    {label:"Email", value:seller.email},
+    {label:"Phone", value:seller.phone},
+    {label:"Business Name", value:seller.business},
+    {label:"Country", value:seller.country},
+    {label:"Address", value:seller.address},
+    {label:"Bank Name", value:seller.bankName},
+    {label:"Account Number", value:seller.accountNumber},
+    {label:"Account Name", value:seller.accountName},
+    {label:"ID Number", value:seller.idNumber},
+    {label:"Product Type", value:seller.productType},
+    {label:"Store Name", value:seller.storeName}
+  ];
+
+  fields.forEach(f => {
+    const card = document.createElement("div");
+    card.classList.add("card");
+    card.innerHTML = `<h3>${f.label}</h3><p>${f.value}</p>`;
+    grid.appendChild(card);
+  });
+
+  await loadBusinessMetrics(sellerId);
 }
 
 // ================= METRICS =================
 async function loadBusinessMetrics(sellerId) {
-  try {
 
-    const metricsGrid = document.getElementById("business-metrics");
-    metricsGrid.innerHTML = "";
+  const metricsGrid = document.getElementById("business-metrics");
+  metricsGrid.innerHTML = "";
 
-    const productsSnap = await getDocs(query(collection(db,"products"), where("sellerId","==",sellerId)));
-    const ordersSnap = await getDocs(query(collection(db,"orders"), where("sellerId","==",sellerId)));
+  const productsSnap = await getDocs(query(collection(db,"products"), where("sellerId","==",sellerId)));
+  const ordersSnap = await getDocs(query(collection(db,"orders"), where("sellerId","==",sellerId)));
 
-    let totalProducts = productsSnap.size;
-    let totalOrders = ordersSnap.size;
-    let pendingOrders = 0;
-    let approvedOrders = 0;
-    let revenue = 0;
+  let totalProducts = productsSnap.size;
+  let totalOrders = ordersSnap.size;
+  let pendingOrders = 0;
+  let approvedOrders = 0;
+  let revenue = 0;
 
-    ordersSnap.forEach(doc => {
-      const o = doc.data();
-      if(o.status === "pending") pendingOrders++;
-      if(o.status === "approved") {
-        approvedOrders++;
-        revenue += o.price || 0;
-      }
-    });
+  ordersSnap.forEach(doc => {
+    const o = doc.data();
 
-    const avgOrder = totalOrders > 0 ? (revenue/totalOrders).toFixed(2) : 0;
+    if(o.status === "pending") pendingOrders++;
+    if(o.status === "approved") {
+      approvedOrders++;
+      revenue += o.price || 0;
+    }
+  });
 
-    const metrics = [
-      {label:"Total Products", value: totalProducts},
-      {label:"Total Orders", value: totalOrders},
-      {label:"Pending Orders", value: pendingOrders},
-      {label:"Approved Orders", value: approvedOrders},
-      {label:"Total Revenue ($)", value: revenue},
-      {label:"Avg Order Value ($)", value: avgOrder}
-    ];
+  const avgOrder = totalOrders > 0 ? (revenue/totalOrders).toFixed(2) : 0;
 
-    metrics.forEach(m => {
-      const card = document.createElement("div");
-      card.classList.add("card");
-      card.innerHTML = `<h3>${m.label}</h3><p>${m.value}</p>`;
-      metricsGrid.appendChild(card);
-    });
+  const metrics = [
+    {label:"Total Products", value: totalProducts},
+    {label:"Total Orders", value: totalOrders},
+    {label:"Pending Orders", value: pendingOrders},
+    {label:"Approved Orders", value: approvedOrders},
+    {label:"Total Revenue ($)", value: revenue},
+    {label:"Avg Order Value ($)", value: avgOrder}
+  ];
 
-    drawSalesChart(ordersSnap);
+  metrics.forEach(m => {
+    const card = document.createElement("div");
+    card.classList.add("card");
+    card.innerHTML = `<h3>${m.label}</h3><p>${m.value}</p>`;
+    metricsGrid.appendChild(card);
+  });
 
-  } catch (error) {
-    console.error("Metrics error:", error);
-  }
+  drawSalesChart(ordersSnap);
 }
 
 // ================= CHART =================
 function drawSalesChart(ordersSnap) {
+
   const ctx = document.getElementById("salesChart").getContext("2d");
 
   const orderData = {};
@@ -213,52 +211,25 @@ function drawSalesChart(ordersSnap) {
   });
 }
 
-
-  // GO TO UPLOAD PAGE
+// ================= BUTTONS =================
 window.goToUpload = function(){
   window.location.href = "seller-upload.html";
 };
 
-// LOGOUT FUNCTION
 window.logout = function(){
   localStorage.removeItem("sellerId");
   alert("Logged out!");
   window.location.href = "seller-login.html";
 };
 
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
-
-async function verifySeller(){
-  const sellerId = localStorage.getItem("sellerId");
-
-  if(!sellerId){
-    window.location.href = "seller-login.html";
-    return;
-  }
-
-  const snap = await getDoc(doc(db,"sellers",sellerId));
-
-  if(!snap.exists()){
-    localStorage.removeItem("sellerId");
-    window.location.href = "seller-login.html";
-  }
-}
-
-verifySeller();
-
-
-  // Auto logout after 30 minutes
+// ================= AUTO LOGOUT =================
 setTimeout(() => {
   localStorage.removeItem("sellerId");
   alert("Session expired. Login again.");
   window.location.href = "seller-login.html";
-}, 30 * 60 * 1000); // 30 minutes
+}, 30 * 60 * 1000);
 
-
-  const sellerId = localStorage.getItem("sellerId");
-
-
-</script>
+    </script>
 
 <div class="container">
 <h2>Seller Dashboard</h2>
