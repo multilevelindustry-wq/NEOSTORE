@@ -68,16 +68,17 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+  
+
 // WAIT FOR PAGE LOAD ✅
 window.addEventListener("DOMContentLoaded", () => {
 
   const sellerId = localStorage.getItem("sellerId");
 
-  if (!sellerId) {
-    alert("No seller logged in!");
-    window.location.href = "seller.html";
-    return;
-  }
+if (!sellerId) {
+  alert("Session expired. Please login again.");
+  window.location.href = "seller-login.html";
+}
 
   loadSeller(sellerId);
 
@@ -212,10 +213,34 @@ function drawSalesChart(ordersSnap) {
   });
 }
 
+
+  // GO TO UPLOAD PAGE
+window.goToUpload = function(){
+  window.location.href = "seller-upload.html";
+};
+
+// LOGOUT FUNCTION
+window.logout = function(){
+  localStorage.removeItem("sellerId");
+  alert("Logged out!");
+  window.location.href = "seller-login.html";
+};
+
+
 </script>
 
 <div class="container">
 <h2>Seller Dashboard</h2>
+
+  <div style="text-align:right;margin-bottom:20px;">
+  <button onclick="goToUpload()" style="padding:10px 15px;background:#0ea5a4;color:white;border:none;border-radius:6px;">
+    + Upload Product
+  </button>
+
+  <button onclick="logout()" style="padding:10px 15px;background:red;color:white;border:none;border-radius:6px;">
+    Logout
+  </button>
+  </div>
 
 <h3>Seller Details</h3>
 <div class="grid" id="seller-details"></div>
