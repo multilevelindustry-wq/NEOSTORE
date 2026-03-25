@@ -50,134 +50,153 @@ h2 { text-align: center; margin-bottom: 20px; }
 
 <!-- Firebase -->
 <script type="module">
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 import { getFirestore, doc, getDoc, collection, query, where, getDocs } 
 from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
-// 🔥 Your Firebase Config
+// 🔥 USE REAL CONFIG (VERY IMPORTANT)
 const firebaseConfig = {
-  apiKey: "YOUR_KEY",
-  authDomain: "YOUR_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_BUCKET",
-  messagingSenderId: "YOUR_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyAC3qCkDfdS2X8YA6deg01lXif7qAStfQQ",
+  authDomain: "neostore-81b57.firebaseapp.com",
+  projectId: "neostore-81b57",
+  storageBucket: "neostore-81b57.firebasestorage.app",
+  messagingSenderId: "760637387702",
+  appId: "1:760637387702:web:3c7c231c34a3513d1a4717"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Get sellerId from localStorage
-const sellerId = localStorage.getItem("sellerId");
-if (!sellerId) {
-  alert("Seller not found. Please log in.");
-  window.location.href = "seller.html";
-}
+// WAIT FOR PAGE LOAD ✅
+window.addEventListener("DOMContentLoaded", () => {
 
-// Fetch seller data
-async function loadSeller() {
-  const docRef = doc(db, "sellers", sellerId);
-  const docSnap = await getDoc(docRef);
-  if (!docSnap.exists()) {
-    alert("Seller not found!");
+  const sellerId = localStorage.getItem("sellerId");
+
+  if (!sellerId) {
+    alert("No seller logged in!");
+    window.location.href = "seller.html";
     return;
   }
-  const seller = docSnap.data();
 
-  // Display seller details
-  const grid = document.getElementById("seller-details");
-  const fields = [
-    {label:"Full Name", value:seller.name},
-    {label:"Email", value:seller.email},
-    {label:"Phone", value:seller.phone},
-    {label:"Business Name", value:seller.business},
-    {label:"Country", value:seller.country},
-    {label:"Address", value:seller.address},
-    {label:"Bank Name", value:seller.bankName},
-    {label:"Account Number", value:seller.accountNumber},
-    {label:"Account Name", value:seller.accountName},
-    {label:"ID Number", value:seller.idNumber},
-    {label:"Product Type", value:seller.productType},
-    {label:"Store Name", value:seller.storeName}
-  ];
+  loadSeller(sellerId);
 
-  fields.forEach(f => {
-    const card = document.createElement("div");
-    card.classList.add("card");
-    card.innerHTML = `<h3>${f.label}</h3><p>${f.value}</p>`;
-    grid.appendChild(card);
-  });
+});
 
-  // Load business metrics (6 extra info)
-  await loadBusinessMetrics();
+// ================= LOAD SELLER =================
+async function loadSeller(sellerId) {
+  try {
+
+    const docRef = doc(db, "sellers", sellerId);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+      alert("Seller not found!");
+      return;
+    }
+
+    const seller = docSnap.data();
+
+    // 🔥 CLEAR BEFORE ADDING (IMPORTANT)
+    const grid = document.getElementById("seller-details");
+    grid.innerHTML = "";
+
+    const fields = [
+      {label:"Full Name", value:seller.name},
+      {label:"Email", value:seller.email},
+      {label:"Phone", value:seller.phone},
+      {label:"Business Name", value:seller.business},
+      {label:"Country", value:seller.country},
+      {label:"Address", value:seller.address},
+      {label:"Bank Name", value:seller.bankName},
+      {label:"Account Number", value:seller.accountNumber},
+      {label:"Account Name", value:seller.accountName},
+      {label:"ID Number", value:seller.idNumber},
+      {label:"Product Type", value:seller.productType},
+      {label:"Store Name", value:seller.storeName}
+    ];
+
+    fields.forEach(f => {
+      const card = document.createElement("div");
+      card.classList.add("card");
+      card.innerHTML = `<h3>${f.label}</h3><p>${f.value}</p>`;
+      grid.appendChild(card);
+    });
+
+    // LOAD METRICS
+    await loadBusinessMetrics(sellerId);
+
+  } catch (error) {
+    console.error("ERROR loading seller:", error);
+    alert("Error loading seller data");
+  }
 }
 
-// Load business metrics
-async function loadBusinessMetrics() {
-  const metricsGrid = document.getElementById("business-metrics");
+// ================= METRICS =================
+async function loadBusinessMetrics(sellerId) {
+  try {
 
-  // 1. Total Products Listed
-  const productsQuery = query(collection(db, "products"), where("sellerId", "==", sellerId));
-  const productsSnap = await getDocs(productsQuery);
-  const totalProducts = productsSnap.size;
+    const metricsGrid = document.getElementById("business-metrics");
+    metricsGrid.innerHTML = "";
 
-  // 2. Total Orders
-  const ordersQuery = query(collection(db, "orders"), where("sellerId", "==", sellerId));
-  const ordersSnap = await getDocs(ordersQuery);
-  const totalOrders = ordersSnap.size;
+    const productsSnap = await getDocs(query(collection(db,"products"), where("sellerId","==",sellerId)));
+    const ordersSnap = await getDocs(query(collection(db,"orders"), where("sellerId","==",sellerId)));
 
-  // 3. Pending Orders
-  const pendingOrdersSnap = await getDocs(query(collection(db, "orders"), where("sellerId","==",sellerId), where("status","==","pending")));
-  const pendingOrders = pendingOrdersSnap.size;
+    let totalProducts = productsSnap.size;
+    let totalOrders = ordersSnap.size;
+    let pendingOrders = 0;
+    let approvedOrders = 0;
+    let revenue = 0;
 
-  // 4. Approved Orders
-  const approvedOrdersSnap = await getDocs(query(collection(db, "orders"), where("sellerId","==",sellerId), where("status","==","approved")));
-  const approvedOrders = approvedOrdersSnap.size;
+    ordersSnap.forEach(doc => {
+      const o = doc.data();
+      if(o.status === "pending") pendingOrders++;
+      if(o.status === "approved") {
+        approvedOrders++;
+        revenue += o.price || 0;
+      }
+    });
 
-  // 5. Total Revenue
-  let revenue = 0;
-  ordersSnap.forEach(doc => {
-    const o = doc.data();
-    if(o.status === "approved") revenue += o.price || 0;
-  });
+    const avgOrder = totalOrders > 0 ? (revenue/totalOrders).toFixed(2) : 0;
 
-  // 6. Average Order Value
-  const avgOrder = totalOrders > 0 ? (revenue/totalOrders).toFixed(2) : 0;
+    const metrics = [
+      {label:"Total Products", value: totalProducts},
+      {label:"Total Orders", value: totalOrders},
+      {label:"Pending Orders", value: pendingOrders},
+      {label:"Approved Orders", value: approvedOrders},
+      {label:"Total Revenue ($)", value: revenue},
+      {label:"Avg Order Value ($)", value: avgOrder}
+    ];
 
-  const metrics = [
-    {label:"Total Products", value: totalProducts},
-    {label:"Total Orders", value: totalOrders},
-    {label:"Pending Orders", value: pendingOrders},
-    {label:"Approved Orders", value: approvedOrders},
-    {label:"Total Revenue ($)", value: revenue},
-    {label:"Avg Order Value ($)", value: avgOrder}
-  ];
+    metrics.forEach(m => {
+      const card = document.createElement("div");
+      card.classList.add("card");
+      card.innerHTML = `<h3>${m.label}</h3><p>${m.value}</p>`;
+      metricsGrid.appendChild(card);
+    });
 
-  metrics.forEach(m => {
-    const card = document.createElement("div");
-    card.classList.add("card");
-    card.innerHTML = `<h3>${m.label}</h3><p>${m.value}</p>`;
-    metricsGrid.appendChild(card);
-  });
+    drawSalesChart(ordersSnap);
 
-  // Draw sales chart
-  drawSalesChart(ordersSnap);
+  } catch (error) {
+    console.error("Metrics error:", error);
+  }
 }
 
-// Draw chart
+// ================= CHART =================
 function drawSalesChart(ordersSnap) {
   const ctx = document.getElementById("salesChart").getContext("2d");
+
   const orderData = {};
 
   ordersSnap.forEach(doc => {
     const o = doc.data();
-    const date = new Date(o.createdAt).toLocaleDateString();
+    const date = new Date(o.createdAt || Date.now()).toLocaleDateString();
+
     if (!orderData[date]) orderData[date] = 0;
     orderData[date] += o.price || 0;
   });
 
-  const labels = Object.keys(orderData).sort();
+  const labels = Object.keys(orderData);
   const data = labels.map(l => orderData[l]);
 
   new Chart(ctx, {
@@ -185,23 +204,14 @@ function drawSalesChart(ordersSnap) {
     data: {
       labels: labels,
       datasets: [{
-        label: 'Revenue Over Time',
+        label: 'Revenue',
         data: data,
-        fill: false,
-        borderColor: '#0ea5a4',
-        tension: 0.2
+        borderColor: '#0ea5a4'
       }]
-    },
-    options: {
-      responsive: true,
-      plugins: { legend: { display: true } },
-      scales: { y: { beginAtZero: true } }
     }
   });
 }
 
-// Init
-loadSeller();
 </script>
 
 <div class="container">
