@@ -8,14 +8,14 @@ body{font-family:Arial;background:#f5f5f5;padding:20px;}
 img{width:100px;border-radius:8px;}
 </style>
 </head>
-
 <body>
+
 <h1>All Seller Products</h1>
 <div id="products"></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAC3qCkDfdS2X8YA6deg01lXif7qAStfQQ",
@@ -43,20 +43,31 @@ async function loadProducts(){
     snapshot = await getDocs(collection(db,"products"));
   }
 
-  snapshot.forEach(docSnap=>{
+  for (const docSnap of snapshot.docs){
     const p = docSnap.data();
+
+    // GET SELLER NAME
+    let sellerName = "Unknown";
+    try {
+      const sellerSnap = await getDoc(doc(db,"sellers", p.sellerId));
+      if(sellerSnap.exists()) sellerName = sellerSnap.data().name;
+    } catch(err){
+      console.warn("Cannot fetch seller name:", err);
+    }
+
     container.innerHTML += `
       <div class="card">
         <img src="${p.image}" alt="product">
         <h3>${p.title}</h3>
         <p>Price: $${p.price}</p>
-        <p>Seller ID: ${p.sellerId}</p>
+        <p>Seller: ${sellerName}</p>
       </div>
     `;
-  });
+  }
 }
 
 loadProducts();
 </script>
+
 </body>
 </html>
