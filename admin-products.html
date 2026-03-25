@@ -2,7 +2,6 @@
 <html>
 <head>
 <title>Admin - Products</title>
-
 <style>
 body{font-family:Arial;background:#f5f5f5;padding:20px;}
 .card{background:#fff;padding:15px;margin-bottom:20px;border-radius:10px;}
@@ -11,23 +10,12 @@ img{width:100px;border-radius:8px;}
 </head>
 
 <body>
-
 <h1>All Seller Products</h1>
 <div id="products"></div>
 
-<button onclick="viewSellerProducts('SELLER_ID')">View Seller Products</button>
-
-<script>
-function viewSellerProducts(sellerId){
-  window.location.href = `admin-products.html?sellerId=${sellerId}`;
-}
-</script>
-  
 <script type="module">
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-import { getFirestore, collection, getDocs } 
-from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAC3qCkDfdS2X8YA6deg01lXif7qAStfQQ",
@@ -42,41 +30,33 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 async function loadProducts(){
-
   const container = document.getElementById("products");
   container.innerHTML = "";
 
-  const snapshot = await getDocs(collection(db,"products"));
+  const urlParams = new URLSearchParams(window.location.search);
+  const sellerId = urlParams.get("sellerId");
+
+  let snapshot;
+  if(sellerId){
+    snapshot = await getDocs(query(collection(db,"products"), where("sellerId","==",sellerId)));
+  } else {
+    snapshot = await getDocs(collection(db,"products"));
+  }
 
   snapshot.forEach(docSnap=>{
     const p = docSnap.data();
-
     container.innerHTML += `
       <div class="card">
-        <img src="${p.image}">
+        <img src="${p.image}" alt="product">
         <h3>${p.title}</h3>
         <p>Price: $${p.price}</p>
-        <p><b>Seller ID:</b> ${p.sellerId}</p>
+        <p>Seller ID: ${p.sellerId}</p>
       </div>
     `;
   });
-
 }
 
 loadProducts();
-
-
-  const urlParams = new URLSearchParams(window.location.search);
-const sellerId = urlParams.get("sellerId");
-
-let snapshot;
-if(sellerId){
-  snapshot = await getDocs(query(collection(db,"products"), where("sellerId","==",sellerId)));
-} else {
-  snapshot = await getDocs(collection(db,"products"));
-    }
-
 </script>
-
 </body>
 </html>
