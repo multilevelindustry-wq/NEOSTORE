@@ -1461,6 +1461,56 @@ font-size:14px;
 
 
 <script>
+  
+const COUNTRY_STORE_MAP = {
+  "nigeria": "Nigeria-Store.html",
+  "ghana": "Ghana-Store.html",
+  "kenya": "Kenya-Store.html",
+  "south africa": "SouthAfrica-Store.html",
+  "uganda": "Uganda-Store.html",
+  "tanzania": "Tanzania-Store.html",
+  "cameroon": "Cameroon-Store.html",
+
+  "united states": "USA-Store.html",
+  "usa": "USA-Store.html",
+  "canada": "Canada-Store.html",
+  "mexico": "Mexico-Store.html",
+  "brazil": "Brazil-Store.html",
+  "argentina": "Argentina-Store.html",
+
+  "united kingdom": "UK-Store.html",
+  "uk": "UK-Store.html",
+  "england": "UK-Store.html",
+  "germany": "Germany-Store.html",
+  "france": "France-Store.html",
+  "italy": "Italy-Store.html",
+  "spain": "Spain-Store.html",
+  "netherlands": "Netherlands-Store.html",
+  "sweden": "Sweden-Store.html",
+
+  "china": "China-Store.html",
+  "india": "India-Store.html",
+  "japan": "Japan-Store.html",
+  "indonesia": "Indonesia-Store.html",
+  "philippines": "Philippines-Store.html",
+  "malaysia": "Malaysia-Store.html",
+  "thailand": "Thailand-Store.html",
+  "pakistan": "Pakistan-Store.html",
+
+  "turkey": "Turkey-Store.html",
+  "israel": "Israel-Store.html",
+  "saudi arabia": "Saudi-Store.html",
+  "uae": "UAE-Store.html",
+  "qatar": "Qatar-Store.html",
+
+  "australia": "Australia-Store.html",
+  "new zealand": "NewZealand-Store.html"
+};
+
+  
+
+
+  
 /////////////////////////
 // Constants
 const CART_KEY = 'neo_cart_v1';
@@ -1559,6 +1609,56 @@ document.getElementById('goto-cart').addEventListener('click',()=> showPage('car
 document.getElementById('continue-shopping').addEventListener('click',()=> showPage('product'));
 document.getElementById('buy-now').addEventListener('click',()=>{ addToCart(product); showPage('cart'); });
 
+
+  async function detectCountry(){
+  try{
+    const res = await fetch("https://ipapi.co/json/");
+    const data = await res.json();
+
+    const country = data.country_name.toLowerCase();
+    localStorage.setItem("user_country", country);
+
+    return country;
+
+  }catch(err){
+    console.error("Location error:", err);
+    return "global";
+  }
+  }
+
+
+  function redirectToStore(country){
+  const c = country.toLowerCase();
+
+  let target = "Global-Store.html";
+
+  for(const key in COUNTRY_STORE_MAP){
+    if(c.includes(key)){
+      target = COUNTRY_STORE_MAP[key];
+      break;
+    }
+  }
+
+  // Prevent redirect loop
+  if(!window.location.pathname.includes(target)){
+    window.location.href = target;
+  }
+  }
+
+
+  (async function initLocation(){
+  let country = localStorage.getItem("user_country");
+
+  if(!country){
+    country = await detectCountry();
+  }
+
+  redirectToStore(country);
+})();
+
+  
+
+  
 /////////////////////////
 // Auth functions
 function getUsers(){ return JSON.parse(localStorage.getItem(AUTH_KEY)||'{}'); }
