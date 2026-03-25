@@ -2,16 +2,18 @@
 <html>
 <head>
 <title>Admin - Products</title>
+
 <style>
 body{font-family:Arial;background:#f5f5f5;padding:20px;}
 .card{background:#fff;padding:15px;margin-bottom:20px;border-radius:10px;}
 img{width:100px;border-radius:8px;}
 </style>
+
 </head>
 <body>
 
 <h1>All Seller Products</h1>
-<div id="products"></div>
+<div id="products">Loading...</div>
 
 <script type="module">
 
@@ -33,29 +35,38 @@ const db = getFirestore(app);
 
 const container = document.getElementById("products");
 
+// Query with safe ordering
 const q = query(collection(db,"products"), orderBy("createdAt","desc"));
 
 onSnapshot(q, snapshot=>{
-  container.innerHTML="";
+  container.innerHTML = "";
+
+  if(snapshot.empty){
+    container.innerHTML = "<p>No products yet.</p>";
+    return;
+  }
 
   snapshot.forEach(doc=>{
     const p = doc.data();
 
     container.innerHTML += `
       <div class="card">
-        <img src="${p.image}" onerror="this.src='https://via.placeholder.com/100'">
-        <h3>${p.title}</h3>
-        <p>Price: $${p.price}</p>
+        <img src="${p.image || ''}" onerror="this.src='https://via.placeholder.com/100'">
+        <h3>${p.title || 'No title'}</h3>
+        <p><b>Price:</b> $${p.price || 0}</p>
 
         <hr>
 
-        <p><b>Seller:</b> ${p.sellerName}</p>
-        <p>Email: ${p.sellerEmail}</p>
-        <p>ID: ${p.sellerId}</p>
+        <p><b>Seller:</b> ${p.sellerName || ''}</p>
+        <p>Email: ${p.sellerEmail || ''}</p>
+        <p>ID: ${p.sellerId || ''}</p>
       </div>
     `;
   });
 
+}, error=>{
+  container.innerHTML = "<p style='color:red;'>Error loading products</p>";
+  console.error(error);
 });
 
 </script>
