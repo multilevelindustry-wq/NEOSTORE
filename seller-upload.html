@@ -8,6 +8,7 @@ body{font-family:Arial;background:#f5f5f5;padding:20px;}
 .box{max-width:500px;margin:auto;background:#fff;padding:20px;border-radius:10px;}
 input,button{width:100%;padding:10px;margin:10px 0;}
 button{background:#0ea5a4;color:white;border:none;}
+img{width:100px;margin-top:10px;border-radius:8px;}
 </style>
 </head>
 
@@ -18,16 +19,29 @@ button{background:#0ea5a4;color:white;border:none;}
 
 <input type="text" id="title" placeholder="Product Name">
 <input type="number" id="price" placeholder="Price">
-<input type="text" id="image" placeholder="Image URL">
+
+<!-- 🔥 REAL IMAGE INPUT -->
+<input type="file" id="imageFile">
+
+<!-- OR URL -->
+<input type="text" id="imageUrl" placeholder="Or paste image URL (optional)">
 
 <button onclick="uploadProduct()">Upload</button>
+
+<img id="preview" style="display:none;">
 </div>
 
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-import { getFirestore, collection, addDoc } 
-from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+import { 
+  getFirestore, collection, addDoc, doc, getDoc 
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+import { 
+  getStorage, ref, uploadBytes, getDownloadURL 
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-storage.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAC3qCkDfdS2X8YA6deg01lXif7qAStfQQ",
@@ -40,44 +54,75 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const storage = getStorage(app);
 
+// PREVIEW IMAGE
+document.getElementById("imageFile").addEventListener("change", e=>{
+  const file = e.target.files[0];
+  if(file){
+    const reader = new FileReader();
+    reader.onload = e=>{
+      const img = document.getElementById("preview");
+      img.src = e.target.result;
+      img.style.display = "block";
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+// UPLOAD PRODUCT
 window.uploadProduct = async function(){
 
   const sellerId = localStorage.getItem("sellerId");
 
   if(!sellerId){
-    alert("Login as seller first!");
+    alert("Login first!");
+    window.location.href = "seller-login.html";
     return;
   }
 
-  const product = {
-    title: document.getElementById("title").value,
-    price: Number(document.getElementById("price").value),
-    image: document.getElementById("image").value,
-    sellerId: sellerId, // 🔥 LINK TO SELLER
+  // CHECK APPROVAL FIRST 🔥
+  const sellerSnap = await getDoc(doc(db,"sellers",sellerId));
+  if(sellerSnap.data().status !== "approved"){
+    alert("Account not approved!");
+    return;
+  }
+
+  const title = document.getElementById("title").value;
+  const price = Number(document.getElementById("price").value);
+  const file = document.getElementById("imageFile").files[0];
+  const imageUrlInput = document.getElementById("imageUrl").value;
+
+  let imageUrl = "";
+
+  // 🔥 OPTION 1: FILE UPLOAD
+  if(file){
+    const storageRef = ref(storage, "products/" + Date.now() + file.name);
+    await uploadBytes(storageRef, file);
+    imageUrl = await getDownloadURL(storageRef);
+  }
+
+  // 🔥 OPTION 2: URL
+  else if(imageUrlInput){
+    imageUrl = imageUrlInput;
+  }
+
+  else{
+    alert("Upload image or enter URL");
+    return;
+  }
+
+  await addDoc(collection(db,"products"),{
+    title,
+    price,
+    image: imageUrl,
+    sellerId,
     createdAt: Date.now()
-  };
+  });
 
-  await addDoc(collection(db,"products"), product);
+  alert("Product uploaded successfully!");
 
-  alert("Product uploaded!");
-
-  const sellerRef = doc(db,"sellers",sellerId);
-const sellerSnap = await getDoc(sellerRef);
-
-if(sellerSnap.data().status !== "approved"){
-  alert("Account not approved yet!");
-  window.location.href = "seller-dashboard.html";
-}
-
-  // Auto logout after 30 minutes
-setTimeout(() => {
-  localStorage.removeItem("sellerId");
-  alert("Session expired. Login again.");
-  window.location.href = "seller-login.html";
-}, 30 * 60 * 1000); // 30 minutes
-
-}
+};
 
 </script>
 
