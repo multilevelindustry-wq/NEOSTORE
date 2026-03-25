@@ -62,6 +62,21 @@ window.uploadProduct = async function(){
 
   alert("Product uploaded!");
 
+  const sellerRef = doc(db,"sellers",sellerId);
+const sellerSnap = await getDoc(sellerRef);
+
+if(sellerSnap.data().status !== "approved"){
+  alert("Account not approved yet!");
+  window.location.href = "seller-dashboard.html";
+}
+
+  // Auto logout after 30 minutes
+setTimeout(() => {
+  localStorage.removeItem("sellerId");
+  alert("Session expired. Login again.");
+  window.location.href = "seller-login.html";
+}, 30 * 60 * 1000); // 30 minutes
+
 }
 
 </script>
