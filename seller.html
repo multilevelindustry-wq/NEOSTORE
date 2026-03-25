@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seller Registration - NEOSTORE</title>
+
+<style>
+body{
+  font-family:Arial;
+  background:#f5f5f5;
+  padding:20px;
+}
+.container{
+  max-width:500px;
+  margin:auto;
+  background:#fff;
+  padding:20px;
+  border-radius:10px;
+  box-shadow:0 5px 20px rgba(0,0,0,0.1);
+}
+input,button{
+  width:100%;
+  padding:10px;
+  margin:8px 0;
+  border-radius:6px;
+  border:1px solid #ddd;
+}
+button{
+  background:#0ea5a4;
+  color:white;
+  border:none;
+  cursor:pointer;
+}
+h2{text-align:center;}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h2>Become a Seller</h2>
+
+<form id="seller-form">
+
+<input type="text" id="name" placeholder="Full Name" required>
+<input type="email" id="email" placeholder="Email" required>
+<input type="text" id="phone" placeholder="Phone Number" required>
+
+<input type="text" id="business" placeholder="Business Name" required>
+<input type="text" id="country" placeholder="Country" required>
+<input type="text" id="address" placeholder="Address" required>
+
+<input type="text" id="bankName" placeholder="Bank Name" required>
+<input type="text" id="accountNumber" placeholder="Account Number" required>
+<input type="text" id="accountName" placeholder="Account Name" required>
+
+<input type="text" id="idNumber" placeholder="ID Number (NIN/Passport)" required>
+<input type="text" id="productType" placeholder="What do you sell?" required>
+<input type="text" id="storeName" placeholder="Store Name" required>
+
+<button type="submit">Register Seller</button>
+
+</form>
+</div>
+
+<!-- FIREBASE -->
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+import { getFirestore, collection, addDoc } 
+from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+// 🔥 YOUR CONFIG
+const firebaseConfig = {
+  apiKey: "YOUR_KEY",
+  authDomain: "YOUR_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_BUCKET",
+  messagingSenderId: "YOUR_ID",
+  appId: "YOUR_APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// REGISTER SELLER
+document.getElementById("seller-form").addEventListener("submit", async (e)=>{
+  e.preventDefault();
+
+  const sellerData = {
+    name: document.getElementById("name").value,
+    email: document.getElementById("email").value,
+    phone: document.getElementById("phone").value,
+
+    business: document.getElementById("business").value,
+    country: document.getElementById("country").value,
+    address: document.getElementById("address").value,
+
+    bankName: document.getElementById("bankName").value,
+    accountNumber: document.getElementById("accountNumber").value,
+    accountName: document.getElementById("accountName").value,
+
+    idNumber: document.getElementById("idNumber").value,
+    productType: document.getElementById("productType").value,
+    storeName: document.getElementById("storeName").value,
+
+    status: "pending", // 🔥 admin will verify
+    createdAt: Date.now()
+  };
+
+  const docRef = await addDoc(collection(db, "sellers"), sellerData);
+
+  alert("Seller Registered Successfully!");
+
+  // 🔥 SAVE sellerId LOCALLY (VERY IMPORTANT)
+  localStorage.setItem("sellerId", docRef.id);
+
+  // redirect (optional)
+  window.location.href = "dashboard.html";
+
+});
+
+</script>
+
+</body>
+</html>
