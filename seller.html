@@ -45,6 +45,7 @@ h2{text-align:center;}
 
 <input type="text" id="name" placeholder="Full Name" required>
 <input type="email" id="email" placeholder="Email" required>
+<input type="password" id="password" placeholder="Password" required>
 <input type="text" id="phone" placeholder="Phone Number" required>
 
 <input type="text" id="business" placeholder="Business Name" required>
@@ -64,13 +65,27 @@ h2{text-align:center;}
 </form>
 </div>
 
-<!-- FIREBASE -->
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-import { getFirestore, collection, addDoc } 
-from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
+import { 
+  getAuth, 
+  createUserWithEmailAndPassword 
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+
+import { 
+  getFirestore, 
+  collection, 
+  addDoc, 
+  getDocs, 
+  query, 
+  where,
+  doc,
+  setDoc
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+// 🔥 CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyAC3qCkDfdS2X8YA6deg01lXif7qAStfQQ",
   authDomain: "neostore-81b57.firebaseapp.com",
@@ -81,51 +96,91 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 const db = getFirestore(app);
 
-// WAIT FOR PAGE LOAD (IMPORTANT FIX)
+// WAIT FOR PAGE LOAD
 window.addEventListener("DOMContentLoaded", () => {
 
-  document.getElementById("seller-form").addEventListener("submit", async (e)=>{
-    e.preventDefault();
+document.getElementById("seller-form").addEventListener("submit", async (e)=>{
+  e.preventDefault();
 
-    try {
+  try {
 
-      const sellerData = {
-        name: document.getElementById("name").value,
-        email: document.getElementById("email").value,
-        phone: document.getElementById("phone").value,
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const phone = document.getElementById("phone").value;
+    const idNumber = document.getElementById("idNumber").value;
+    const storeName = document.getElementById("storeName").value;
 
-        business: document.getElementById("business").value,
-        country: document.getElementById("country").value,
-        address: document.getElementById("address").value,
+    // 🔥 DUPLICATE CHECKS
+    const emailCheck = query(collection(db, "sellers"), where("email", "==", email));
+    const phoneCheck = query(collection(db, "sellers"), where("phone", "==", phone));
+    const idCheck = query(collection(db, "sellers"), where("idNumber", "==", idNumber));
+    const storeCheck = query(collection(db, "sellers"), where("storeName", "==", storeName));
 
-        bankName: document.getElementById("bankName").value,
-        accountNumber: document.getElementById("accountNumber").value,
-        accountName: document.getElementById("accountName").value,
+    const [emailSnap, phoneSnap, idSnap, storeSnap] = await Promise.all([
+      getDocs(emailCheck),
+      getDocs(phoneCheck),
+      getDocs(idCheck),
+      getDocs(storeCheck)
+    ]);
 
-        idNumber: document.getElementById("idNumber").value,
-        productType: document.getElementById("productType").value,
-        storeName: document.getElementById("storeName").value,
+    if (!emailSnap.empty) return alert("Email already registered!");
+    if (!phoneSnap.empty) return alert("Phone already used!");
+    if (!idSnap.empty) return alert("ID already used!");
+    if (!storeSnap.empty) return alert("Store name already taken!");
 
-        status: "pending",
-        createdAt: Date.now()
-      };
+    // 🔥 CREATE AUTH ACCOUNT
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const uid = userCredential.user.uid;
 
-      const docRef = await addDoc(collection(db, "sellers"), sellerData);
+    // 🔥 SELLER DATA
+    const sellerData = {
+      uid: uid,
+      name: document.getElementById("name").value,
+      email: email,
+      phone: phone,
 
-      alert("Seller Registered Successfully!");
+      business: document.getElementById("business").value,
+      country: document.getElementById("country").value,
+      address: document.getElementById("address").value,
 
-      localStorage.setItem("sellerId", docRef.id);
+      bankName: document.getElementById("bankName").value,
+      accountNumber: document.getElementById("accountNumber").value,
+      accountName: document.getElementById("accountName").value,
 
-      window.location.href = "dashboard.html";
+      idNumber: idNumber,
+      productType: document.getElementById("productType").value,
+      storeName: storeName,
 
-    } catch (error) {
-      console.error("ERROR:", error);
-      alert("Error: " + error.message);
+      status: "pending",
+      createdAt: Date.now()
+    };
+
+    // 🔥 SAVE USING UID (NO DUPLICATE POSSIBLE)
+    await setDoc(doc(db, "sellers", uid), sellerData);
+
+    alert("Seller Registered Successfully!");
+
+    // SAVE sellerId
+    localStorage.setItem("sellerId", uid);
+
+    window.location.href = "dashboard.html";
+
+  } catch (error) {
+
+    console.error("ERROR:", error);
+
+    if (error.code === "auth/email-already-in-use") {
+      alert("Email already exists!");
+    } else {
+      alert(error.message);
     }
 
-  });
+  }
+
+});
 
 });
 </script>
