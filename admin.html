@@ -266,6 +266,48 @@ setInterval(()=>{
   renderOrders();
 },5000);
 
+    
+async function loadOrders(){
+  const ordersSnap = await getDocs(collection(db,"orders"));
+
+  ordersSnap.forEach(async (docSnap)=>{
+    const order = docSnap.data();
+
+    for(const item of order.items){
+
+      // 🔥 GET SELLER INFO USING sellerId
+      const sellerQuery = query(
+        collection(db,"sellers"),
+        where("__name__","==", item.sellerId)
+      );
+
+      const sellerSnap = await getDocs(sellerQuery);
+
+      sellerSnap.forEach(sellerDoc=>{
+        const seller = sellerDoc.data();
+
+        document.getElementById("orders").innerHTML += `
+          <div>
+            <img src="${item.image}" width="80">
+            <h3>${item.title}</h3>
+            <p>Price: $${item.price}</p>
+
+            <hr>
+
+            <p><b>Seller:</b> ${seller.name}</p>
+            <p>Email: ${seller.email}</p>
+            <p>Phone: ${seller.phone}</p>
+
+            <p><b>Bank:</b> ${seller.bankName}</p>
+            <p>Acct: ${seller.accountNumber}</p>
+
+          </div>
+        `;
+      });
+
+    }
+  });
+    }
   </script>
   
 
