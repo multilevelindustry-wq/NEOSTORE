@@ -31,41 +31,30 @@ const db = getFirestore(app);
 
 async function loadProducts(){
   const container = document.getElementById("products");
-  container.innerHTML = "";
+  container.innerHTML = "<p>Loading...</p>";
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const sellerId = urlParams.get("sellerId");
+  const snapshot = await getDocs(collection(db,"products"));
 
-  let snapshot;
-  if(sellerId){
-    snapshot = await getDocs(query(collection(db,"products"), where("sellerId","==",sellerId)));
-  } else {
-    snapshot = await getDocs(collection(db,"products"));
-  }
+  container.innerHTML = ""; // 🔥 clears old items
 
   for (const docSnap of snapshot.docs){
     const p = docSnap.data();
 
-    // GET SELLER NAME
-    let sellerName = "Unknown";
-    try {
-      const sellerSnap = await getDoc(doc(db,"sellers", p.sellerId));
-      if(sellerSnap.exists()) sellerName = sellerSnap.data().name;
-    } catch(err){
-      console.warn("Cannot fetch seller name:", err);
-    }
-
     container.innerHTML += `
       <div class="card">
-        <img src="${p.image}" alt="product">
+        <img src="${p.image}" alt="product" onerror="this.src='https://via.placeholder.com/100'">
         <h3>${p.title}</h3>
         <p>Price: $${p.price}</p>
-        <p>Seller: ${sellerName}</p>
+
+        <hr>
+
+        <p><b>Seller:</b> ${p.sellerName || "Unknown"}</p>
+        <p>Email: ${p.sellerEmail || "N/A"}</p>
       </div>
     `;
   }
 }
-
+  
 loadProducts();
 </script>
 
