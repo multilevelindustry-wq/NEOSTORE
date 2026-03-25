@@ -41,6 +41,11 @@ canvas{background:#fff;border-radius:10px;padding:10px;}
   <table id="sellersTable"></table>
 </div>
 
+<div class="card">
+<h2>Seller Products</h2>
+<div id="sellerProducts"></div>
+</div>
+  
 <!-- 3 ORDERS -->
 <div class="card">
 <h2>Orders</h2>
@@ -383,6 +388,45 @@ window.updateSellerStatus = async function(sellerId, status){
     alert("Failed to update status.");
   }
 };
+
+
+    async function loadSellerProducts(){
+
+  const sellersSnap = await getDocs(collection(db,"sellers"));
+  const productsSnap = await getDocs(collection(db,"products"));
+
+  let html = "";
+
+  sellersSnap.forEach(sellerDoc => {
+
+    const seller = sellerDoc.data();
+    const sellerId = sellerDoc.id;
+
+    html += `<h3 style="margin-top:20px">${seller.name} (${seller.storeName})</h3>`;
+
+    productsSnap.forEach(productDoc => {
+      const p = productDoc.data();
+
+      if(p.sellerId === sellerId){
+
+        html += `
+        <div style="border:1px solid #ddd;padding:10px;margin:10px 0;">
+          <img src="${p.image}" width="80">
+          <p><b>${p.title}</b></p>
+          <p>$${p.price}</p>
+        </div>
+        `;
+      }
+
+    });
+
+  });
+
+  document.getElementById("sellerProducts").innerHTML = html;
+    }
+
+
+    
   </script>
   
 
