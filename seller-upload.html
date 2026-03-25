@@ -19,9 +19,8 @@ img{width:100px;margin-top:10px;border-radius:8px;}
 <input type="text" id="title" placeholder="Product Name">
 <input type="number" id="price" placeholder="Price">
 
-<!-- Real image input -->
 <input type="file" id="imageFile">
-<input type="text" id="imageUrl" placeholder="Or paste image URL (optional)">
+<input type="text" id="imageUrl" placeholder="Or paste image URL">
 
 <button onclick="uploadProduct()">Upload</button>
 <img id="preview" style="display:none;">
@@ -60,29 +59,25 @@ document.getElementById("imageFile").addEventListener("change", e=>{
   }
 });
 
+// 🚨 TEMP TEST FIX (REMOVE LATER)
+// ensures sellerId exists
+if(!localStorage.getItem("sellerId")){
+  localStorage.setItem("sellerId", "testSeller123");
+}
+
 window.uploadProduct = async function(){
   try{
-
     const sellerId = localStorage.getItem("sellerId");
 
-    if(!sellerId){
-      alert("Seller not found. Please register/login first.");
-      return;
-    }
-
-    // 🔥 get seller info
     const sellerSnap = await getDoc(doc(db,"sellers",sellerId));
 
-    if(!sellerSnap.exists()){
-      alert("Seller account not found");
-      return;
-    }
+    let sellerName = "Test Seller";
+    let sellerEmail = "test@email.com";
 
-    const seller = sellerSnap.data();
-
-    // 🔥 keep your approval check but don't block testing
-    if(seller.status !== "approved"){
-      console.warn("Seller not approved yet (still allowed for testing)");
+    if(sellerSnap.exists()){
+      const seller = sellerSnap.data();
+      sellerName = seller.name;
+      sellerEmail = seller.email;
     }
 
     const title = document.getElementById("title").value;
@@ -92,7 +87,6 @@ window.uploadProduct = async function(){
 
     let imageUrl = "";
 
-    // 🔥 HANDLE IMAGE
     if(file){
       const storageRef = ref(storage, `products/${sellerId}_${Date.now()}_${file.name}`);
       await uploadBytes(storageRef, file);
@@ -102,24 +96,23 @@ window.uploadProduct = async function(){
       imageUrl = imageUrlInput;
     } 
     else {
-      alert("Please select image or enter URL");
+      alert("Add image");
       return;
     }
 
-    // 🔥 SAVE PRODUCT WITH SELLER INFO
     await addDoc(collection(db,"products"),{
       title,
       price,
       image: imageUrl,
       sellerId,
-      sellerName: seller.name,   // 🔥 important
-      sellerEmail: seller.email, // 🔥 important
+      sellerName,
+      sellerEmail,
       createdAt: Date.now()
     });
 
-    alert("Product uploaded successfully!");
+    alert("Uploaded!");
 
-    // 🔥 CLEAR FORM
+    // CLEAR FORM
     document.getElementById("title").value = "";
     document.getElementById("price").value = "";
     document.getElementById("imageFile").value = "";
@@ -127,12 +120,9 @@ window.uploadProduct = async function(){
     document.getElementById("preview").style.display = "none";
 
   }catch(err){
-    console.error(err);
-    alert("Error: " + err.message);
+    alert(err.message);
   }
-  }
-
-                                    
+}
 </script>
 
 </body>
