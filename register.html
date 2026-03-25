@@ -358,29 +358,36 @@ document.getElementById('buy-now').addEventListener('click',()=>{ addToCart(prod
 function getUsers(){ return JSON.parse(localStorage.getItem(AUTH_KEY)||'{}'); }  
 function saveUsers(u){ localStorage.setItem(AUTH_KEY, JSON.stringify(u)); }  
 // SIGNUP
-async function signup(name, email, password){
+    async function signup(name, email, password){
+
   const userCredential = await createUserWithEmailAndPassword(auth, email, password);
   const user = userCredential.user;
 
-  // send verification email
   await sendEmailVerification(user);
 
-  // save user in firestore
+  // detect country
+  let country = localStorage.getItem("user_country");
+  if(!country){
+    country = await detectCountry();
+  }
+
+  // save user with country
   await setDoc(doc(db, "users", user.uid), {
     name: name,
     email: email,
-    verified: false,
+    country: country,
     createdAt: Date.now()
   });
 
-  alert("Verification email sent! Check your email.");
+  alert("Account created!");
 
-  // redirect to track page
-  window.location.href = "dashboard.html";
-}
+  redirectToStore(country);
+    }
+
 
 // LOGIN
 async function login(email, password){
+
   const userCredential = await signInWithEmailAndPassword(auth, email, password);
   const user = userCredential.user;
 
@@ -390,11 +397,14 @@ async function login(email, password){
   localStorage.setItem("neo_session_v1", JSON.stringify({
     uid: user.uid,
     name: data.name,
-    email: data.email
+    email: data.email,
+    country: data.country
   }));
 
-  window.location.href = "dashboard.html";
+  // redirect to their country store
+  redirectToStore(data.country);
     }
+
     
 function logout(){ localStorage.removeItem(SESSION_KEY); renderUserUI(); showPage('product'); }  
 function currentUser(){ return JSON.parse(localStorage.getItem(SESSION_KEY)||'null'); }  
