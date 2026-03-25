@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Upload Product</title>
+
+<style>
+body{font-family:Arial;background:#f5f5f5;padding:20px;}
+.box{max-width:500px;margin:auto;background:#fff;padding:20px;border-radius:10px;}
+input,button{width:100%;padding:10px;margin:10px 0;}
+button{background:#0ea5a4;color:white;border:none;}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+<h2>Upload Product</h2>
+
+<input type="text" id="title" placeholder="Product Name">
+<input type="number" id="price" placeholder="Price">
+<input type="text" id="image" placeholder="Image URL">
+
+<button onclick="uploadProduct()">Upload</button>
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+import { getFirestore, collection, addDoc } 
+from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAC3qCkDfdS2X8YA6deg01lXif7qAStfQQ",
+  authDomain: "neostore-81b57.firebaseapp.com",
+  projectId: "neostore-81b57",
+  storageBucket: "neostore-81b57.firebasestorage.app",
+  messagingSenderId: "760637387702",
+  appId: "1:760637387702:web:3c7c231c34a3513d1a4717"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.uploadProduct = async function(){
+
+  const sellerId = localStorage.getItem("sellerId");
+
+  if(!sellerId){
+    alert("Login as seller first!");
+    return;
+  }
+
+  const product = {
+    title: document.getElementById("title").value,
+    price: Number(document.getElementById("price").value),
+    image: document.getElementById("image").value,
+    sellerId: sellerId, // 🔥 LINK TO SELLER
+    createdAt: Date.now()
+  };
+
+  await addDoc(collection(db,"products"), product);
+
+  alert("Product uploaded!");
+
+}
+
+</script>
+
+</body>
+</html>
