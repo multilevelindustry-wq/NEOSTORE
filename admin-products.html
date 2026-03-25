@@ -14,8 +14,9 @@ img{width:100px;border-radius:8px;}
 <div id="products"></div>
 
 <script type="module">
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+import { getFirestore, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAC3qCkDfdS2X8YA6deg01lXif7qAStfQQ",
@@ -29,38 +30,31 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-async function loadProducts(){
-  const container = document.getElementById("products");
-  container.innerHTML = "<p>Loading...</p>";
+const container = document.getElementById("products");
 
-  const snapshot = await getDocs(collection(db,"products"));
+// 🔥 REAL-TIME LISTENER
+const q = query(collection(db,"products"), orderBy("createdAt","desc"));
 
-  container.innerHTML = ""; // 🔥 clears old items
+onSnapshot(q, snapshot=>{
+  container.innerHTML = "";
 
-  for (const docSnap of snapshot.docs){
-    const p = docSnap.data();
+  snapshot.forEach(doc=>{
+    const p = doc.data();
 
     container.innerHTML += `
       <div class="card">
-        <img src="${p.image}" alt="product" onerror="this.src='https://via.placeholder.com/100'">
+        <img src="${p.image}" onerror="this.src='https://via.placeholder.com/100'">
         <h3>${p.title}</h3>
         <p>Price: $${p.price}</p>
 
         <hr>
 
-        <p><b>Seller:</b> ${p.sellerName || "Unknown"}</p>
-        <p>Email: ${p.sellerEmail || "N/A"}</p>
+        <p><b>Seller:</b> ${p.sellerName}</p>
+        <p>Email: ${p.sellerEmail}</p>
       </div>
     `;
-  }
-}
-  
-loadProducts();
-
-  loadProducts();
-
-// 🔥 AUTO REFRESH EVERY 5 SECONDS
-setInterval(loadProducts, 5000);
+  });
+});
 </script>
 
 </body>
