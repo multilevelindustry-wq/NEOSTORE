@@ -1,0 +1,1508 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>NEOSTORE — Product / Cart / Auth Demo</title>
+
+<!-- PayPal JS SDK (LIVE client-id) -->
+<script src="https://www.paypal.com/sdk/js?client-id=Aey_vJzSIErk6JUHmkIU41JQ4W1vA2FlfBNf5Vtkg7j4YLaWHkFtw4WSPI0SWiCzhaNKqPt2oGuVIF1n&components=buttons&currency=USD"></script>
+
+<style>
+  /* ====== Basic Styling ====== */
+  :root {--accent:#0ea5a4; --muted:#6b7280; --bg:#f8fafc;}
+  *{box-sizing:border-box;}
+  body{font-family:Inter,system-ui,Arial,sans-serif; margin:0; background:var(--bg); color:#111;}
+  header{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:white;box-shadow:0 2px 8px rgba(2,6,23,0.06);}
+  .logo{font-weight:700; letter-spacing:1px;}
+  nav a{margin-right:12px;color:var(--muted);text-decoration:none;}
+  .icon{cursor:pointer; margin-left:12px;}
+  main{max-width:1000px;margin:28px auto;padding:0 16px;}
+  .grid{display:grid;grid-template-columns:1fr 360px;gap:20px;}
+  .card{background:white;padding:18px;border-radius:12px;box-shadow:0 6px 18px rgba(2,6,23,0.06);}
+  .product img{width:100%;height:360px;object-fit:cover;border-radius:8px;}
+  .product h1{margin:12px 0 6px;}
+  .price{font-size:20px;color:var(--accent);font-weight:600;}
+  button.btn{background:var(--accent);color:white;padding:10px 14px;border-radius:8px;border:0;cursor:pointer;}
+  button.ghost{background:transparent;border:1px solid #e6e6e6;color:var(--muted);}
+  .product-desc{margin-top:12px;color:var(--muted);}
+  .cart-list{max-height:420px;overflow:auto;margin-top:12px;}
+  .cart-item{display:flex;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid #f3f4f6;}
+  .cart-item img{width:64px;height:64px;object-fit:cover;border-radius:6px;}
+  .qty{width:56px;}
+  .hidden{display:none;}
+  .center{display:flex;align-items:center;justify-content:center;}
+  
+  @media (max-width:880px){.grid{grid-template-columns:1fr}.product img{height:260px}}
+  
+  /* Modal & auth inputs */
+  .modal{position:fixed;inset:0;background:rgba(2,6,23,0.4);display:flex;align-items:center;justify-content:center;}
+  .modal .panel{width:360px;background:white;padding:18px;border-radius:10px;}
+  input[type=text],input[type=password],input[type=email]{width:100%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid #e5e7eb;}
+  a.link{color:var(--accent);cursor:pointer;}
+  footer{padding:20px;text-align:center;color:var(--muted);background-color:black;}
+  .copyright{padding:20px;text-align:center;color:var(--muted);background-color: black;}
+
+  /* Header enhancements */
+  .left-section{display:flex;align-items:center;gap:15px;}
+  .logo{font-size:1.5rem;font-weight:bold;}
+  nav{display:flex;gap:25px;}
+  nav a{color:#111;text-decoration:none;font-size:1rem;transition:0.3s;}
+  nav a:hover{color:#f97316;}
+  
+  /* Hamburger Menu */
+  .menu-btn{display:none;font-size:1.5rem;cursor:pointer;color:#111;background:none;border:none;}
+  @media(max-width:768px){
+    .menu-btn{display:block;}
+    nav{
+      position:fixed;top:0;left:-100%;width:50%;height:50vh;background:white;
+      flex-direction:column;align-items:center;justify-content:center;transition:0.4s;
+    }
+    nav.active{left:0;}
+    .close-btn{position:absolute;top:20px;left:20px;font-size:2rem;color:#111;cursor:pointer;background:none;border:none;}
+    .close-btn.hidden{display:none;}
+  }
+  
+  
+  .logo a{
+      text-decoration:none;
+      color: black;
+  }
+  
+  .icon a{
+      color: black;
+  }
+  
+  
+  /* --- Header --- */
+header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:19px 18px;
+  background: #fff;
+  box-shadow: 0 2px 0px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+}
+    
+      .left-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  nav {
+    display: flex;
+    gap: 25px;
+  }
+
+  nav a {
+    color: #111;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: 0.3s;
+  }
+
+  nav a:hover {
+    color: #f97316;
+  }
+
+  /* Hamburger icon */
+  .menu-btn {
+    display: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #111;
+    background: none;
+    border: none;
+  }
+
+  /* Mobile view */
+  @media (max-width: 768px) {
+    .menu-btn {
+      display: block;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: -100%;
+      width: 50%;
+      height: 50vh;
+      background: white;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: 0.4s;
+    }
+
+    nav.active {
+      left: 0;
+    }
+
+    /* Close (X) button inside opened menu */
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      font-size: 2rem;
+      color: #111;
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+
+    /* Hide close button by default */
+    .close-btn.hidden {
+      display: none;
+    }
+  }
+
+
+.sign-up img{
+    font-size: 0.2rem;
+    font-weight: bold;
+}
+
+
+
+/* 🎬 Movie-style responsive slider */
+.slider {
+  position: relative;
+  width: 100%;
+  height: 60vh; /* Responsive height */
+  max-height: 60px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #000;
+}
+
+/* Common image styling */
+.slider img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  animation-duration: 24s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+/* Each image animation direction */
+.from-left { animation-name: slideFromLeft; }
+.from-right { animation-name: slideFromRight; }
+.from-top { animation-name: slideFromTop; }
+.from-bottom { animation-name: slideFromBottom; }
+
+/* Animations for different entry directions */
+@keyframes slideFromLeft {
+  0% { transform: translateX(-100%); opacity: 0; }
+  5%, 25% { transform: translateX(0); opacity: 1; }
+  30%, 100% { opacity: 0; }
+}
+
+@keyframes slideFromRight {
+  25% { transform: translateX(100%); opacity: 0; }
+  30%, 50% { transform: translateX(0); opacity: 1; }
+  55%, 100% { opacity: 0; }
+}
+
+@keyframes slideFromTop {
+  50% { transform: translateY(-100%); opacity: 0; }
+  55%, 75% { transform: translateY(0); opacity: 1; }
+  80%, 100% { opacity: 0; }
+}
+
+@keyframes slideFromBottom {
+  75% { transform: translateY(100%); opacity: 0; }
+  80%, 100% { transform: translateY(0); opacity: 1; }
+}
+
+/* 🔁 Smooth fade-in/out transition */
+@keyframes slideIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* 📱 Mobile responsiveness */
+@media (max-width: 768px) {
+  .slider {
+    height: 40vh; /* smaller on mobile */
+  }
+
+  .slider img {
+    object-fit: cover;
+  }
+}
+
+/* 📲 Smaller phones */
+@media (max-width: 480px) {
+  .slider {
+    height: 35vh;
+  }
+}
+
+
+
+/* call order*/
+
+.call-order{
+    background-color: black;
+    text-align: center;
+    color: white;
+    padding: 10px;
+}
+
+/* promo slide */
+
+
+.promo-section {
+  width: 100%;
+  overflow: hidden;
+  background: #fff;
+  position: relative;
+  padding: 10px 0;
+  margin-bottom: 10px;
+  padding-left: 5px;
+}
+
+.section {
+  width: 100%;
+  overflow: hidden;
+  background: #fff;
+  position: relative;
+  padding: 10px 0;
+  padding-left: 5px;
+  margin-top: -20px;
+}
+
+/* product slides*/
+
+.product-slider {
+  width: 100%;
+  overflow: hidden;
+  background: #fff;
+  position: relative;
+  padding: 10px 0;
+  padding-left: 15px;
+}
+
+/* --- Slider Container --- */
+.promo-cards {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+
+.promo {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+
+.promo-cards::-webkit-scrollbar { display: none; }
+
+
+/* --- Each Card --- */
+.singles {
+  flex: 0 0 auto;
+  width: 280px; 
+  border-radius: 15px;
+  overflow: hidden;
+}
+  
+.single img {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+  
+.singles img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 15px;
+}
+
+.single {
+  flex: 0 0 auto;
+  width: 100px; /* Between 250 - 350 */
+  overflow: hidden;
+
+}
+.single .slider{
+    border-radius: 5px;
+}
+
+.singlet h1 {
+  font-size: 15px;
+  text-align: center;
+  margin-bottom: -10px;
+}
+.singlet p {
+  font-size: 15px;
+  text-align: center;
+  margin-bottom: -5px;
+}
+
+.singlet {
+  position: relative; 
+  width: 200px;
+  border-radius: 15px;
+  overflow: hidden;
+  flex: 0 0 auto;
+  padding: 5px;
+  background: #fff;
+  text-align: center;
+}
+
+.singlet img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+/* 💥 Make span appear at top-right like a sale badge */
+.singlet span {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #f97316; /* orange color */
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 4px 15px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+
+.flash-sale {
+    height: 10hv;
+    background-color: red;
+    color: white;
+    margin-bottom: -20px;
+    position: relative; 
+    width: 100%;
+}
+
+
+.flash-saller {
+    height: 10hv;
+    background-color: black;
+    color: white;
+    margin-bottom: 25px;
+    position: relative; 
+    width: 100%;
+}
+
+.flash-sellers {
+    height: 10hv;
+    background-color: white;
+    color: black;
+    margin-bottom: 25px;
+    position: relative; 
+    width: 100%;
+}
+
+.deals {
+    height: 10hv;
+    background-color: black;
+    color: white;
+    margin-bottom: 45px;
+    position: relative; 
+    width: 100%;
+}
+
+
+
+h6{
+    font-size: 15px;
+    padding: 10px;
+    margin-bottom: -30px;
+}
+
+.flash-sale p {
+    font-size: 15px;
+    padding: 10px;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+.flash span{
+    position: absolute;
+  top: 30px;
+  right: 170px;
+  color: white;
+  font-size: 14px;
+  padding: 4px 15px;
+  font-weight: 500;
+    
+}
+
+.more {
+  position: absolute;
+  top: -15px;
+  right: 1px;
+  color: white;
+  font-size: 14px;
+  padding: 4px 15px;
+  font-weight: bold;
+}
+
+.more a{
+    color: white;
+}
+
+
+.product-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  background: white;
+  padding: 5px;
+  gap: 5px;
+  justify-items: center;
+}
+
+.productes-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  background: black;
+  gap: 15px;
+  justify-items: center;
+}
+
+.product-row .col-1 {
+  background: white;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  padding-left: 3px;
+}
+
+.productes-row .col-1 {
+  background-color: black;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  padding-left: 30px;
+}
+
+.product-row .col-1:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.productes-row .col-1:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.product-row img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 3px;
+}
+
+/* ✅ Mobile: 4 columns */
+@media (max-width: 768px) {
+  .product-row {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* ✅ Desktop: 6+ columns */
+@media (min-width: 1024px) {
+  .product-row {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+/* ✅ Mobile: 4 columns */
+@media (max-width: 768px) {
+  .productes-row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ✅ Desktop: 6+ columns */
+@media (min-width: 1024px) {
+  .productes-row {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+
+.col-1 h1 {
+  font-size: 15px;
+  text-align: center;
+}
+
+.product {
+    display: flex;
+    background-color: #fff;
+    width: 100%;
+    max-width: 500px;
+    margin-top: 10px;
+    height: 150hv;
+}
+
+.product-desc {
+    display: flex;
+    background-color: #fff;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.add {
+
+    width: 100%;
+    max-width: 100px;
+    height: 40px;
+}
+
+.buy {
+    width: 100px;
+    height: 40px;
+}
+
+.product img{
+    width: 100%;
+    max-width: 200px;
+    height: 100hv;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/*-- long product list -@-*/
+
+.products-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  background: white;
+  padding: 5px;
+  gap: 15px;
+  justify-items: center;
+}
+
+.products-row .col-1 {
+  background: #fff;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  padding-left: 3px;
+}
+
+.products-row .col-1:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.products-row img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 3px;
+}
+
+/* ✅ Mobile: 4 columns */
+@media (max-width: 768px) {
+  .products-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ✅ Desktop: 6+ columns */
+@media (min-width: 1024px) {
+  .products-row {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+
+.col-1 h1 {
+  font-size: 15px;
+  text-align: center;
+}
+
+
+
+/* ... existing header styles unchanged ... */
+
+/* --- Jumia-like Search --- */
+.search-bar {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  margin: 0 20px;
+  max-width: 500px;
+}
+
+.search-bar input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 14px 0 0 14px;
+  outline: none;
+  font-size: 0.95rem;
+}
+
+.search-bar button {
+  background: #f97316;
+  border: none;
+  color: #fff;
+  padding: 9px 14px;
+  border-radius: 0 14px 14px 0;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.search-bar button:hover {
+  background: #e66410;
+}
+
+/* --- Mobile Search --- */
+.mobile-search {
+  display: none;
+  background: #fff;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  position: sticky;
+  top: 70px;
+  z-index: 999;
+}
+
+.mobile-search input {
+  width: 100%;
+  padding: 10px 35px 10px 10px;
+  border: 1px solid #ccc;
+  border-radius: 19px;
+  font-size: 0.95rem;
+}
+
+.mobile-search .search-icon {
+  position: absolute;
+  right: 25px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .desktop-search {
+    display: none;
+  }
+  .mobile-search {
+    display: block;
+  }
+}
+
+/* 🔽 Search Results Dropdown */
+.search-results {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  list-style: none;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  max-height: 250px;
+  overflow-y: auto;
+  display: none;
+  z-index: 999;
+}
+
+.search-results li {
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+ 
+ .search-results li:hover {
+  background: #f5f5f5;
+  color: #f68b1e;
+}
+
+/* 👤 Dropdown */
+.dropdown {
+  position: absolute;
+  right: 0;
+  top: 60px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  display: none;
+  flex-direction: column;
+  min-width: 140px;
+  z-index: 999;
+}
+
+.dropdown a {
+  padding: 10px;
+  text-decoration: none;
+  color: #333;
+}
+
+.dropdown a:hover {
+  background: #f9f9f9;
+  }
+  
+  #user-area a{
+      text-decoration: none;
+  }
+  
+
+</style>
+</head>
+<body>
+    <a href="#">
+    <div class="slider">
+  <img src="images.jpg" alt="Neolife Store for All your Needs" class="slide from-left">
+  <img src="1000089465-min.jpg" alt="cheapest online customers for every" class="slide from-top">
+  <img src="" alt="Free Shipping for Orders above $40" class="slide from-right">
+  <img src="https://ng.jumia.is/cms/0-0-black-friday/2025/MOBILE-TOP-STRIP-LIVE-ezgif.com-optimize.gif" alt="best Online shopping for American" class="slide from-bottom">
+</div></a>
+
+<header>
+  <div class="left-section">
+    <div class="menu-btn" id="menu-btn">&#9776;</div>
+    <div class="logo"><a href="index.html">NEOSTORE</a></div>
+  </div>
+  
+  <!-- 🔍 Search Bar (Desktop) -->
+      <div class="search-bar desktop-search">
+        <input type="text" id="search-input" placeholder="Search for products, categories, and more..." />
+        <button id="search-btn"><i class="fa-solid fa-search"></i></button>
+      </div>
+      
+  
+  <nav id="nav">
+    <button class="close-btn hidden" id="close-btn">&times;</button>
+    <a href="#product">Neo Ship</a>
+    <a href="#product">Shop</a>
+    <a href="#about">Contact</a>
+  </nav>
+  <div style="display:flex;align-items:center">
+    <div id="user-area" class="icon" title="Sign Up / Login">  <a href="register.html">
+        <i class="fa-solid fa-user"></i>
+    <span id="user-text-mini" style="margin-left:8px"></span></a></div>
+    <div style="width:12px"></div>
+    
+    <div id="cart-btn" class="icon" title="Cart"><a href="cart.html"><i class="fa-solid fa-cart-shopping"></i></a> <span id="cart-count" style="font-weight:600;margin-left:6px;color:black;border-radius:5px;"></span></div>
+  </div>
+</header>
+
+<!-- 🔍 Mobile Search Box (Below Header) -->
+  <div class="mobile-search">
+    <input type="text" id="mobile-search-input" placeholder="Search products..." />
+    <i class="fa-solid fa-search search-icon"></i>
+  </div>
+
+<main>
+  <!-- SPA pages placeholders -->
+  <section id="page-product" class="page">
+      
+      <style>
+          #page-product{
+              display: none;
+          }
+      </style>
+      
+    <div class="grid">
+      <div>
+        <div class="card product">
+          <img id="product-image" src="1000086128-min.png.jpg" alt="product image">
+          <h1 id="product-title">Vitamin</h1>
+          <div class="price" id="product-price">$24.99</div>
+          <p class="product-desc">High quality product. Use the Add to cart button to store this item in your cart. Cart persists across pages and sessions.</p>
+          <div style="margin-top:12px;display:flex;gap:10px">
+            <button id="add-to-cart" class="btn">Add to cart</button>
+            <button id="buy-now" class="btn ghost">Buy Now</button>
+          </div>
+        </div>
+        <div style="margin-top:14px" class="card">
+          <h3>Product details</h3>
+          <ul style="color:var(--muted)">
+            <li>Weight: 200g</li>
+            <li>Made with care</li>
+            <li>30-day returns</li>
+          </ul>
+        </div>
+      </div>
+      <aside>
+        <div class="card">
+          <h3>Your Cart</h3>
+          <div class="cart-list" id="cart-list"></div>
+          <div style="margin-top:12px;display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div style="color:var(--muted)">Subtotal</div>
+              <div style="font-weight:700;font-size:18px" id="cart-subtotal">$0.00</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <button id="goto-cart" class="btn">Go to cart page</button>
+              <button id="checkout-now" class="btn ghost">Checkout (PayPal)</button>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+  <!-- Cart Page -->
+  <section id="page-cart" class="page hidden">
+         <style>
+          #page-cart{
+              display: none;
+          }
+      </style>
+    <div class="card">
+      <h2>Your Cart</h2>
+      <div id="cart-full-list" class="cart-list"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+        <div>
+          <div style="color:var(--muted)">Total</div>
+          <div style="font-weight:700;font-size:20px" id="cart-total">$0.00</div>
+        </div>
+        <div>
+          <div id="paypal-container"></div>
+          <div style="margin-top:8px"><button id="continue-shopping" class="btn ghost">Continue shopping</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<style>
+          #page-login{
+              display: none;
+          }
+      </style>
+
+  <!-- Login / Signup Page -->
+  <section id="page-login" class="page hidden">
+    <div class="card" style="max-width:480px;margin:auto">
+      <h2 id="auth-title">Sign Up</h2>
+      <form id="auth-form">
+        <input id="auth-name" type="text" placeholder="Full name (for sign up)">
+        <input id="auth-email" type="email" placeholder="Email" required>
+        <input id="auth-password" type="password" placeholder="Password" required>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button type="submit" class="btn">Submit</button>
+          <button type="button" id="auth-toggle" class="btn ghost">Switch to Login</button>
+        </div>
+        <div style="margin-top:8px;color:var(--muted)"></div>
+      </form>
+    </div>
+  </section>
+
+
+<style>
+          #page-dashboard{
+              display: none;
+          }
+      </style>
+  <!-- Dashboard Page -->
+  <section id="page-dashboard" class="page hidden">
+    <div class="card" style="max-width:700px;margin:auto">
+      <h2>Dashboard</h2>
+      <div id="dashboard-welcome">Welcome</div>
+      <div style="margin-top:12px"><button id="logout-btn" class="btn ghost">Logout</button></div>
+      <div style="margin-top:12px"><button class="btn ghost"> <a href="index.html">SHOP NOW</a></button></div>
+    
+    
+    </div>
+  </section>
+</main>
+
+<div id="modal-root" class="hidden"></div>
+
+<div class="call-order">
+    CALL TO ORDER +44 85995394  +44 109538280
+</div>
+<div class="promo-section">
+    <div class="promo-cards" id="promoCards">
+      <div class="singles"><a href="apparel.html"><img src="https://ng.jumia.is/cms/0-0-black-friday/2025/MOBILE-TOP-STRIP-LIVE-ezgif.com-optimize.gif" alt=""></a></div>
+      <div class="singles"><a href="Electronics.html"><img src="https://s.alicdn.com/@sc04/kf/H285098e966c444c485879e2b92e55a2aA/Big-Capacity-80000mah-Power-Banks-Digital-Display.png_350x350q80.jpg" alt=""></a></div>
+      
+      <div class="singles"><a href="Groceries.html"><img src="1000088913-min.png.jpg" alt=""></a></div>
+      
+      <div class="singles"><a href="femalewear.html"><img src="1000088912-min.png.jpg" alt=""></a></div>
+      
+      <div class="singles"><a href="mencloths.html"><img src="1000088911-min.png.jpg" alt=""></a></div>
+      <div class="singles"><a href="shoe.html"><img src="1000088911-min.png.jpg" alt=""></a></div>
+      <div class="singles"><a href="homeapp.html"><img src="1000078564-min.jpg" alt=""></a></div>
+       <div class="singles"><a href="automobile.html"><img src="1000078564-min.jpg" alt=""></a></div>
+       <div class="singles"><a href="accessory.html"><img src="1000078564-min.jpg" alt=""></a></div>
+       <div class="singles"><a href="powerbank.html"><img src="1000078564-min.jpg" alt=""></a></div>
+       <div class="singles"><a href="kids.html"><img src="1000078564-min.jpg" alt=""></a></div>
+       <div class="singles"><a href="books.html"><img src="1000078564-min.jpg" alt=""></a></div>
+       <div class="singles"><a href="phonestore.html"><img src="1000078564-min.jpg" alt=""></a></div>
+       <div class="singles"><a href="Agriculture.html"><img src="1000078564-min.jpg" alt=""></a></div>
+      </div>
+     </div>
+
+    <!-- Progress Line -->
+    <div class="slide-progress">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+  </div>
+  
+  <div class="promo-section">
+    <div class="promo-cards" id="promoCards">
+     <div class="single"><a href="product23.html">
+       <div class="slider">
+  <img src="https://ae-pic-a1.aliexpress-media.com/kf/S895e55a34c67484389e6f6331e32ed8dz.jpg_960x960q75.jpg_.avif" alt="" class="slide from-left">
+  <img src="https://ae-pic-a1.aliexpress-media.com/kf/S2566fa724a074b95ba36e5274562b8928.jpg_960x960q75.jpg_.avif" alt="" class="slide from-top">
+  <img src="1000088756-min.png.jpg" alt="Free Shipping for Orders above $40" class="slide from-right">
+  <img src="1000088759-min.png.jpg" alt="best Online shopping for American" class="slide from-bottom"></div>
+  </div></a>
+    
+  <div class="single"><a href="product24.html">
+       <div class="slider">
+  <img src="1000088758-min.png.jpg" alt="" class="slide from-left">
+  <img src="1000088145-min.png.jpg" alt="" class="slide from-top">
+  <img src="1000088135-min.png.jpg" alt="Free Shipping for Orders above $40" class="slide from-right">
+  <img src="1000088137-min.png.jpg" alt="best Online shopping for American" class="slide from-bottom"></div>
+  </div></a>
+  
+  <div class="single"><a href="product25.html">
+       <div class="slider">
+  <img src="1000088764-min.png.jpg" alt="" class="slide from-left">
+  <img src="1000088146-min.png.jpg" alt="" class="slide from-top">
+  <img src="1000088761-min.png.jpg" alt="Free Shipping for Orders above $40" class="slide from-right">
+  <img src="1000088148-min.png.jpg" alt="best Online shopping for American" class="slide from-bottom"></div>
+  </div></a>
+  
+   <div class="single"><a href="product26.html">
+    <div class="slider">
+  <img src="1000078564-min.jpg" alt="" class="slide from-left">
+  <img src="IMG-20251024-WA0004.jpg" alt="" class="slide from-top">
+  <img src="1000078515-min.jpg" alt="Free Shipping for Orders above $40" class="slide from-right">
+  <img src="1000078420-min.jpg" alt="best Online shopping for American" class="slide from-bottom"></div>
+    </div></a>
+  
+  <div class="single"><a href="product27.html">
+    <div class="slider">
+  <img src="1000078564-min.jpg" alt="" class="slide from-left">
+  <img src="IMG-20251024-WA0004.jpg" alt="" class="slide from-top">
+  <img src="1000078515-min.jpg" alt="Free Shipping for Orders above $40" class="slide from-right">
+  <img src="1000078420-min.jpg" alt="best Online shopping for American" class="slide from-bottom"></div>
+    </div></a>
+    
+    <div class="single"><a href="product28.html">
+    <div class="slider">
+  <img src="1000078564-min.jpg" alt="" class="slide from-left">
+  <img src="IMG-20251024-WA0004.jpg" alt="" class="slide from-top">
+  <img src="1000078515-min.jpg" alt="Free Shipping for Orders above $40" class="slide from-right">
+  <img src="1000078420-min.jpg" alt="best Online shopping for American" class="slide from-bottom"></div>
+    </div></a>
+    
+    <div class="single"><a href="product29.html">
+    <div class="slider">
+  <img src="1000078564-min.jpg" alt="" class="slide from-left">
+  <img src="IMG-20251024-WA0004.jpg" alt="" class="slide from-top">
+  <img src="1000078515-min.jpg" alt="Free Shipping for Orders above $40" class="slide from-right">
+  <img src="1000078420-min.jpg" alt="best Online shopping for American" class="slide from-bottom"></div>
+     </div></a>
+      
+      <div class="single"><a href="product30.html">
+    <div class="slider">
+  <img src="1000078564-min.jpg" alt="" class="slide from-left">
+  <img src="IMG-20251024-WA0004.jpg" alt="" class="slide from-top">
+  <img src="1000078515-min.jpg" alt="Free Shipping for Orders above $40" class="slide from-right">
+  <img src="1000078420-min.jpg" alt="best Online shopping for American" class="slide from-bottom"></div>
+    </div></a>
+       <div class="single"><a href="product31.html">
+    <div class="slider">
+  <img src="1000078564-min.jpg" alt="" class="slide from-left">
+  <img src="IMG-20251024-WA0004.jpg" alt="" class="slide from-top">
+  <img src="1000078515-min.jpg" alt="Free Shipping for Orders above $40" class="slide from-right">
+  <img src="1000078420-min.jpg" alt="best Online shopping for American" class="slide from-bottom"></div>
+    </div></a>
+    
+       <div class="single"><a href="product32.html">
+    <div class="slider">
+  <img src="1000078564-min.jpg" alt="" class="slide from-left">
+  <img src="IMG-20251024-WA0004.jpg" alt="" class="slide from-top">
+  <img src="1000078515-min.jpg" alt="Free Shipping for Orders above $40" class="slide from-right">
+  <img src="1000078420-min.jpg" alt="best Online shopping for American" class="slide from-bottom"></div>
+    </div></a>
+    
+       <div class="single"><a href="product33.html">
+    <div class="slider">
+  <img src="1000078564-min.jpg" alt="" class="slide from-left">
+  <img src="IMG-20251024-WA0004.jpg" alt="" class="slide from-top">
+  <img src="1000078515-min.jpg" alt="Free Shipping for Orders above $40" class="slide from-right">
+  <img src="1000078420-min.jpg" alt="best Online shopping for American" class="slide from-bottom"></div>
+    </div></a>
+    
+       <div class="single"><a href="product34.html">
+    <div class="slider">
+  <img src="1000078564-min.jpg" alt="" class="slide from-left">
+  <img src="IMG-20251024-WA0004.jpg" alt="" class="slide from-top">
+  <img src="1000078515-min.jpg" alt="Free Shipping for Orders above $40" class="slide from-right">
+  <img src="1000078420-min.jpg" alt="best Online shopping for American" class="slide from-bottom"></div>
+    </div></a>
+    
+       <div class="single"><a href="product35.html">
+    <div class="slider">
+  <img src="1000078564-min.jpg" alt="" class="slide from-left">
+  <img src="IMG-20251024-WA0004.jpg" alt="" class="slide from-top">
+  <img src="1000078515-min.jpg" alt="Free Shipping for Orders above $40" class="slide from-right">
+  <img src="1000078420-min.jpg" alt="best Online shopping for American" class="slide from-bottom"></div>
+    </div></a>
+    
+       <div class="single"><a href="product36.html">
+    <div class="slider">
+  <img src="1000078564-min.jpg" alt="" class="slide from-left">
+  <img src="IMG-20251024-WA0004.jpg" alt="" class="slide from-top">
+  <img src="1000078515-min.jpg" alt="Free Shipping for Orders above $40" class="slide from-right">
+  <img src="1000078420-min.jpg" alt="best Online shopping for American" class="slide from-bottom"></div>
+    </div></a>
+    
+  </div>
+ </div>
+ </div>
+ 
+      <div class="section">
+    <div class="promo" id="promoCards">
+     <div class="single"><a href="product1.html"><img src="https://ae-pic-a1.aliexpress-media.com/kf/Scfc8f325cbde4bd1b2f25d903eb77db7i.jpg_960x960q75.jpg_.avif" alt=""></a></div>
+      <div class="single"><a href="product2.html"><img src="https://ae-pic-a1.aliexpress-media.com/kf/S5ef3b033af09443f98a6bb733133498d0.jpg_960x960q75.jpg_.avif" alt=""></a></div>
+      <div class="single"><a href="product3.html"><img src="1000088759-min.png.jpg" alt=""></a></div>
+      <div class="single"><a href="product4.html"><img src="https://sc04.alicdn.com/kf/H8179eff7209143c2bd231c191b7a374bn.jpg" alt=""></a></div>
+      <div class="single"><a href="product5.html"><img src="1000088143-min.png.jpg" alt=""></a></div>
+      <div class="single"><a href="product6.html"><img src="1000088752-min.png.jpg" alt=""></a></div>
+      <div class="single"><a href="product7.html"><img src="1000088142-min.png.jpg" alt=""></a></div>
+       <div class="single"><a href="product8.html"><img src="https://ae-pic-a1.aliexpress-media.com/kf/Se170f93d2b3e4d7691968f463046328bA.jpg_960x960q75.jpg_.avif" alt=""></a></div>
+      <div class="single"><a href="product9.html"><img src="1000088141-min.png.jpg" alt=""></a></div>
+      <div class="single"><a href="product10.html"><img src="1000088135-min.png.jpg" alt=""></a></div>
+      <div class="single"><a href="product11.html"><img src="1000088136-min.png.jpg" alt=""></a></div>
+      <div class="single"><a href="product12.html"><img src="1000088134-min.png.jpg" alt=""></a></div>
+      <div class="single"><a href="product13.html"><img src="https://ae-pic-a1.aliexpress-media.com/kf/S895e55a34c67484389e6f6331e32ed8dz.jpg_960x960q75.jpg_.avif" alt=""></a></div>
+       <div class="single"><a href="product14.html"><img src="1000088757-min.png.jpg" alt=""></a></div>
+      <div class="single"><a href="product15.html"><img src="1000088752-min.png.jpg" alt=""></a></div>
+      <div class="single"><a href="product16.html"><img src="https://ae-pic-a1.aliexpress-media.com/kf/S96c18cdc99d84dcb92d3cfc26b40714fF.jpg_960x960q75.jpg_.avif" alt=""></a></div>
+      <div class="single"><a href="product17.html"><img src="1000088878-min.png.jpg" alt=""></a></div>
+      <div class="single"><a href="product18.html"><img src="1000088875-min.png.jpg" alt=""></a></div>
+ </div>
+ </div>
+
+<div class="promo-section">
+    <div class="promo-cards" id="promoCards">
+     <div class="singlet"><a href="product37.html"><img src="https://sc04.alicdn.com/kf/He0c322314a99496f96dcaef380d13c01c.png" alt="Top trending Men's fashion in US, African , Europe in the world| Cheap Online Men's Clothing Boutique in the World"></a><h1>Men's Fashion Pers....</h1><p>$14.8⁷</p><p>5k+ Sold</p> <span>-67</span></div>
+      <div class="singlet"><a href="product38.html"><img src="1000088750-min.png.jpg" alt=""></a></a><h1>Wireless Earbuds...</h1><p>$15.0⁹</p><p>2k+ Sold</p> <span>-43</span></div>
+      
+      <div class="singlet"><a href="product39.html"><img src="1000088765-min.png.jpg" alt=""></a></a><h1>Phone Shop</h1><p>$75.9⁸</p><p>200+ Sold</p> <span>-38</span></div>
+ 
+      <div class="singlet"><a href="product40.html"><img src="1000088766-min.png.jpg" alt=""></a></a><h1>Six Selling Points</h1><p>$87.7⁷</p><p>100+ Sold</p> <span>-21</span></div>
+      
+      <div class="singlet"><a href="#"><img src="1000088880-min.png.jpg" alt=""></a></a><h1>Men's Summer Wear...</h1><p>$15.0⁷</p><p>500+ Sold</p> <span>-58</span></div>
+      
+      <div class="singlet"><a href="#"><img src="1000088885-min.png.jpg" alt=""></a></a><h1>Top Men's Series...</h1><p>$14.7⁷</p><p>700+ Sold</p> <span>-37</span></div>
+      
+      <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+      
+       <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+       
+      <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+      
+      <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+      
+      <div class="singlet"><a href="#"><img src="1000078420-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+      
+      <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+      
+      <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+      
+       <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+       
+      <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+      </div>
+    </div>
+
+
+  <div class="product-row">
+  <div class="col-1"><a href="#"><img src="1000088766-min.png.jpg" alt=""></a><h1>Selling Points...</h1></div>
+  <div class="col-1"><a href="#"><img src="1000088759-min.png.jpg" alt=""></a><h1>Official-Orange...</h1></div>
+  <div class="col-1"><a href="#"><img src="1000088146-min.png.jpg" alt=""></a><h1>Trendy female...</h1></div>
+  <div class="col-1"><a href="#"><img src="1000088761-min.png.jpg" alt=""></a><h1>Smart Phone</h1></div>
+  <div class="col-1"><a href="#"><img src="1000088756-min.png.jpg" alt=""></a><h1>F9 Wireless...</h1></div>
+  <div class="col-1"><a href="#"><img src="1000088764-min.png.jpg" alt=""></a><h1>Global Unlock...</h1></div>
+  <div class="col-1"><img src="1000088758-min.png.jpg" alt=""></a><h1>Top pouch</h1></div>
+  <div class="col-1"><a href="#"><img src="1000088148-min.png.jpg" alt=""></a><h1>Female Top</h1></div>
+</div>
+<div>
+       <div class="flash-saller">
+          <h6>Top sellers</h6>
+      <h4 class="more">
+         <a href="#">See All</a>
+      </h4>
+      </div>
+  </div>
+  
+  <div class="promo-section">
+    <div class="promo-cards" id="promoCards">
+     <div class="singlet"><a href="#"><img src="1000088898-min.png.jpg" alt=""></a>
+     <h1>New Winter</h1><p>$14.7⁹</p><p>1.1k Sold</p> <span>-39</span></div>
+     
+      <div class="singlet"><a href="men2.html"><img src="1000088875-min.png.jpg" alt="Men's Casual wears top fashion trending outfits | Online Store for Men's Accessories shoes and more"></a>
+      <h1>Casual breath...</h1><p>$13.6⁹</p><p>2k+ Sold</p> <span>-72</span></div>
+      
+      <div class="singlet"> <a href="men3.html"><img
+ src="1000088876-min.png.jpg" alt=" Best Men's Store For Cheap Affordable Amazon type of products | No One Amazon Shopping Deal in the world with free delivery in us"></a>
+ <h1>Men's Summer New...</h1><p>$14.1³</p> <p>1.5k+ Sold</p> <span>-54</span></div>
+ 
+      <div class="singlet"><a href="men1.html"><img src="1000088877-min.png.jpg" alt="Shop All Men's categories fast Jumia and Amazon Deals | Men's clothing store for fast delivery Online"></a><h1>Men's fashion Pers...</h1><p>$14.8⁷</p><p>5k+ Sold</p> <span>-67</span></div>
+      
+      <div class="singlet"><a href="#"><img src="1000078420-min.png.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+       <div class="singlet"><a href="#"><img src="" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+       <div class="singlet"><a href="#"><img src="" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      </div>
+    </div>
+
+
+  <div class="product-row">
+  <div class="col-1"><a href="#"><img src="1000088902-min.png.jpg" alt=""></a><h1>Top Brands...</h1></div>
+  <div class="col-1"><a href="#"><img src="1000088912-min.png.jpg" alt=""></a><h1>office Footwears...</h1></div>
+  <div class="col-1"><a href="#"><img src="1000088895-min.png.jpg" alt=""></a><h1>Summer wears</h1></div>
+  <div class="col-1"><a href="#"><img src="1000088877-min.png.jpg" alt=""></a><h1>Fashion for...</h1></div>
+  <div class="col-1"><a href="#"><img src="1000088901-min.png.jpg" alt=""></a><h1>Fashionable...</h1></div>
+  <div class="col-1"><a href="#"><img src="1000088897-min.png.jpg" alt=""></a><h1>Summer New...</h1></div>
+  <div class="col-1"><a href="#"><img src="1000088876-min.png.jpg" alt=""></a><h1>New Summer...</h1></div>
+  <div class="col-1"><a href="#"><img src="1000088880-min.png.jpg" alt=""></a><h1>Men Summer...</h1></div>
+</div>
+
+<div class="flash-sellers">
+          <h6>Sponsored Products</h6>
+      <h4 class="more">
+         <a href="#">See All</a>
+      </h4>
+      </div>
+  </div>
+  <div class="promo-section">
+    <div class="promo-cards" id="promoCards">
+     <div class="singlet"><a href="#"><img src="1000088916-min.png.jpg" alt=""></a>
+     <h1>Trending Blacks...</h1><p>$24.7⁹</p><p>400+ Sold</p><span>-26</span></div>
+     
+      <div class="singlet"><a href="#"><img src="1000088915-min.png.jpg" alt=""></a><h1>Office Blacks...</h1><p>$23.8⁵</p> <p>600+ Sold</p> <span>-24</span></div>
+      
+      <div class="singlet"><a href="#"><img
+ src="1000088907-min.png.jpg" alt=""></a> <h1>Chinese Green...</h1><p>$14.4⁷</p> <p>250+ Sold</p><span>-41</span></div>
+ 
+      <div class="singlet"><a href="#"><img src="1000088909-min.png.jpg" alt=""></a><h1>Branded Black Watch...</h1><p>$17.0⁸</p><p>1k+ Sold</p> <span>-48</span></div>
+      
+      
+      <div class="singlet"><a href="#"><img src="1000088132-min.png.jpg" alt=""></a><h1>Casual wears</h1><p>$13.8⁷</p><p>800+ Sold</p> <span>-56</span></div>
+      
+      
+      <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+       <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <Span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="1000078420-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+       <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      </div>
+    </div>
+    
+    
+    <div class="deals">
+          <h6>Black Friday Deals <br> Up to 60% Off</h6>
+      <h4 class="more">
+         <a href="#">See All</a>
+      </h4>
+      </div>
+  </div>
+    <div class="products-row">
+  <div class="col-1"><a href="#"><img src="1000088894-min.png.jpg" alt=""></a><h1>Perfume Store...</h1></div>
+  <div class="col-1"><a href="#"><img src="1000088896-min.png.jpg" alt=""></a><h1>For Ladies...</h1></div>
+  <div class="col-1"><a href="#"><img src="1000088887-min.png.jpg" alt=""></a><h1>Asad Perfu...</h1></div>
+  <div class="col-1"><a href="#"><img src="1000088883-min.png.jpg" alt=""></a><h1>Men's Urban...</h1></div>
+  <div class="col-1"><a href="#"><img src="1000088884-min.png.jpg" alt=""></a><h1>Men's Casual...</h1></div>
+  <div class="col-1"><a href="#"><img src="1000088907-min.png.jpg" alt=""></a><h1>Wristwatch...</h1></div>
+  <div class="col-1"><a href="#"><img src="1000088908-min.png.jpg" alt=""></a><h1>Black Watch...</h1></div>
+  <div class="col-1"><a href="#"><img src="1000088899-min.png.jpg" alt=""></a><h1>White and Blacks...</h1></div>
+  <div class="col-1"><a href="#"><img src="1000088916-min.png.jpg" alt=""></a><h1>Black Outfit....</h1></div>
+  <div class="col-1"><a href="#"><img src="1000088914-min.png.jpg" alt=""></a><h1>Shiny Office...</h1></div>
+    <div class="col-1"><a href="#"><img src="1000088900-min.png.jpg" alt=""></a><h1>Spring and A...</h1></div>
+    
+    <div class="col-1"><a href="#"><img src="1000088910-min.png.jpg" alt=""></a><h1>US Wrists...</h1></div>
+  <div class="col-1"><a href="#"><img src="1000088905-min.png.jpg" alt=""></a></a><h1>Gold Shiny...</h1></div>
+  <div class="col-1"><a href="#"><img src="1000088903-min.png.jpg" alt=""></a><h1>Ladies Hill...</h1></div>
+  <div class="col-1"><a href="#"><img src="1000088909-min.png.jpg" alt=""></a><h1>unisex wrist...</h1></div>
+  <div class="col-1"><a href="#"><img src="1000088140-min.png.jpg" alt=""></a><h1>Summer Wears...</h1></div>
+  </div>
+
+    <div class="deals">
+          <h6>Hisense and Maxi<br>Black Friday Deals</h6>
+      <h4 class="more">
+         <a href="#">See All</a>
+      </h4>
+      </div>
+  </div>
+  
+   <div class="promo-section">
+    <div class="promo-cards" id="promoCards">
+     <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a>
+     <h1>items name</h1><p>$24.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="1000078420-min.jpg" alt=""></a><h1>items name</h1><p>$24.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img
+ src="1000078420-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="1000078420-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+       <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="1000078420-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+       <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      </div>
+    </div>
+    
+    
+      
+       <div class="deals">
+          <h6>Phone Deals <br>Black Friday Deals</h6>
+      <h4 class="more">
+         <a href="#">See All</a>
+      </h4>
+      </div>
+  </div>
+  
+   <div class="promo-section">
+    <div class="promo-cards" id="promoCards">
+     <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a>
+     <h1>items name</h1><p>$24.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="1000078420-min.jpg" alt=""></a><h1>items name</h1><p>$24.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img
+ src="1000078420-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="1000078420-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+       <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="1000078420-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+       <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><a href="#"><img src="1000078564-min.jpg" alt=""></a><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      </div>
+    </div>
+  <footer class="site-footer">
+
+<div class="footer-container">
+
+<div class="footer-box">
+<h3>About Us</h3>
+<p>
+Video Reward Hub is a platform where users earn money by watching ads,
+completing tasks, and inviting friends.
+</p>
+</div>
+
+<div class="footer-box">
+<h3>Quick Links</h3>
+<ul>
+<li><a href="#">Home</a></li>
+<li><a href="#">Dashboard</a></li>
+<li><a href="#">Watch Tasks</a></li>
+<li><a href="#">Withdraw</a></li>
+</ul>
+</div>
+
+<div class="footer-box">
+<h3>Earn Money</h3>
+<ul>
+<li><a href="#">Watch Ads</a></li>
+<li><a href="#">Referral Program</a></li>
+<li><a href="#">Daily Tasks</a></li>
+<li><a href="#">Leaderboard</a></li>
+</ul>
+</div>
+
+<div class="footer-box">
+<h3>Support</h3>
+<ul>
+<li><a href="#">Help Center</a></li>
+<li><a href="#">Contact Us</a></li>
+<li><a href="#">FAQ</a></li>
+<li><a href="#">Report Issue</a></li>
+</ul>
+</div>
+
+<div class="footer-box">
+<h3>Legal</h3>
+<ul>
+<li><a href="#">Privacy Policy</a></li>
+<li><a href="#">Terms of Service</a></li>
+<li><a href="#">Cookie Policy</a></li>
+<li><a href="#">Disclaimer</a></li>
+</ul>
+</div>
+
+<div class="footer-box">
+<h3>Follow Us</h3>
+<ul>
+<li><a href="#">Facebook</a></li>
+<li><a href="#">Twitter</a></li>
+<li><a href="#">Instagram</a></li>
+<li><a href="#">Telegram</a></li>
+</ul>
+</div>
+
+</div>
+
+<div class="footer-bottom">
+<p>© 2026 NEOSTORE MARKET HUB. ALL RIGHTS RESERVED.</p>
+</div>
+
+</footer>
+
+
+<style>
+
+.site-footer{
+background:#111;
+color:#eee;
+margin-top:50px;
+}
+
+.footer-container{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+gap:25px;
+max-width:1100px;
+margin:auto;
+padding:40px 20px;
+}
+
+.footer-box h3{
+color:#fff;
+margin-bottom:10px;
+font-size:16px;
+}
+
+.footer-box ul{
+list-style:none;
+padding:0;
+}
+
+.footer-box ul li{
+margin:6px 0;
+}
+
+.footer-box a{
+color:#bbb;
+text-decoration:none;
+font-size:14px;
+}
+
+.footer-box a:hover{
+color:#fff;
+}
+
+.footer-bottom{
+text-align:center;
+padding:15px;
+background:#000;
+font-size:14px;
+}
+
+</style>
+
+
+  <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
+
+import { 
+  getAuth, 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword,
+  sendEmailVerification
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+
+import { 
+  getFirestore, 
+  doc, 
+  setDoc, 
+  getDoc, 
+  collection, 
+  addDoc 
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+  
+const firebaseConfig = {
+  apiKey: "AIzaSyAC3qCkDfdS2X8YA6deg01lXif7qAStfQQ",
+  authDomain: "neostore-81b57.firebaseapp.com",
+  databaseURL: "https://neostore-81b57-default-rtdb.firebaseio.com",
+  projectId: "neostore-81b57",
+  storageBucket: "neostore-81b57.firebasestorage.app",
+  messagingSenderId: "760637387702",
+  appId: "1:760637387702:web:3c7c231c34a3513d1a4717",
+  measurementId: "G-1PBBK48DCK"
+};
+
+const app = initializeApp(firebaseConfig);
+getAnalytics(app);
+
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// MAKE GLOBAL
+window.auth = auth;
+window.db = db;
+window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+window.sendEmailVerification = sendEmailVerification;
+window.setDoc = setDoc;
+window.getDoc = getDoc;
+window.doc = doc;
+window.collection = collection;
+window.addDoc = addDoc;
+  </script>
+
+
+<script>
+  
+const COUNTRY_STORE_MAP = {
+  "nigeria": "Nigeria-Store.html",
+  "ghana": "Ghana-Store.html",
+  "kenya": "Kenya-Store.html",
+  "south africa": "SouthAfrica-Store.html",
+  "uganda": "Uganda-Store.html",
+  "tanzania": "Tanzania-Store.html",
+
