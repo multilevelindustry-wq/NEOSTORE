@@ -379,14 +379,22 @@ function saveUsers(u){ localStorage.setItem(AUTH_KEY, JSON.stringify(u)); }
     createdAt: Date.now()
   });
 
-  alert("Account created!");
+  // save session
+  localStorage.setItem("neo_session_v1", JSON.stringify({
+    uid: user.uid,
+    name: name,
+    email: email,
+    country: country
+  }));
 
-  redirectToStore(country);
+  alert("Account created successfully!");
+
+  // ✅ REDIRECT TO DASHBOARD FIRST
+  window.location.href = "dashboard.html";
     }
 
 
-// LOGIN
-async function login(email, password){
+    async function login(email, password){
 
   const userCredential = await signInWithEmailAndPassword(auth, email, password);
   const user = userCredential.user;
@@ -401,8 +409,8 @@ async function login(email, password){
     country: data.country
   }));
 
-  // redirect to their country store
-  redirectToStore(data.country);
+  // ✅ go to dashboard first
+  window.location.href = "dashboard.html";
     }
 
     
