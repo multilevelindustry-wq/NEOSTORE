@@ -1073,25 +1073,7 @@ h6{
     CALL TO ORDER +44 85995394  +44 109538280
 </div>
 <div class="promo-section">
-    <div class="promo-cards" id="promoCards">
-      <div class="singles"><a href="apparel.html"><img src="https://ng.jumia.is/cms/0-0-black-friday/2025/MOBILE-TOP-STRIP-LIVE-ezgif.com-optimize.gif" alt=""></a></div>
-      <div class="singles"><a href="Electronics.html"><img src="https://s.alicdn.com/@sc04/kf/H285098e966c444c485879e2b92e55a2aA/Big-Capacity-80000mah-Power-Banks-Digital-Display.png_350x350q80.jpg" alt=""></a></div>
-      
-      <div class="singles"><a href="Groceries.html"><img src="1000088913-min.png.jpg" alt=""></a></div>
-      
-      <div class="singles"><a href="femalewear.html"><img src="1000088912-min.png.jpg" alt=""></a></div>
-      
-      <div class="singles"><a href="mencloths.html"><img src="1000088911-min.png.jpg" alt=""></a></div>
-      <div class="singles"><a href="shoe.html"><img src="1000088911-min.png.jpg" alt=""></a></div>
-      <div class="singles"><a href="homeapp.html"><img src="1000078564-min.jpg" alt=""></a></div>
-       <div class="singles"><a href="automobile.html"><img src="1000078564-min.jpg" alt=""></a></div>
-       <div class="singles"><a href="accessory.html"><img src="1000078564-min.jpg" alt=""></a></div>
-       <div class="singles"><a href="powerbank.html"><img src="1000078564-min.jpg" alt=""></a></div>
-       <div class="singles"><a href="kids.html"><img src="1000078564-min.jpg" alt=""></a></div>
-       <div class="singles"><a href="books.html"><img src="1000078564-min.jpg" alt=""></a></div>
-       <div class="singles"><a href="phonestore.html"><img src="1000078564-min.jpg" alt=""></a></div>
-       <div class="singles"><a href="Agriculture.html"><img src="1000078564-min.jpg" alt=""></a></div>
-      </div>
+    <div class="promo-cards" id="promoCards"></div>
      </div>
 
     <!-- Progress Line -->
@@ -2288,7 +2270,81 @@ function createOrder(){
   showPage('dashboard');
   }
 
+// product rotate
+const items = [
+  {img:"https://ng.jumia.is/cms/0-0-black-friday/2025/MOBILE-TOP-STRIP-LIVE-ezgif.com-optimize.gif", link:"apparel.html", text:"🔥 Up to 80% OFF Fashion"},
+  {img:"https://s.alicdn.com/@sc04/kf/H285098e966c444c485879e2b92e55a2aA/Big-Capacity-80000mah-Power-Banks-Digital-Display.png_350x350q80.jpg", link:"Electronics.html", text:"⚡ Power Deals Today"},
+  {img:"1000088913-min.png.jpg", link:"Groceries.html", text:"🛒 Daily Essentials Cheap"},
+  {img:"1000088912-min.png.jpg", link:"femalewear.html", text:"👗 Trending Women Styles"},
 
+  {img:"1000088911-min.png.jpg", link:"mencloths.html", text:"👕 Men's Fashion Sale"},
+  {img:"1000088911-min.png.jpg", link:"shoe.html", text:"👟 Hot Shoe Deals"},
+  {img:"1000078564-min.jpg", link:"homeapp.html", text:"🏠 Home Essentials"},
+  {img:"1000078564-min.jpg", link:"automobile.html", text:"🚗 Auto Discounts"},
+
+  {img:"1000078564-min.jpg", link:"accessory.html", text:"⌚ Accessories Promo"},
+  {img:"1000078564-min.jpg", link:"powerbank.html", text:"🔋 Power Bank Sale"},
+  {img:"1000078564-min.jpg", link:"kids.html", text:"🧸 Kids Mega Deals"},
+  {img:"1000078564-min.jpg", link:"books.html", text:"📚 Book Discounts"},
+
+  {img:"1000078564-min.jpg", link:"phonestore.html", text:"📱 Phone Clearance"},
+  {img:"1000078564-min.jpg", link:"Agriculture.html", text:"🌱 Farm Essentials"},
+
+  // duplicate to reach ~50 (you can replace with real images later)
+];
+
+// auto-expand to 50 items
+while(items.length < 50){
+  items.push(...items.slice(0, 50 - items.length));
+}
+
+const container = document.getElementById("promoCards");
+
+let index = 0;
+
+function renderGroup(){
+  container.innerHTML = "";
+
+  let group = items.slice(index, index + 4);
+
+  group.forEach(item=>{
+    const div = document.createElement("div");
+    div.className = "singles";
+
+    div.innerHTML = `
+      <a href="${item.link}">
+        <div style="position:relative;">
+          <img src="${item.img}" style="width:100%;border-radius:8px;">
+          <div style="
+            position:absolute;
+            bottom:0;
+            left:0;
+            right:0;
+            background:rgba(0,0,0,0.7);
+            color:#fff;
+            font-size:12px;
+            padding:5px;
+            text-align:center;
+          ">
+            ${item.text}
+          </div>
+        </div>
+      </a>
+    `;
+
+    container.appendChild(div);
+  });
+
+  index += 4;
+  if(index >= items.length) index = 0;
+}
+
+// initial load
+renderGroup();
+
+// rotate every 5 seconds
+setInterval(renderGroup, 5000);
+</script>
 
 
 
