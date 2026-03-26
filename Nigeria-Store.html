@@ -769,11 +769,156 @@ h6{
   #user-area a{
       text-decoration: none;
   }
+
+  .banner{
+  width:100%;
+  height:120px;
+  position:relative;
+  overflow:hidden;
+}
+
+/* Slides container */
+.slides{
+  display:flex;
+  height:100%;
+  transition: transform 1.2s ease-in-out;
+}
+
+/* Each slide */
+.slide{
+  flex:0 0 100%; /* ✅ perfect width control */
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 20px;
+  background:linear-gradient(90deg,#000,#111,#000);
+  position:relative;
+  overflow:hidden;
+}
+
+/* Glow effect */
+.slide::before{
+  content:"";
+  position:absolute;
+  width:200%;
+  height:100%;
+  background:linear-gradient(90deg,transparent,orange,transparent);
+  animation:shine 3s linear infinite;
+}
+
+@keyframes shine{
+  0%{transform:translateX(-100%);}
+  100%{transform:translateX(100%);}
+}
+
+/* Text */
+.text{
+  color:#fff;
+  z-index:2;
+  max-width:70%; /* ✅ prevents overflow */
+}
+
+.title{
+  font-size:18px;
+  font-weight:bold;
+}
+
+.sub{
+  color:orange;
+  font-size:13px;
+}
+
+/* Button */
+.btn{
+  background:orange;
+  color:#000;
+  padding:8px 16px;
+  border-radius:5px;
+  font-weight:bold;
+  cursor:pointer;
+  z-index:2;
+  animation:pulse 1.5s infinite;
+  white-space:nowrap; /* ✅ prevents breaking */
+}
+
+@keyframes pulse{
+  0%{transform:scale(1);}
+  50%{transform:scale(1.1);}
+  100%{transform:scale(1);}
+}
+
+/* Badge */
+.badge{
+  position:absolute;
+  top:10px;
+  right:20px;
+  background:red;
+  color:#fff;
+  padding:5px 10px;
+  font-size:12px;
+  animation:blink 1s infinite;
+  z-index:2;
+}
+
+@keyframes blink{
+  0%,100%{opacity:1;}
+  50%{opacity:0;}
+  }
   
 
 </style>
 </head>
 <body>
+  <div class="banner">
+
+  <div class="slides" id="slides">
+
+    <!-- 1 -->
+    <div class="slide">
+      <div class="text">
+        <div class="title">BLACK FRIDAY MEGA SALE</div>
+        <div class="sub">Up to 80% OFF – Today Only!</div>
+      </div>
+      <div class="btn">SHOP NOW</div>
+      <div class="badge">LIVE</div>
+    </div>
+
+    <!-- 2 -->
+    <div class="slide">
+      <div class="text">
+        <div class="title">⚡ FLASH DEALS END SOON</div>
+        <div class="sub">Hurry! Prices increase in a few hours</div>
+      </div>
+      <div class="btn">GRAB DEAL</div>
+      <div class="badge">HOT</div>
+    </div>
+
+    <!-- 3 -->
+    <div class="slide">
+      <div class="text">
+        <div class="title">🎁 BUY MORE, SAVE MORE</div>
+        <div class="sub">Extra discounts when you shop today</div>
+      </div>
+      <div class="btn">START SAVING</div>
+      <div class="badge">BONUS</div>
+    </div>
+
+    <!-- 4 -->
+    <div class="slide">
+      <div class="text">
+        <div class="title">🚀 LIMITED STOCK ALERT</div>
+        <div class="sub">Best-selling items almost sold out!</div>
+      </div>
+      <div class="btn">BUY FAST</div>
+      <div class="badge">URGENT</div>
+    </div>
+
+  </div>
+
+  </div>
+
+  
     <a href="#">
     <div class="slider">
   <img src="images.jpg" alt="Neolife Store for All your Needs" class="slide from-left">
@@ -1850,8 +1995,23 @@ function updateDeliveryTotalDisplay(){
 const originalShowPage = showPage;
 showPage = function(name){ originalShowPage(name); if(name==='cart') setTimeout(updateDeliveryTotalDisplay,300); };
 
+// Slides 
+let index = 0;
+const slides = document.getElementById("slides");
+const totalSlides = 4;
 
+function showSlide(){
+  slides.style.transform = "translateX(-" + (index * 100) + "%)";
+}
 
+// show first slide properly
+showSlide();
+
+// run every 7 seconds
+setInterval(()=>{
+  index = (index + 1) % totalSlides;
+  showSlide();
+}, 7000);
 
 
 /* ---------- LIVE SEARCH PATCH (append to script.js) ----------
