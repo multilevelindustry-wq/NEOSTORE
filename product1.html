@@ -1,9 +1,107 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>NEOSTORE — men's summer fashion Dress </title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- 🔥 PRIMARY SEO -->
+<title>Buy Quality Products Online | Fast Delivery Worldwide | NeoStore</title>
+
+<meta name="description" content="Shop high-quality products at unbeatable prices. Fast worldwide delivery. Trusted by thousands. Buy now from NeoStore and enjoy secure checkout.">
+
+<meta name="keywords" content="online shopping, buy products online, cheap gadgets, fashion store, ecommerce Nigeria, global store, NeoStore">
+
+<meta name="author" content="NeoStore">
+
+<!-- 🔥 GOOGLE INDEXING -->
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://yourdomain.com/">
+
+<!-- 🔥 OPEN GRAPH (FACEBOOK / WHATSAPP) -->
+<meta property="og:title" content="Buy Quality Products Online | NeoStore">
+<meta property="og:description" content="Affordable products, fast delivery, and secure checkout. Shop NeoStore now!">
+<meta property="og:image" content="https://yourdomain.com/preview.jpg">
+<meta property="og:url" content="https://yourdomain.com/">
+<meta property="og:type" content="website">
+
+<!-- 🔥 TWITTER SEO -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Shop Online Easily | NeoStore">
+<meta name="twitter:description" content="Best deals on gadgets, fashion, and more. Order now!">
+<meta name="twitter:image" content="https://yourdomain.com/preview.jpg">
+
+<!-- 🔥 FAVICON -->
+<link rel="icon" href="https://yourdomain.com/favicon.ico" type="image/x-icon">
+
+<!-- 🔥 PERFORMANCE -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<!-- 🔥 GOOGLE FONT -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<!-- 🔥 STRUCTURED DATA (VERY IMPORTANT FOR GOOGLE) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Store",
+  "name": "NeoStore",
+  "url": "https://yourdomain.com",
+  "logo": "https://yourdomain.com/logo.png",
+  "sameAs": [
+    "https://facebook.com/yourpage",
+    "https://instagram.com/yourpage"
+  ],
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "NG"
+  }
+}
+</script>
+
+<!-- 🔥 PRODUCT STRUCTURE (BOOST PRODUCT SEARCH) -->
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org/",
+ "@type": "Product",
+ "name": "High Quality Product",
+ "image": "https://yourdomain.com/product.jpg",
+ "description": "Best product with premium quality.",
+ "brand": {
+   "@type": "Brand",
+   "name": "NeoStore"
+ },
+ "offers": {
+   "@type": "Offer",
+   "priceCurrency": "USD",
+   "price": "24.99",
+   "availability": "https://schema.org/InStock"
+ }
+}
+</script>
+
+<script>
+function updateSEO(product){
+  document.title = product.title + " | Buy Online - NeoStore";
+
+  const desc = document.querySelector("meta[name='description']");
+  if(desc){
+    desc.setAttribute("content", product.title + " at best price. Order now with fast delivery.");
+  }
+
+  const ogTitle = document.querySelector("meta[property='og:title']");
+  if(ogTitle){
+    ogTitle.setAttribute("content", product.title);
+  }
+
+  const ogImage = document.querySelector("meta[property='og:image']");
+  if(ogImage){
+    ogImage.setAttribute("content", product.image);
+  }
+}
+  </script>
+
+  
 
 <!-- PayPal JS SDK (LIVE client-id) -->
 <script src="https://www.paypal.com/sdk/js?client-id=Aey_vJzSIErk6JUHmkIU41JQ4W1vA2FlfBNf5Vtkg7j4YLaWHkFtw4WSPI0SWiCzhaNKqPt2oGuVIF1n&components=buttons&currency=USD"></script>
