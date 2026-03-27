@@ -941,7 +941,39 @@ h6{
   50%{opacity:0;}
   }
 
+.floating-ad {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999;
+  width: 320px;
+  max-width: 90%;
+}
 
+/* 🔝 TOP */
+.ad-top {
+  top: 80px;
+}
+
+/* 📍 MIDDLE */
+.ad-middle {
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* 🔻 BOTTOM */
+.ad-bottom {
+  bottom: 20px;
+}
+
+/* 📱 MOBILE OPTIMIZATION */
+@media(max-width: 768px){
+  .floating-ad {
+    width: 95%;
+  }
+  }
+
+  
 
   
 </style>
@@ -1024,6 +1056,35 @@ h6{
   </div>
 </header>
 
+<!-- TOP FLOATING AD -->
+<div class="floating-ad ad-top">
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-XXXXXXXX"
+       data-ad-slot="1111111111"
+       data-ad-format="auto"></ins>
+</div>
+
+<!-- MIDDLE FLOATING AD -->
+<div class="floating-ad ad-middle">
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-XXXXXXXX"
+       data-ad-slot="2222222222"
+       data-ad-format="auto"></ins>
+</div>
+
+<!-- BOTTOM FLOATING AD -->
+<div class="floating-ad ad-bottom">
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-XXXXXXXX"
+       data-ad-slot="3333333333"
+       data-ad-format="auto"></ins>
+</div>
+
+
+  
 <!-- 🔍 Mobile Search Box (Below Header) -->
   <div class="mobile-search">
     <input type="text" id="mobile-search-input" placeholder="Search products..." />
@@ -2262,8 +2323,17 @@ function createOrder(){
   }
 
 
+window.addEventListener("scroll", () => {
+  const scrollY = window.scrollY;
+  document.querySelector(".ad-top").style.display = scrollY < 300 ? "block" : "none";
+  document.querySelector(".ad-middle").style.display = (scrollY >= 300 && scrollY < 1000) ? "block" : "none";
+  document.querySelector(".ad-bottom").style.display = scrollY >= 1000 ? "block" : "block";
+});
+
+  
 
 
+  
 </script>
 
 <!-- Font Awesome -->
