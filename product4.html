@@ -822,17 +822,34 @@ const pages = {
 
 // Show SPA page
 function showPage(name){
-  Object.values(pages).forEach(p=>p.classList.add('hidden'));
-  pages[name].classList.remove('hidden');
-  location.hash = '#'+name;
-  if(name==='cart') renderCartFull();
-  if(name==='dashboard') renderDashboard();
-}
 
-// Init page
-window.addEventListener('hashchange', ()=> showPage(location.hash.replace('#','') || 'product'));
-if(!location.hash) location.hash = '#product';
-showPage(location.hash.replace('#',''));
+  // 🔥 REDIRECT TO REAL PAGES INSTEAD OF HASH
+  if(name === 'product'){
+    window.location.href = "product1.html";
+    return;
+  }
+
+  if(name === 'cart'){
+    window.location.href = "cart.html";
+    return;
+  }
+
+  if(name === 'dashboard'){
+    window.location.href = "dashboard.html";
+    return;
+  }
+
+  if(name === 'login'){
+    window.location.href = "register.html";
+    return;
+  }
+
+  // fallback (if needed)
+  Object.values(pages).forEach(p=>p.classList.add('hidden'));
+  pages[name]?.classList.remove('hidden');
+  }
+
+  
 
 // Product data
 const product = {
