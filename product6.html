@@ -441,11 +441,12 @@ h6{
             <li>Style: Casual</li>
             <li>Material: POLYESTER</li>
             <li>Applicable Season: Summer</li>
-            <li>Gender: Men</li
+            <li>Gender: Men</li>
           </ul>
         </div>
       </div>
-      <div class="product-row">
+
+            <div class="product-row">
   <div class="col-1"><a href="product2.html"><img src="https://sc04.alicdn.com/kf/H003a83b019c84ac5b86ee05df0eaebd6I.png" alt="Affordable Power bank Store in Africa, American, USA, Nigeria"></a><h1>50000Mah Power bank</h1></div>
   <div class="col-1"><img src="1000086137-min.png.jpg" alt=""><h1>items name</h1></div>
   <div class="col-1"><img src="1000086143-min.png.jpg" alt=""><h1>items name</h1></div>
@@ -467,7 +468,6 @@ h6{
       </h4>
       </div>
   </div>
-  
   <div class="promo-section">
     <div class="promo-cards" id="promoCards">
      <div class="singlet"><img src="1000078564-min.jpg" alt="">
@@ -847,12 +847,11 @@ function showPage(name){
   }
 
   
-
 // Product data
 const product = {
-  id: 'p6',
+  id: 'p2',
   title: document.getElementById('product-title').textContent,
-  price: $29.69,
+  price: 4.98,
   image: document.getElementById('product-image').src
 };
 document.getElementById('product-price').textContent = '$'+product.price.toFixed(2);
@@ -920,39 +919,11 @@ document.getElementById('buy-now').addEventListener('click',()=>{ addToCart(prod
 // Auth functions
 function getUsers(){ return JSON.parse(localStorage.getItem(AUTH_KEY)||'{}'); }
 function saveUsers(u){ localStorage.setItem(AUTH_KEY, JSON.stringify(u)); }
-function signup(name,email,password){ const users = getUsers(); if(users[email]) throw new Error('User exists'); users[email] = {name,email,password}; saveUsers(users); login(email,password);}
-function login(email,password){ const users = getUsers(); if(!users[email] || users[email].password !== password) throw new Error('Invalid credentials'); localStorage.setItem(SESSION_KEY, JSON.stringify({email,name:users[email].name,loggedAt:Date.now()})); renderUserUI(); }
-function logout(){ localStorage.removeItem(SESSION_KEY); renderUserUI(); showPage('product'); }
-function currentUser(){ return JSON.parse(localStorage.getItem(SESSION_KEY)||'null'); }
+function 
 
-// Auth form
-const authForm = document.getElementById('auth-form');
-const authToggle = document.getElementById('auth-toggle');
-let authMode = 'signup';
-authToggle.addEventListener('click', ()=>{
-  authMode = authMode === 'signup' ? 'login' : 'signup';
-  document.getElementById('auth-title').textContent = authMode==='signup' ? 'Sign Up' : 'Login';
-  document.getElementById('auth-name').style.display = authMode==='signup' ? 'block' : 'none';
-  authToggle.textContent = authMode==='signup' ? 'Switch to Login' : 'Switch to Sign Up';
-});
-authForm.addEventListener('submit', e=>{
-  e.preventDefault();
-  const name = document.getElementById('auth-name').value.trim();
-  const email = document.getElementById('auth-email').value.trim();
-  const pw = document.getElementById('auth-password').value;
-  try{
-    if(authMode==='signup') signup(name,email,pw); else login(email,pw);
-    alert('Logged in'); window.location.href = "dashboard.html";
-  }catch(err){ alert(err.message); }
-});
 
-// User area
-document.getElementById('user-area').addEventListener('click', ()=>{ if(currentUser()) showPage('dashboard'); else showPage('login'); });
-function renderUserUI(){ const u=currentUser(); document.getElementById('user-text-mini').textContent = u ? u.name : 'Sign in'; }
-renderUserUI();
-document.getElementById('logout-btn').addEventListener('click', ()=>{ logout(); });
 
-/////////////////////////
+  /////////////////////////
 // Auto-logout
 function touchActivity(){ localStorage.setItem(INACT_KEY, Date.now()); }
 ['click','keydown','mousemove','touchstart'].forEach(evt=> window.addEventListener(evt, touchActivity));
