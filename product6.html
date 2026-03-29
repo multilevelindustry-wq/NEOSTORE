@@ -915,13 +915,15 @@ document.getElementById('goto-cart').addEventListener('click',()=> showPage('car
 document.getElementById('continue-shopping').addEventListener('click',()=> showPage('product'));
 document.getElementById('buy-now').addEventListener('click',()=>{ addToCart(product); showPage('cart'); });
 
-     /////////////////////////
+       /////////////////////////
 // Auth functions
 function getUsers(){ return JSON.parse(localStorage.getItem(AUTH_KEY)||'{}'); }
 function saveUsers(u){ localStorage.setItem(AUTH_KEY, JSON.stringify(u)); }
-function 
-
-
+function signup(name,email,password){ const users = getUsers(); if(users[email]) throw new Error('User exists'); users[email] = {name,email,password}; saveUsers(users); login(email,password);}
+function login(email,password){ const users = getUsers(); if(!users[email] || users[email].password !== password) throw new Error('Invalid credentials'); localStorage.setItem(SESSION_KEY, JSON.stringify({email,name:users[email].name,loggedAt:Date.now()})); renderUserUI(); }
+function logout(){ localStorage.removeItem(SESSION_KEY); renderUserUI(); showPage('product'); }
+function currentUser(){ return JSON.parse(localStorage.getItem(SESSION_KEY)||'null'); }
+  
 
   /////////////////////////
 // Auto-logout
