@@ -1,0 +1,1360 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- 🔥 PRIMARY SEO -->
+<title>Buy Quality Products Online | Fast Delivery Worldwide | NeoStore</title>
+
+<meta name="description" content="Shop high-quality products at unbeatable prices. Fast worldwide delivery. Trusted by thousands. Buy now from NeoStore and enjoy secure checkout.">
+
+<meta name="keywords" content="online shopping, buy products online, cheap gadgets, fashion store, ecommerce Nigeria, global store, NeoStore">
+
+<meta name="author" content="NeoStore">
+
+<!-- 🔥 GOOGLE INDEXING -->
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://yourdomain.com/">
+
+<!-- 🔥 OPEN GRAPH (FACEBOOK / WHATSAPP) -->
+<meta property="og:title" content="Buy Quality Products Online | NeoStore">
+<meta property="og:description" content="Affordable products, fast delivery, and secure checkout. Shop NeoStore now!">
+<meta property="og:image" content="https://yourdomain.com/preview.jpg">
+<meta property="og:url" content="https://yourdomain.com/">
+<meta property="og:type" content="website">
+
+<!-- 🔥 TWITTER SEO -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Shop Online Easily | NeoStore">
+<meta name="twitter:description" content="Best deals on gadgets, fashion, and more. Order now!">
+<meta name="twitter:image" content="https://yourdomain.com/preview.jpg">
+
+<!-- 🔥 FAVICON -->
+<link rel="icon" href="https://yourdomain.com/favicon.ico" type="image/x-icon">
+
+<!-- 🔥 PERFORMANCE -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<!-- 🔥 GOOGLE FONT -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<!-- 🔥 STRUCTURED DATA (VERY IMPORTANT FOR GOOGLE) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Store",
+  "name": "NeoStore",
+  "url": "https://yourdomain.com",
+  "logo": "https://yourdomain.com/logo.png",
+  "sameAs": [
+    "https://facebook.com/yourpage",
+    "https://instagram.com/yourpage"
+  ],
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "NG"
+  }
+}
+</script>
+
+<!-- 🔥 PRODUCT STRUCTURE (BOOST PRODUCT SEARCH) -->
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org/",
+ "@type": "Product",
+ "name": "High Quality Product",
+ "image": "https://yourdomain.com/product.jpg",
+ "description": "Best product with premium quality.",
+ "brand": {
+   "@type": "Brand",
+   "name": "NeoStore"
+ },
+ "offers": {
+   "@type": "Offer",
+   "priceCurrency": "USD",
+   "price": "24.99",
+   "availability": "https://schema.org/InStock"
+ }
+}
+</script>
+
+<script>
+function updateSEO(product){
+  document.title = product.title + " | Buy Online - NeoStore";
+
+  const desc = document.querySelector("meta[name='description']");
+  if(desc){
+    desc.setAttribute("content", product.title + " at best price. Order now with fast delivery.");
+  }
+
+  const ogTitle = document.querySelector("meta[property='og:title']");
+  if(ogTitle){
+    ogTitle.setAttribute("content", product.title);
+  }
+
+  const ogImage = document.querySelector("meta[property='og:image']");
+  if(ogImage){
+    ogImage.setAttribute("content", product.image);
+  }
+}
+  </script>
+
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9884706884825746"
+     crossorigin="anonymous"></script>
+
+<!-- PayPal JS SDK (LIVE client-id) -->
+<script src="https://www.paypal.com/sdk/js?client-id=Aey_vJzSIErk6JUHmkIU41JQ4W1vA2FlfBNf5Vtkg7j4YLaWHkFtw4WSPI0SWiCzhaNKqPt2oGuVIF1n&components=buttons&currency=USD"></script>
+
+<style>
+  /* ====== Basic Styling ====== */
+  :root {--accent:#0ea5a4; --muted:#6b7280; --bg:#f8fafc;}
+  *{box-sizing:border-box;}
+  body{font-family:Inter,system-ui,Arial,sans-serif; margin:0; background:var(--bg); color:#111;}
+  header{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:white;box-shadow:0 2px 8px rgba(2,6,23,0.06);}
+  .logo{font-weight:700; letter-spacing:1px;}
+  nav a{margin-right:12px;color:var(--muted);text-decoration:none;}
+  .icon{cursor:pointer; margin-left:12px;}
+  main{max-width:1000px;margin:28px auto;padding:0 16px;}
+  .grid{display:grid;grid-template-columns:1fr 360px;gap:20px;}
+  .card{background:white;padding:18px;border-radius:12px;box-shadow:0 6px 18px rgba(2,6,23,0.06);}
+  .product img{width:100%;height:360px;object-fit:cover;border-radius:8px;}
+  .product h1{margin:12px 0 6px;}
+  .price{font-size:20px;color:var(--accent);font-weight:600;}
+  button.btn{background:var(--accent);color:white;padding:10px 14px;border-radius:8px;border:0;cursor:pointer;}
+  button.ghost{background:transparent;border:1px solid #e6e6e6;color:var(--muted);}
+  .product-desc{margin-top:12px;color:var(--muted);}
+  .cart-list{max-height:420px;overflow:auto;margin-top:12px;}
+  .cart-item{display:flex;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid #f3f4f6;}
+  .cart-item img{width:64px;height:64px;object-fit:cover;border-radius:6px;}
+  .qty{width:56px;}
+  .hidden{display:none;}
+  .center{display:flex;align-items:center;justify-content:center;}
+  
+  @media (max-width:880px){.grid{grid-template-columns:1fr}.product img{height:260px}}
+  
+  /* Modal & auth inputs */
+  .modal{position:fixed;inset:0;background:rgba(2,6,23,0.4);display:flex;align-items:center;justify-content:center;}
+  .modal .panel{width:360px;background:white;padding:18px;border-radius:10px;}
+  input[type=text],input[type=password],input[type=email]{width:100%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid #e5e7eb;}
+  a.link{color:var(--accent);cursor:pointer;}
+  footer{padding:20px;text-align:center;color:var(--muted);}
+
+  /* Header enhancements */
+  .left-section{display:flex;align-items:center;gap:15px;}
+  .logo{font-size:1.5rem;font-weight:bold;}
+  nav{display:flex;gap:25px;}
+  nav a{color:#111;text-decoration:none;font-size:1rem;transition:0.3s;}
+  nav a:hover{color:#f97316;}
+  
+  /* Hamburger Menu */
+  .menu-btn{display:none;font-size:1.5rem;cursor:pointer;color:#111;background:none;border:none;}
+  @media(max-width:768px){
+    .menu-btn{display:block;}
+    nav{
+      position:fixed;top:0;left:-100%;width:50%;height:50vh;background:white;
+      flex-direction:column;align-items:center;justify-content:center;transition:0.4s;
+    }
+    nav.active{left:0;}
+    .close-btn{position:absolute;top:20px;left:20px;font-size:2rem;color:#111;cursor:pointer;background:none;border:none;}
+    .close-btn.hidden{display:none;}
+  }
+  
+  /* call order*/
+
+.call-order{
+    background-color: black;
+    text-align: center;
+    color: white;
+    padding: 10px;
+}
+
+/* promo slide */
+
+
+.promo-section {
+  width: 100%;
+  overflow: hidden;
+  background: #fff;
+  position: relative;
+  padding: 10px 0;
+  margin-bottom: 10px;
+  padding-left: 5px;
+}
+
+.section {
+  width: 100%;
+  overflow: hidden;
+  background: #fff;
+  position: relative;
+  padding: 10px 0;
+  padding-left: 5px;
+  margin-top: -20px;
+}
+
+/* product slides*/
+
+.product-slider {
+  width: 100%;
+  overflow: hidden;
+  background: #fff;
+  position: relative;
+  padding: 10px 0;
+  padding-left: 15px;
+}
+
+/* --- Slider Container --- */
+.promo-cards {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+
+.promo {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+
+.promo-cards::-webkit-scrollbar { display: none; }
+
+
+/* --- Each Card --- */
+.singles {
+  flex: 0 0 auto;
+  width: 280px; 
+  border-radius: 15px;
+  overflow: hidden;
+}
+  
+.single img {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+  
+.singles img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 15px;
+}
+
+.single {
+  flex: 0 0 auto;
+  width: 100px; /* Between 250 - 350 */
+  overflow: hidden;
+
+}
+.single .slider{
+    border-radius: 5px;
+}
+
+.singlet h1 {
+  font-size: 15px;
+  text-align: center;
+  margin-bottom: -10px;
+}
+.singlet p {
+  font-size: 15px;
+  text-align: center;
+  margin-bottom: -5px;
+}
+
+.singlet {
+  position: relative; 
+  width: 200px;
+  border-radius: 15px;
+  overflow: hidden;
+  flex: 0 0 auto;
+  padding: 5px;
+  background: #fff;
+  text-align: center;
+}
+
+.singlet img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+/* 💥 Make span appear at top-right like a sale badge */
+.singlet span {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #f97316; /* orange color */
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 4px 15px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+
+.flash-sale {
+    height: 10hv;
+    background-color: red;
+    color: white;
+    margin-bottom: -20px;
+    position: relative; 
+    width: 100%;
+}
+
+
+.flash-saller {
+    height: 10hv;
+    background-color: black;
+    color: white;
+    margin-bottom: 25px;
+    position: relative; 
+    width: 100%;
+}
+
+.flash-sellers {
+    height: 10hv;
+    background-color: white;
+    color: black;
+    margin-bottom: 25px;
+    position: relative; 
+    width: 100%;
+}
+
+.deals {
+    height: 10hv;
+    background-color: black;
+    color: white;
+    margin-bottom: 45px;
+    position: relative; 
+    width: 100%;
+}
+
+
+
+h6{
+    font-size: 15px;
+    padding: 10px;
+    margin-bottom: -30px;
+}
+
+.flash-sale p {
+    font-size: 15px;
+    padding: 10px;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+.flash span{
+    position: absolute;
+  top: 30px;
+  right: 170px;
+  color: white;
+  font-size: 14px;
+  padding: 4px 15px;
+  font-weight: 500;
+    
+}
+
+.more {
+  position: absolute;
+  top: -15px;
+  right: 1px;
+  color: white;
+  font-size: 14px;
+  padding: 4px 15px;
+  font-weight: bold;
+}
+
+.more a{
+    color: white;
+}
+
+
+.product-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  background: white;
+  padding: 5px;
+  gap: 5px;
+  justify-items: center;
+}
+
+.product-row .col-1 {
+  background: #fff;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  padding-left: 3px;
+}
+
+.product-row .col-1:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.product-row img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 3px;
+}
+
+/* ✅ Mobile: 4 columns */
+@media (max-width: 768px) {
+  .product-row {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* ✅ Desktop: 6+ columns */
+@media (min-width: 1024px) {
+  .product-row {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+.col-1 h1 {
+  font-size: 15px;
+  text-align: center;
+}
+
+/*-- long product list -@-*/
+
+.products-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  background: white;
+  padding: 5px;
+  gap: 15px;
+  justify-items: center;
+}
+
+.products-row .col-1 {
+  background: #fff;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  padding-left: 3px;
+}
+
+.products-row .col-1:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+.products-row img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 3px;
+}
+
+/* ✅ Mobile: 4 columns */
+@media (max-width: 768px) {
+  .products-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ✅ Desktop: 6+ columns */
+@media (min-width: 1024px) {
+  .products-row {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+.icon a{
+  text-decoration: none;
+  color: black;
+}
+
+.logo a{
+  text-decoration: none;
+  color: black;
+}
+.btn a{
+  color: #B2BEB5;
+  text-decoration: none;
+}
+  
+
+.col-1 h1 {
+  font-size: 15px;
+  text-align: center;
+}
+
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="left-section">
+    <div class="menu-btn" id="menu-btn">&#9776;</div>
+    <div class="logo"><a href="index.html">NEOSTORE</a></div>
+  </div>
+  <nav id="nav">
+    <button class="close-btn hidden" id="close-btn">&times;</button>
+    <a href="#product">Home</a>
+    <a href="#product">Shop</a>
+    <a href="#about">About</a>
+    <a href="#about">Contact</a>
+  </nav>
+  <div style="display:flex;align-items:center">
+    <div id="user-area" class="icon" title="Sign Up / Login"><i class="fa-solid fa-user"></i> <span id="user-text-mini" style="margin-left:8px"></span></div>
+    <div style="width:12px"></div>
+    <div id="cart-btn" class="icon" title="Cart"><a href="cart.html"><i class="fa-solid fa-cart-shopping"></i></a> <span id="cart-count" style="font-weight:600;margin-left:6px;color:black;border-radius:5px;"></span></div>
+  </div>
+</header>
+
+      <main>
+  <!-- SPA pages placeholders -->
+  <section id="page-product" class="page">
+    <div class="grid">
+      <div>
+        <div class="card product">
+          <img id="product-image" src="https://ae-pic-a1.aliexpress-media.com/kf/S713063387541481fa26002920ae4505dC.jpg_960x960q75.jpg_.avif" alt="Cheapest Price 50000mah Power Bank in Nigeria and USA">
+          <h1 id="product-title">men's summer fashion</h1>
+          <div class="price" id="product-price">$9.84</div>
+          <p class="product-desc">European and American men's summer fashion cartoon print comfortable breathable round neck T-shirt outdoor city high street top</p>
+          <div style="margin-top:12px;display:flex;gap:10px">
+            <button id="add-to-cart" class="btn">Add to cart</button>
+            <button id="buy-now" class="btn ghost">Buy Now</button>
+          </div>
+        </div> 
+        <div style="margin-top:14px" class="card">
+          <h3>Product details</h3>
+          <ul style="color:var(--muted)">
+            <li>Craft of Weaving: Tatting</li>
+            <li>High-concerned chemical: None</li>
+            <li>Thickness: Thin</li>
+            <li>whether full opening: No</li>
+            <li>Pattern Type: Print</li>
+            <li>Place Of Origin: China (mainland)</li>
+            <li>Collar: O-Neck</li>
+            <li>Style: Casual</li>
+            <li>Material: POLYESTER</li>
+            <li>Applicable Season: Summer</li>
+            <li>Gender: Men</li
+          </ul>
+        </div>
+      </div>
+      
+      <div class="product-row">
+  <div class="col-1"><a href="product2.html"><img src="https://sc04.alicdn.com/kf/H003a83b019c84ac5b86ee05df0eaebd6I.png" alt="Affordable Power bank Store in Africa, American, USA, Nigeria"></a><h1>50000Mah Power bank</h1></div>
+  <div class="col-1"><img src="1000086137-min.png.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="1000086143-min.png.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="images.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="1000086143-min.png.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="1000086146-min.png.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="1000086128-min.png.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="1000086137-min.png.jpg" alt=""><h1>items name</h1></div>
+</div>
+
+   <div class="call-order">
+    CALL TO ORDER 08085995394  08109538280
+</div>
+
+<div class="flash-sellers">
+          <h6>Sponsored Products</h6>
+      <h4 class="more">
+         <a href="#">See All</a>
+      </h4>
+      </div>
+  </div>
+  
+  <div class="promo-section">
+    <div class="promo-cards" id="promoCards">
+     <div class="singlet"><img src="1000078564-min.jpg" alt="">
+     <h1>items name</h1><p>$24.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$24.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img
+ src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+       <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+       <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      </div>
+    </div>
+    
+      <div class="flash-sale">
+      <div class="flash">
+          <h6>Flash Sales</h6>
+  <p>TIME LEFT:</p><span>04h:26m:43s</span>
+      <h4 class="more">
+         <a href="#">See All</a>
+      </h4>
+      </div>
+  </div>
+  
+  <div class="promo-section">
+    <div class="promo-cards" id="promoCards">
+     <div class="singlet"><img src="1000078564-min.jpg" alt="">
+     <h1>items name</h1><p>$24.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$24.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+      <div class="singlet"><img
+ src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+       <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+       <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+      </div>
+    </div>
+    
+    
+      <div class="product-row">
+  <div class="col-1"><img src="1000078420-min.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="IMG-20251024-WA0004.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="1000078420-min.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="IMG-20251024-WA0004.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="1000078420-min.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="IMG-20251024-WA0004.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="1000078420-min.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="IMG-20251024-WA0004.jpg" alt=""><h1>items name</h1></div>
+</div>
+<div>
+   
+   
+   <div class="flash-saller">
+          <h6>Top sellers</h6>
+      <h4 class="more">
+         <a href="#">See All</a>
+      </h4>
+      </div>
+  </div>
+  
+  <div class="promo-section">
+    <div class="promo-cards" id="promoCards">
+     <div class="singlet"><img src="1000078564-min.jpg" alt="">
+     <h1>items name</h1><p>$24.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$24.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+       <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+       <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      </div>
+    </div>
+      <div class="product-row">
+  <div class="col-1"><img src="1000078420-min.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="IMG-20251024-WA0004.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="1000078420-min.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="IMG-20251024-WA0004.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="1000078420-min.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="IMG-20251024-WA0004.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="1000078420-min.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="IMG-20251024-WA0004.jpg" alt=""><h1>items name</h1></div>
+</div>
+
+     
+      <aside>
+        <div class="card">
+          <h3>Your Cart</h3>
+          <div class="cart-list" id="cart-list"></div>
+          <div style="margin-top:12px;display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div style="color:var(--muted)">Subtotal</div>
+              <div style="font-weight:700;font-size:18px" id="cart-subtotal">$0.00</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <button id="goto-cart" class="btn">Go to cart page</button>
+              <button id="checkout-now" class="btn ghost">Checkout (PayPal)</button>
+            </div>
+          </div>
+        </div>
+        
+      </aside>
+    </div>
+
+    <style>
+      #page-cart{
+        display: none;
+      }
+    </style>
+
+    
+  </section>
+  <!-- Cart Page -->
+  <section id="page-cart" class="page hidden">
+    <div class="card">
+      <h2>Your Cart</h2>
+      <div id="cart-full-list" class="cart-list"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+        <div>
+          <div style="color:var(--muted)">Total</div>
+          <div style="font-weight:700;font-size:20px" id="cart-total">$0.00</div>
+        </div>
+        <div>
+          <div id="paypal-container"></div>
+          <div style="margin-top:8px"><button id="continue-shopping" class="btn ghost">Continue shopping</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Login / Signup Page -->
+  <section id="page-login" class="page hidden">
+    <div class="card" style="max-width:480px;margin:auto">
+      <h2 id="auth-title">Sign Up</h2>
+      <form id="auth-form">
+        <input id="auth-name" type="text" placeholder="Full name (for sign up)">
+        <input id="auth-email" type="email" placeholder="Email" required>
+        <input id="auth-password" type="password" placeholder="Password" required>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button type="submit" class="btn">Submit</button>
+          <button type="button" id="auth-toggle" class="btn ghost">Switch too login</button>
+        </div>
+        <div style="margin-top:8px;color:var(--muted)">Demo: passwords stored client-side (localStorage).</div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Dashboard Page -->
+  <section id="page-dashboard" class="page hidden">
+    <div class="card" style="max-width:700px;margin:auto">
+      <h2>Dashboard</h2>
+      <div id="dashboard-welcome">Welcome</div>
+      <div style="margin-top:12px"><button id="logout-btn" class="btn ghost">Logout</button></div>
+      <div style="margin-top:12px"><button class="btn ghost"><a href="index.html"> SHOP NOW</a></div>
+    </div>
+  </section>
+      </main>
+
+  <footer class="site-footer">
+
+<div class="footer-container">
+
+<div class="footer-box">
+<h3>About Us</h3>
+<p>
+Video Reward Hub is a platform where users earn money by watching ads,
+completing tasks, and inviting friends.
+</p>
+</div>
+
+<div class="footer-box">
+<h3>Quick Links</h3>
+<ul>
+<li><a href="#">Home</a></li>
+<li><a href="#">Dashboard</a></li>
+<li><a href="#">Watch Tasks</a></li>
+<li><a href="#">Withdraw</a></li>
+</ul>
+</div>
+
+<div class="footer-box">
+<h3>Earn Money</h3>
+<ul>
+<li><a href="#">Watch Ads</a></li>
+<li><a href="#">Referral Program</a></li>
+<li><a href="#">Daily Tasks</a></li>
+<li><a href="#">Leaderboard</a></li>
+</ul>
+</div>
+
+<div class="footer-box">
+<h3>Support</h3>
+<ul>
+<li><a href="#">Help Center</a></li>
+<li><a href="#">Contact Us</a></li>
+<li><a href="#">FAQ</a></li>
+<li><a href="#">Report Issue</a></li>
+</ul>
+</div>
+
+<div class="footer-box">
+<h3>Legal</h3>
+<ul>
+<li><a href="#">Privacy Policy</a></li>
+<li><a href="#">Terms of Service</a></li>
+<li><a href="#">Cookie Policy</a></li>
+<li><a href="#">Disclaimer</a></li>
+</ul>
+</div>
+
+<div class="footer-box">
+<h3>Follow Us</h3>
+<ul>
+<li><a href="#">Facebook</a></li>
+<li><a href="#">Twitter</a></li>
+<li><a href="#">Instagram</a></li>
+<li><a href="#">Telegram</a></li>
+</ul>
+</div>
+
+</div>
+
+<div class="footer-bottom">
+<p>© 2026 Video Reward Hub. All Rights Reserved.</p>
+</div>
+
+</footer>
+
+
+<style>
+
+.site-footer{
+background:#111;
+color:#eee;
+margin-top:50px;
+}
+
+.footer-container{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+gap:25px;
+max-width:1100px;
+margin:auto;
+padding:40px 20px;
+}
+
+.footer-box h3{
+color:#fff;
+margin-bottom:10px;
+font-size:16px;
+}
+
+.col-1 h1 {
+  font-size: 15px;
+  text-align: center;
+}
+
+/*-- long product list -@-*/
+
+.products-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  background: white;
+  padding: 5px;
+  gap: 15px;
+  justify-items: center;
+}
+
+.products-row .col-1 {
+  background: #fff;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  padding-left: 3px;
+}
+
+.products-row .col-1:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+.products-row img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 3px;
+}
+
+/* ✅ Mobile: 4 columns */
+@media (max-width: 768px) {
+  .products-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ✅ Desktop: 6+ columns */
+@media (min-width: 1024px) {
+  .products-row {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+.icon a{
+  text-decoration: none;
+  color: black;
+}
+
+.logo a{
+  text-decoration: none;
+  color: black;
+}
+.btn a{
+  color: #B2BEB5;
+  text-decoration: none;
+}
+  
+
+.col-1 h1 {
+  font-size: 15px;
+  text-align: center;
+}
+
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="left-section">
+    <div class="menu-btn" id="menu-btn">&#9776;</div>
+    <div class="logo"><a href="index.html">NEOSTORE</a></div>
+  </div>
+  <nav id="nav">
+    <button class="close-btn hidden" id="close-btn">&times;</button>
+    <a href="#product">Home</a>
+    <a href="#product">Shop</a>
+    <a href="#about">About</a>
+    <a href="#about">Contact</a>
+  </nav>
+  <div style="display:flex;align-items:center">
+    <div id="user-area" class="icon" title="Sign Up / Login"><i class="fa-solid fa-user"></i> <span id="user-text-mini" style="margin-left:8px"></span></div>
+    <div style="width:12px"></div>
+    <div id="cart-btn" class="icon" title="Cart"><a href="cart.html"><i class="fa-solid fa-cart-shopping"></i></a> <span id="cart-count" style="font-weight:600;margin-left:6px;color:black;border-radius:5px;"></span></div>
+  </div>
+</header>
+
+      <main>
+  <!-- SPA pages placeholders -->
+  <section id="page-product" class="page">
+    <div class="grid">
+      <div>
+        <div class="card product">
+          <img id="product-image" src="https://ae-pic-a1.aliexpress-media.com/kf/S713063387541481fa26002920ae4505dC.jpg_960x960q75.jpg_.avif" alt="Cheapest Price 50000mah Power Bank in Nigeria and USA">
+          <h1 id="product-title">men's summer fashion</h1>
+          <div class="price" id="product-price">$9.84</div>
+          <p class="product-desc">European and American men's summer fashion cartoon print comfortable breathable round neck T-shirt outdoor city high street top</p>
+          <div style="margin-top:12px;display:flex;gap:10px">
+            <button id="add-to-cart" class="btn">Add to cart</button>
+            <button id="buy-now" class="btn ghost">Buy Now</button>
+          </div>
+        </div> 
+        <div style="margin-top:14px" class="card">
+          <h3>Product details</h3>
+          <ul style="color:var(--muted)">
+            <li>Craft of Weaving: Tatting</li>
+            <li>High-concerned chemical: None</li>
+            <li>Thickness: Thin</li>
+            <li>whether full opening: No</li>
+            <li>Pattern Type: Print</li>
+            <li>Place Of Origin: China (mainland)</li>
+            <li>Collar: O-Neck</li>
+            <li>Style: Casual</li>
+            <li>Material: POLYESTER</li>
+            <li>Applicable Season: Summer</li>
+            <li>Gender: Men</li
+          </ul>
+        </div>
+      </div>
+      
+      <div class="product-row">
+  <div class="col-1"><a href="product2.html"><img src="https://sc04.alicdn.com/kf/H003a83b019c84ac5b86ee05df0eaebd6I.png" alt="Affordable Power bank Store in Africa, American, USA, Nigeria"></a><h1>50000Mah Power bank</h1></div>
+  <div class="col-1"><img src="1000086137-min.png.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="1000086143-min.png.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="images.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="1000086143-min.png.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="1000086146-min.png.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="1000086128-min.png.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="1000086137-min.png.jpg" alt=""><h1>items name</h1></div>
+</div>
+
+   <div class="call-order">
+    CALL TO ORDER 08085995394  08109538280
+</div>
+
+<div class="flash-sellers">
+          <h6>Sponsored Products</h6>
+      <h4 class="more">
+         <a href="#">See All</a>
+      </h4>
+      </div>
+  </div>
+  
+  <div class="promo-section">
+    <div class="promo-cards" id="promoCards">
+     <div class="singlet"><img src="1000078564-min.jpg" alt="">
+     <h1>items name</h1><p>$24.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$24.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img
+ src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+       <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+       <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      </div>
+    </div>
+    
+      <div class="flash-sale">
+      <div class="flash">
+          <h6>Flash Sales</h6>
+  <p>TIME LEFT:</p><span>04h:26m:43s</span>
+      <h4 class="more">
+         <a href="#">See All</a>
+      </h4>
+      </div>
+  </div>
+  
+  <div class="promo-section">
+    <div class="promo-cards" id="promoCards">
+     <div class="singlet"><img src="1000078564-min.jpg" alt="">
+     <h1>items name</h1><p>$24.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$24.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+      <div class="singlet"><img
+ src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+       <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+       <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p><p>50 remaining</p> <span>-14</span></div>
+      </div>
+    </div>
+    
+    
+      <div class="product-row">
+  <div class="col-1"><img src="1000078420-min.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="IMG-20251024-WA0004.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="1000078420-min.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="IMG-20251024-WA0004.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="1000078420-min.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="IMG-20251024-WA0004.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="1000078420-min.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="IMG-20251024-WA0004.jpg" alt=""><h1>items name</h1></div>
+</div>
+<div>
+   
+   
+   <div class="flash-saller">
+          <h6>Top sellers</h6>
+      <h4 class="more">
+         <a href="#">See All</a>
+      </h4>
+      </div>
+  </div>
+  
+  <div class="promo-section">
+    <div class="promo-cards" id="promoCards">
+     <div class="singlet"><img src="1000078564-min.jpg" alt="">
+     <h1>items name</h1><p>$24.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$24.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+       <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078420-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+       <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      <div class="singlet"><img src="1000078564-min.jpg" alt=""><h1>items name</h1><p>$27.8⁷</p> <span>-14</span></div>
+      </div>
+    </div>
+      <div class="product-row">
+  <div class="col-1"><img src="1000078420-min.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="IMG-20251024-WA0004.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="1000078420-min.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="IMG-20251024-WA0004.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="1000078420-min.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="IMG-20251024-WA0004.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="1000078420-min.jpg" alt=""><h1>items name</h1></div>
+  <div class="col-1"><img src="IMG-20251024-WA0004.jpg" alt=""><h1>items name</h1></div>
+</div>
+
+     
+      <aside>
+        <div class="card">
+          <h3>Your Cart</h3>
+          <div class="cart-list" id="cart-list"></div>
+          <div style="margin-top:12px;display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div style="color:var(--muted)">Subtotal</div>
+              <div style="font-weight:700;font-size:18px" id="cart-subtotal">$0.00</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <button id="goto-cart" class="btn">Go to cart page</button>
+              <button id="checkout-now" class="btn ghost">Checkout (PayPal)</button>
+            </div>
+          </div>
+        </div>
+        
+      </aside>
+    </div>
+
+    <style>
+      #page-cart{
+        display: none;
+      }
+    </style>
+
+    
+  </section>
+  <!-- Cart Page -->
+  <section id="page-cart" class="page hidden">
+    <div class="card">
+      <h2>Your Cart</h2>
+      <div id="cart-full-list" class="cart-list"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+        <div>
+          <div style="color:var(--muted)">Total</div>
+          <div style="font-weight:700;font-size:20px" id="cart-total">$0.00</div>
+        </div>
+        <div>
+          <div id="paypal-container"></div>
+          <div style="margin-top:8px"><button id="continue-shopping" class="btn ghost">Continue shopping</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Login / Signup Page -->
+  <section id="page-login" class="page hidden">
+    <div class="card" style="max-width:480px;margin:auto">
+      <h2 id="auth-title">Sign Up</h2>
+      <form id="auth-form">
+        <input id="auth-name" type="text" placeholder="Full name (for sign up)">
+        <input id="auth-email" type="email" placeholder="Email" required>
+        <input id="auth-password" type="password" placeholder="Password" required>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button type="submit" class="btn">Submit</button>
+          <button type="button" id="auth-toggle" class="btn ghost">Switch too login</button>
+        </div>
+        <div style="margin-top:8px;color:var(--muted)">Demo: passwords stored client-side (localStorage).</div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Dashboard Page -->
+  <section id="page-dashboard" class="page hidden">
+    <div class="card" style="max-width:700px;margin:auto">
+      <h2>Dashboard</h2>
+      <div id="dashboard-welcome">Welcome</div>
+      <div style="margin-top:12px"><button id="logout-btn" class="btn ghost">Logout</button></div>
+      <div style="margin-top:12px"><button class="btn ghost"><a href="index.html"> SHOP NOW</a></div>
+    </div>
+  </section>
+      </main>
+
+  <footer class="site-footer">
+
+<div class="footer-container">
+
+<div class="footer-box">
+<h3>About Us</h3>
+<p>
+Video Reward Hub is a platform where users earn money by watching ads,
+completing tasks, and inviting friends.
+</p>
+</div>
+
+<div class="footer-box">
+<h3>Quick Links</h3>
+<ul>
+<li><a href="#">Home</a></li>
+<li><a href="#">Dashboard</a></li>
+<li><a href="#">Watch Tasks</a></li>
+<li><a href="#">Withdraw</a></li>
+</ul>
+</div>
+
+<div class="footer-box">
+<h3>Earn Money</h3>
+<ul>
+<li><a href="#">Watch Ads</a></li>
+<li><a href="#">Referral Program</a></li>
+<li><a href="#">Daily Tasks</a></li>
+<li><a href="#">Leaderboard</a></li>
+</ul>
+</div>
+
+<div class="footer-box">
+<h3>Support</h3>
+<ul>
+<li><a href="#">Help Center</a></li>
+<li><a href="#">Contact Us</a></li>
+<li><a href="#">FAQ</a></li>
+<li><a href="#">Report Issue</a></li>
+</ul>
+</div>
+
+<div class="footer-box">
+<h3>Legal</h3>
+<ul>
+<li><a href="#">Privacy Policy</a></li>
+<li><a href="#">Terms of Service</a></li>
+<li><a href="#">Cookie Policy</a></li>
+<li><a href="#">Disclaimer</a></li>
+</ul>
+</div>
+
+<div class="footer-box">
+<h3>Follow Us</h3>
+<ul>
+<li><a href="#">Facebook</a></li>
+<li><a href="#">Twitter</a></li>
+<li><a href="#">Instagram</a></li>
+<li><a href="#">Telegram</a></li>
+</ul>
+</div>
+
+</div>
+
+<div class="footer-bottom">
+<p>© 2026 Video Reward Hub. All Rights Reserved.</p>
+</div>
+
+</footer>
+
+
+<style>
+
+.site-footer{
+background:#111;
+color:#eee;
+margin-top:50px;
+}
+
+.footer-container{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+gap:25px;
+max-width:1100px;
+margin:auto;
+padding:40px 20px;
+}
+
+.footer-box h3{
+color:#fff;
+margin-bottom:10px;
+font-size:16px;
+}
+/////////////////////////
+// CREATE ORDER SYSTEM
+function createOrder(){
+
+  const user = currentUser();
+  if(!user){
+    alert("Login first");
+    showPage('login');
+    return;
+  }
+
+  const cart = getCart();
+  if(cart.length === 0){
+    alert("Cart is empty");
+    return;
+  }
+
+  const users = getUsers();
+
+  const order = {
+    id: "ORD-" + Date.now(),
+    buyer: user.email,
+    items: cart,
+    total: cartSubtotal(),
+    status: "pending",
+    date: new Date().toLocaleString()
+  };
+
+  // Save to buyer
+  if(!users[user.email].orders){
+    users[user.email].orders = [];
+  }
+  users[user.email].orders.push(order);
+
+  // Save globally (for admin)
+  let allOrders = JSON.parse(localStorage.getItem("neo_orders") || "[]");
+  allOrders.push(order);
+  localStorage.setItem("neo_orders", JSON.stringify(allOrders));
+
+  saveUsers(users);
+
+  localStorage.removeItem(CART_KEY);
+  renderMiniCart();
+
+  alert("Order placed successfully!");
+
+  showPage('dashboard');
+  }
+
+/*----flash sales timer---*/
+
+  // Select the countdown <span> inside your .flash-sale
+  const countdownSpan = document.querySelector('.flash-sale span');
+
+  function updateCountdownToMidnight() {
+    const now = new Date();
+
+    // Set target time to next midnight
+    const midnight = new Date();
+    midnight.setHours(24, 0, 0, 0);
+
+    // Calculate the remaining time
+    const diff = midnight - now; // milliseconds
+
+    // Convert to hours, minutes, seconds
+    const hours = Math.floor(diff / 1000 / 3600);
+    const minutes = Math.floor((diff / 1000 % 3600) / 60);
+    const seconds = Math.floor(diff / 1000 % 60);
+
+    // Display with leading zeros
+    countdownSpan.textContent = 
+      `${String(hours).padStart(2, '0')}h:${String(minutes).padStart(2, '0')}m:${String(seconds).padStart(2, '0')}s`;
+
+    // If somehow negative (past midnight), reset instantly
+    if (diff <= 0) {
+      setTimeout(startCountdown, 1000);
+    }
+  }
+
+  function startCountdown() {
+    updateCountdownToMidnight();
+    setInterval(updateCountdownToMidnight, 1000);
+  }
+
+  // Start timer when page loads
+  startCountdown();
+
+
+  
+</script>
+
+<!-- Font Awesome -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</body>
+</html>
