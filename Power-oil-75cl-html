@@ -518,10 +518,10 @@ h6{
     <div class="grid">
       <div>
         <div class="card product">
-          <img id="product-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSywD8f31Py-5_kuwjHCdAM2wW3o1q1DtklmGNRSmVRYw&s" alt="Cheapest Price 50000mah Power Bank in Nigeria and USA">
-          <h1 id="product-title">3.5L Mamador's Vegetable Oil</h1>
-          <div class="price" id="product-price">$10.84</div>
-          <p class="product-desc">Cook healthier, tastier meals with Mamador Pure Vegetable Oil 3.5L, one of Nigeria's most trusted and widely used cooking oils.</p>
+          <img id="product-image" src="https://www.pricepally.com/_next/image?url=https%3A%2F%2Fpp-new-node-medusa-prod-bucket.s3.us-east-1.amazonaws.com%2F75cl_lite-1755778942396.jpg&w=750&q=75" alt="Cheapest Price 50000mah Power Bank in Nigeria and USA">
+          <h1 id="product-title">Power Oil 7cl </h1>
+          <div class="price" id="product-price">$3.84</div>
+          <p class="product-desc">Cook healthier, tastier meals with Power Oil Pure Vegetable Oil 75cl, one of Nigeria's most trusted and widely used cooking oils.</p>
           <div style="margin-top:12px;display:flex;gap:10px">
             <button id="add-to-cart" class="btn">Add to cart</button>
             <button id="buy-now" class="btn ghost">Buy Now</button>
@@ -529,18 +529,15 @@ h6{
         </div> 
         <div style="margin-top:14px" class="card">
           <h3>Product details</h3>
-          <ul style="color:var(--muted)">
-            <li>Craft of Weaving: Tatting</li>
-            <li>High-concerned chemical: None</li>
-            <li>Thickness: Thin</li>
-            <li>whether full opening: No</li>
-            <li>Pattern Type: Print</li>
-            <li>Place Of Origin: China (mainland)</li>
-            <li>Collar: O-Neck</li>
-            <li>Style: Casual</li>
-            <li>Material: POLYESTER</li>
-            <li>Applicable Season: Summer</li>
-            <li>Gender: Men</li
+<ul style="color:var(--muted)">
+  <li>Product Name: Power Oil</li>
+  <li>Volume: 75cl</li>
+  <li>Product Type: Cooking Oil</li>
+  <li>Packaging: 75cl bottle</li>
+  <li>Suitable For: Cooking and Food Preparation</li>
+  <li>Origin: Nigeria</li>
+  <li>Storage: Store in a cool, dry place</li>
+  <li>Condition: New</li>
           </ul>
         </div>
       </div>
@@ -961,7 +958,7 @@ function showPage(name){
 const product = {
   id: 'p1',
   title: document.getElementById('product-title').textContent,
-  price: 10.84,
+  price: 3.84,
   image: document.getElementById('product-image').src
 };
 document.getElementById('product-price').textContent = '$'+product.price.toFixed(2);
