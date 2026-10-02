@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>NEOSTORE — Product / Cart / Auth Demo</title>
 
+  <!-- Paystack -->
+<script src="https://js.paystack.co/v2/inline.js"></script>
+  
 <!-- PayPal JS SDK (LIVE client-id) -->
 <script src="https://www.paypal.com/sdk/js?client-id=Aey_vJzSIErk6JUHmkIU41JQ4W1vA2FlfBNf5Vtkg7j4YLaWHkFtw4WSPI0SWiCzhaNKqPt2oGuVIF1n&components=buttons&currency=USD"></script>
 
@@ -156,6 +159,18 @@
         </div>
         <div>
           <div id="paypal-container"></div>
+
+<div style="margin-top:12px">
+    <button id="paystack-btn" class="btn" style="width:100%;">
+        Pay with Paystack
+    </button>
+</div>
+
+<div id="paystack-naira-total"
+     style="margin-top:8px;text-align:center;color:var(--muted);font-size:14px;">
+</div>
+
+          
           <div style="margin-top:8px">
               <style>
                   #continue-shopping{
@@ -375,6 +390,26 @@ const INACTIVE_MS = 10 * 60 * 1000; // 10 min
 const INACT_KEY = 'neo_last_activity_v1';
 const DELIVERY_COUNTRY_KEY = "neo_delivery_country_v1";
 
+
+  // ============================================
+// PAYSTACK / USD → NGN
+// ============================================
+
+// Change this rate whenever your USD/NGN rate changes.
+const USD_TO_NGN = 1500;
+
+function usdToNaira(usd){
+    return Math.round(usd * USD_TO_NGN);
+}
+
+function formatNaira(amount){
+    return '₦' + Number(amount).toLocaleString('en-NG', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+  }
+
+  
 // Pages
 const pages = {
   product: document.getElementById('page-product'),
@@ -409,8 +444,21 @@ document.getElementById('product-price').textContent = '$'+product.price.toFixed
 /////////////////////////
 // Cart functions
 function getCart(){ return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); }
-function saveCart(cart){ localStorage.setItem(CART_KEY, JSON.stringify(cart)); renderMiniCart(); updateDeliveryTotalDisplay(); }
-function addToCart(item){
+function saveCart(cart){
+    localStorage.setItem(
+        CART_KEY,
+        JSON.stringify(cart)
+    );
+
+    renderMiniCart();
+    updateDeliveryTotalDisplay();
+
+    if(location.hash === '#cart'){
+        renderPaystackButton();
+    }
+}
+  
+  function addToCart(item){
   const cart = getCart();
   const found = cart.find(i=>i.id===item.id);
   if(found) found.qty += 1; else cart.push({...item, qty:1});
@@ -455,7 +503,8 @@ function renderCartFull(){
   document.querySelectorAll('.remove-item').forEach(b=>b.addEventListener('click',e=>{ removeFromCart(e.target.dataset.id); renderCartFull(); }));
   document.querySelectorAll('.qty-input').forEach(inp=>inp.addEventListener('change',e=>{ const id=e.target.dataset.id; const v=parseInt(e.target.value)||0; updateQty(id,v); renderCartFull(); }));
   updateDeliveryTotalDisplay();
-  renderPayPalButton();
+renderPayPalButton();
+renderPaystackButton();
 }
 
 /////////////////////////
@@ -550,6 +599,381 @@ function checkInactivity(){
 setInterval(checkInactivity,10000);
 if(!localStorage.getItem(INACT_KEY)) touchActivity();
 
+
+  // ============================================
+// PAYSTACK CHECKOUT
+// ============================================
+
+function renderPaystackButton(){
+
+    const button = document.getElementById('paystack-btn');
+    const display = document.getElementById('paystack-naira-total');
+
+    if(!button) return;
+
+    const subtotal = cartSubtotal();
+
+    const country =
+        localStorage.getItem(DELIVERY_COUNTRY_KEY) || "Other";
+
+    const deliveryFeeUSD =
+        calculateDeliveryFee(country);
+
+    const totalUSD =
+        subtotal + deliveryFeeUSD;
+
+    const totalNGN =
+        usdToNaira(totalUSD);
+
+    // Display Naira equivalent
+    if(display){
+
+        display.innerHTML =
+            `Paystack total: <strong>${formatNaira(totalNGN)}</strong>
+             <br>
+             <small>
+                 $${totalUSD.toFixed(2)} equivalent
+             </small>`;
+    }
+
+    // Empty cart
+    if(totalUSD <= 0){
+
+        button.disabled = true;
+        button.style.opacity = "0.5";
+        button.textContent = "Cart is empty";
+
+        return;
+    }
+
+    button.disabled = false;
+    button.style.opacity = "1";
+    button.textContent = "Pay with Paystack";
+
+
+    // ========================================
+    // CLICK
+    // ========================================
+
+    button.onclick = async function(){
+
+        const user = currentUser();
+
+        if(!user){
+
+            alert("Please login before checkout.");
+
+            window.location.href =
+                "register.html";
+
+            return;
+        }
+
+
+        const cart = getCart();
+
+        if(!cart.length){
+
+            alert("Your cart is empty.");
+
+            return;
+        }
+
+
+        // Recalculate everything at payment time
+        const currentSubtotal =
+            cartSubtotal();
+
+        const currentCountry =
+            localStorage.getItem(
+                DELIVERY_COUNTRY_KEY
+            ) || "Other";
+
+        const currentDeliveryUSD =
+            calculateDeliveryFee(
+                currentCountry
+            );
+
+        const currentTotalUSD =
+            currentSubtotal +
+            currentDeliveryUSD;
+
+        const currentTotalNGN =
+            usdToNaira(
+                currentTotalUSD
+            );
+
+
+        if(currentTotalNGN <= 0){
+
+            alert("Invalid payment amount.");
+
+            return;
+        }
+
+
+        // ====================================
+        // UNIQUE PAYMENT REFERENCE
+        // ====================================
+
+        const reference =
+            "NEO-" +
+            Date.now() +
+            "-" +
+            Math.random()
+                .toString(36)
+                .substring(2,8)
+                .toUpperCase();
+
+
+        // ====================================
+        // OPEN PAYSTACK
+        // ====================================
+
+        try{
+
+            const paystack =
+                new PaystackPop();
+
+            paystack.newTransaction({
+
+                key:
+                    "pk_live_ae2ef39d24e2f001cbc716def10d3ede5148af5b",
+
+                email:
+                    user.email,
+
+                amount:
+                    currentTotalNGN * 100,
+
+                currency:
+                    "NGN",
+
+                reference:
+                    reference,
+
+                metadata: {
+
+                    userId:
+                        user.uid,
+
+                    email:
+                        user.email,
+
+                    country:
+                        currentCountry,
+
+                    subtotalUSD:
+                        currentSubtotal,
+
+                    deliveryUSD:
+                        currentDeliveryUSD,
+
+                    totalUSD:
+                        currentTotalUSD,
+
+                    totalNGN:
+                        currentTotalNGN,
+
+                    cart:
+                        JSON.stringify(cart)
+                },
+
+
+                onSuccess: async (transaction) => {
+
+                    console.log(
+                        "Paystack successful:",
+                        transaction
+                    );
+
+
+                    // =================================
+                    // CREATE ORDER ID
+                    // =================================
+
+                    const orderId =
+                        "ORD" + Date.now();
+
+
+                    // =================================
+                    // SAVE FIREBASE ORDER
+                    // =================================
+
+                    try{
+
+                        await addDoc(
+                            collection(
+                                db,
+                                "orders"
+                            ),
+                            {
+
+                                orderId:
+                                    orderId,
+
+                                paymentReference:
+                                    transaction.reference,
+
+                                paymentMethod:
+                                    "Paystack",
+
+                                paymentCurrency:
+                                    "NGN",
+
+                                userId:
+                                    user.uid,
+
+                                email:
+                                    user.email,
+
+                                items:
+                                    cart,
+
+                                subtotalUSD:
+                                    currentSubtotal,
+
+                                shippingUSD:
+                                    currentDeliveryUSD,
+
+                                totalUSD:
+                                    currentTotalUSD,
+
+                                totalNGN:
+                                    currentTotalNGN,
+
+                                country:
+                                    currentCountry,
+
+                                status:
+                                    "paid",
+
+                                createdAt:
+                                    Date.now()
+                            }
+                        );
+
+
+                        // =================================
+                        // LOCAL ORDER
+                        // =================================
+
+                        let orders =
+                            JSON.parse(
+                                localStorage.getItem(
+                                    "neo_orders"
+                                ) || "[]"
+                            );
+
+
+                        orders.push({
+
+                            id:
+                                orderId,
+
+                            paymentReference:
+                                transaction.reference,
+
+                            buyer:
+                                user.email,
+
+                            paymentMethod:
+                                "Paystack",
+
+                            currency:
+                                "NGN",
+
+                            items:
+                                cart,
+
+                            totalUSD:
+                                currentTotalUSD,
+
+                            totalNGN:
+                                currentTotalNGN,
+
+                            status:
+                                "paid"
+                        });
+
+
+                        localStorage.setItem(
+                            "neo_orders",
+                            JSON.stringify(
+                                orders
+                            )
+                        );
+
+
+                        // =================================
+                        // CLEAR CART
+                        // =================================
+
+                        localStorage.removeItem(
+                            CART_KEY
+                        );
+
+
+                        renderMiniCart();
+
+
+                        alert(
+                            "Payment successful! Your order has been placed."
+                        );
+
+
+                        // =================================
+                        // SUCCESS PAGE
+                        // =================================
+
+                        window.location.href =
+                            "success.html?order=" +
+                            encodeURIComponent(
+                                orderId
+                            );
+
+                    }catch(error){
+
+                        console.error(
+                            "Order saving error:",
+                            error
+                        );
+
+                        alert(
+                            "Payment was successful, but there was a problem saving your order. Please contact support."
+                        );
+                    }
+                },
+
+
+                onCancel: () => {
+
+                    console.log(
+                        "Paystack payment cancelled."
+                    );
+
+                    alert(
+                        "Payment was cancelled."
+                    );
+                }
+
+            });
+
+        }catch(error){
+
+            console.error(
+                "Paystack error:",
+                error
+            );
+
+            alert(
+                "Unable to open Paystack checkout."
+            );
+        }
+    };
+}
+
+  
 //////////////////////////
   function renderPayPalButton(){
   const container = document.getElementById('paypal-container');
