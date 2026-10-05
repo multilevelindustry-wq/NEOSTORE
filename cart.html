@@ -1080,20 +1080,142 @@ menuBtn.addEventListener('click',()=>{ nav.classList.add('active'); closeBtn.cla
 closeBtn.addEventListener('click',()=>{ nav.classList.remove('active'); closeBtn.classList.add('hidden'); });
 document.querySelectorAll('nav a').forEach(link=> link.addEventListener('click',()=>{ nav.classList.remove('active'); closeBtn.classList.add('hidden'); }));
 
-/////////////////////////
+
+
+  /////////////////////////
 // Delivery Fee
+
 function calculateDeliveryFee(country){
+
   const cart = getCart();
-  const itemCount = cart.reduce((s,i)=>s+i.qty,0); if(itemCount===0) return 0;
-  const c = (country||'').trim().toLowerCase();
-  let feePer2= 2.01;
-  if(['ghana','nigeria','kenya','south africa','cameroon','tanzania','uganda','zambia','ethiopia','africa'].some(x=>c.includes(x))) feePer2=1.98;
-  else if(['france','germany','italy','spain','uk','england','europe','sweden','netherlands'].some(x=>c.includes(x))) feePer2=18;
-  else if(['china','japan','india','thailand','philippines','asia','indonesia','malaysia','vietnam','pakistan'].some(x=>c.includes(x))) feePer1=11;
-  else if(['usa','united states','canada','mexico','america','brazil','argentina'].some(x=>c.includes(x))) feePer2=12;
-  else if(['turkey','greece','cyprus','mediterranean','israel','lebanon','morocco','tunisia','egypt'].some(x=>c.includes(x))) feePer2=22;
-  return feePer2 * Math.ceil(itemCount/1);
-}
+
+  const itemCount = cart.reduce(
+    (s,i) => s + i.qty,
+    0
+  );
+
+  if(itemCount === 0) return 0;
+
+  const c = (country || '')
+    .trim()
+    .toLowerCase();
+
+  // Default delivery prices
+  let oneItemFee = 1.01;
+  let twoItemFee = 1.98;
+
+
+  // Africa
+  if([
+    'ghana',
+    'nigeria',
+    'kenya',
+    'south africa',
+    'cameroon',
+    'tanzania',
+    'uganda',
+    'zambia',
+    'ethiopia',
+    'africa'
+  ].some(x => c.includes(x))){
+
+    oneItemFee = 1.01;
+    twoItemFee = 1.98;
+
+  }
+
+
+  // Europe
+  else if([
+    'france',
+    'germany',
+    'italy',
+    'spain',
+    'uk',
+    'england',
+    'europe',
+    'sweden',
+    'netherlands'
+  ].some(x => c.includes(x))){
+
+    oneItemFee = 9;
+    twoItemFee = 18;
+
+  }
+
+
+  // Asia
+  else if([
+    'china',
+    'japan',
+    'india',
+    'thailand',
+    'philippines',
+    'asia',
+    'indonesia',
+    'malaysia',
+    'vietnam',
+    'pakistan'
+  ].some(x => c.includes(x))){
+
+    oneItemFee = 6;
+    twoItemFee = 11;
+
+  }
+
+
+  // USA / North & South America
+  else if([
+    'usa',
+    'united states',
+    'canada',
+    'mexico',
+    'america',
+    'brazil',
+    'argentina'
+  ].some(x => c.includes(x))){
+
+    oneItemFee = 6;
+    twoItemFee = 12;
+
+  }
+
+
+  // Mediterranean
+  else if([
+    'turkey',
+    'greece',
+    'cyprus',
+    'mediterranean',
+    'israel',
+    'lebanon',
+    'morocco',
+    'tunisia',
+    'egypt'
+  ].some(x => c.includes(x))){
+
+    oneItemFee = 11;
+    twoItemFee = 22;
+
+  }
+
+
+  // ==========================================
+  // CALCULATE BY PAIRS
+  // ==========================================
+
+  const pairs = Math.floor(itemCount / 2);
+  const remaining = itemCount % 2;
+
+  const deliveryFee =
+    (pairs * twoItemFee) +
+    (remaining * oneItemFee);
+
+
+  return deliveryFee;
+  }
+
+  
 
 function getOrAskCountry(){
   let country = localStorage.getItem(DELIVERY_COUNTRY_KEY);
