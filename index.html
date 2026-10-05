@@ -2177,4 +2177,160 @@ setInterval(()=>{
 
   // If neither input found, attempt to find inputs by common class names
   if(!desktopInput && !mobileInput){
-    const possibleInputs = document.querySelectorAll('input[type="search"], input[placeholder*="Search"], input[placeholder*="search
+    const possibleInputs = document.querySelectorAll('input[type="search"], input[placeholder*="Search"], input[placeholder*="search"]');
+    if(possibleInputs && possibleInputs.length){
+      possibleInputs.forEach(inp=>{
+        const ul = ensureResultsList(inp, ['searchResultsAuto']);
+        setupInput(inp, ul);
+      });
+    }
+  }
+
+  // expose helper for adding new products at runtime (optional)
+  window.__NEOSTORE_addProduct = function(prod){
+    if(prod && prod.name && prod.link) productList.push(prod);
+  };
+
+})(); 
+/* ---------- END PATCH ---------- */
+
+
+
+  // promo slide
+
+// ---------------- Auto Slide + Pause + Scrollable ----------------
+const slider = document.getElementById("promoCards");
+let speed = 0.8; // lower = slower, higher = faster
+let running = true;
+
+function autoScroll() {
+  if (running) {
+    slider.scrollLeft += speed;
+    // when reach end, restart from beginning
+    if (slider.scrollLeft + slider.clientWidth >= slider.scrollWidth) {
+      slider.scrollLeft = 0;
+    }
+  }
+  requestAnimationFrame(autoScroll);
+}
+
+// Start auto sliding
+requestAnimationFrame(autoScroll);
+
+// Pause when hover or touch
+slider.addEventListener("mouseenter", () => running = false);
+slider.addEventListener("mouseleave", () => running = true);
+slider.addEventListener("touchstart", () => running = false, { passive: true });
+slider.addEventListener("touchend", () => running = true, { passive: true });
+  
+  
+  
+
+
+
+/*----flash sales timer---*/
+
+  // Select the countdown <span> inside your .flash-sale
+  const countdownSpan = document.querySelector('.flash-sale span');
+
+  function updateCountdownToMidnight() {
+    const now = new Date();
+
+    // Set target time to next midnight
+    const midnight = new Date();
+    midnight.setHours(24, 0, 0, 0);
+
+    // Calculate the remaining time
+    const diff = midnight - now; // milliseconds
+
+    // Convert to hours, minutes, seconds
+    const hours = Math.floor(diff / 1000 / 3600);
+    const minutes = Math.floor((diff / 1000 % 3600) / 60);
+    const seconds = Math.floor(diff / 1000 % 60);
+
+    // Display with leading zeros
+    countdownSpan.textContent = 
+      `${String(hours).padStart(2, '0')}h:${String(minutes).padStart(2, '0')}m:${String(seconds).padStart(2, '0')}s`;
+
+    // If somehow negative (past midnight), reset instantly
+    if (diff <= 0) {
+      setTimeout(startCountdown, 1000);
+    }
+  }
+
+  function startCountdown() {
+    updateCountdownToMidnight();
+    setInterval(updateCountdownToMidnight, 1000);
+  }
+
+  // Start timer when page loads
+  startCountdown();
+
+
+/////////////////////////
+// CREATE ORDER SYSTEM
+function createOrder(){
+
+  const user = currentUser();
+  if(!user){
+    alert("Login first");
+    showPage('login');
+    return;
+  }
+
+  const cart = getCart();
+  if(cart.length === 0){
+    alert("Cart is empty");
+    return;
+  }
+
+  const users = getUsers();
+
+  const order = {
+    id: "ORD-" + Date.now(),
+    buyer: user.email,
+    items: cart,
+    total: cartSubtotal(),
+    status: "pending",
+    date: new Date().toLocaleString()
+  };
+
+  // Save to buyer
+  if(!users[user.email].orders){
+    users[user.email].orders = [];
+  }
+  users[user.email].orders.push(order);
+
+  // Save globally (for admin)
+  let allOrders = JSON.parse(localStorage.getItem("neo_orders") || "[]");
+  allOrders.push(order);
+  localStorage.setItem("neo_orders", JSON.stringify(allOrders));
+
+  saveUsers(users);
+
+  localStorage.removeItem(CART_KEY);
+  renderMiniCart();
+
+  alert("Order placed successfully!");
+
+  showPage('dashboard');
+  }
+
+
+window.addEventListener("scroll", () => {
+  const scrollY = window.scrollY;
+  document.querySelector(".ad-top").style.display = scrollY < 300 ? "block" : "none";
+  document.querySelector(".ad-middle").style.display = (scrollY >= 300 && scrollY < 1000) ? "block" : "none";
+  document.querySelector(".ad-bottom").style.display = scrollY >= 1000 ? "block" : "block";
+});
+
+  
+
+
+  
+</script>
+
+<!-- Font Awesome -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</body>
+</html>
