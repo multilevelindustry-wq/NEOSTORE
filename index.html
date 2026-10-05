@@ -969,4 +969,321 @@ h6{
 }
 
 /* Text */
-.t
+.text{
+  color:#fff;
+  z-index:2;
+  max-width:70%; /* ✅ prevents overflow */
+}
+
+.title{
+  font-size:18px;
+  font-weight:bold;
+}
+
+.sub{
+  color:orange;
+  font-size:13px;
+}
+
+/* Button */
+.btn{
+  background:orange;
+  color:#000;
+  padding:8px 16px;
+  border-radius:5px;
+  font-weight:bold;
+  cursor:pointer;
+  z-index:2;
+  animation:pulse 1.5s infinite;
+  white-space:nowrap; /* ✅ prevents breaking */
+}
+
+@keyframes pulse{
+  0%{transform:scale(1);}
+  50%{transform:scale(1.1);}
+  100%{transform:scale(1);}
+}
+
+/* Badge */
+.badge{
+  position:absolute;
+  top:10px;
+  right:20px;
+  background:red;
+  color:#fff;
+  padding:5px 10px;
+  font-size:12px;
+  animation:blink 1s infinite;
+  z-index:2;
+}
+
+@keyframes blink{
+  0%,100%{opacity:1;}
+  50%{opacity:0;}
+  }
+
+
+  
+</style>
+</head>
+<body>
+
+<div class="banner">
+
+  <div class="slides" id="slides">
+
+    <!-- 1 -->
+    <div class="slide">
+      <div class="text">
+        <div class="title">BLACK FRIDAY MEGA SALE</div>
+        <div class="sub">Up to 80% OFF – Today Only!</div>
+      </div>
+      <div class="btn">SHOP NOW</div>
+      <div class="badge">LIVE</div>
+    </div>
+
+    <!-- 2 -->
+    <div class="slide">
+      <div class="text">
+        <div class="title">⚡ FLASH DEALS END SOON</div>
+        <div class="sub">Hurry! Prices increase in a few hours</div>
+      </div>
+      <div class="btn">GRAB DEAL</div>
+      <div class="badge">HOT</div>
+    </div>
+
+    <!-- 3 -->
+    <div class="slide">
+      <div class="text">
+        <div class="title">🎁 BUY MORE, SAVE MORE</div>
+        <div class="sub">Extra discounts when you shop today</div>
+      </div>
+      <div class="btn">START SAVING</div>
+      <div class="badge">BONUS</div>
+    </div>
+
+    <!-- 4 -->
+    <div class="slide">
+      <div class="text">
+        <div class="title">🚀 LIMITED STOCK ALERT</div>
+        <div class="sub">Best-selling items almost sold out!</div>
+      </div>
+      <div class="btn">BUY FAST</div>
+      <div class="badge">URGENT</div>
+    </div>
+
+  </div>
+
+</div>
+
+  
+<header>
+  <div class="left-section">
+    <div class="menu-btn" id="menu-btn">&#9776;</div>
+    <div class="logo"><a href="index.html">ZONGO</a></div>
+  </div>
+  
+  <!-- 🔍 Search Bar (Desktop) -->
+      <div class="search-bar desktop-search">
+        <input type="text" id="search-input" placeholder="Search for products, categories, and more..." />
+        <button id="search-btn"><i class="fa-solid fa-search"></i></button>
+      </div>
+      
+  
+  <nav id="nav">
+    <button class="close-btn hidden" id="close-btn">&times;</button>
+    
+    <a href="#cooking-oils">Cooking Oils</a>
+    <a href="#vegetables">Vegetables</a>
+    <a href="#fruits">Fruits</a>
+    <a href="#snacks">Snacks</a>
+    <a href="#Drinks">Drinks</a>
+  </nav>
+  
+  <div style="display:flex;align-items:center">
+    <div id="user-area" class="icon" title="Sign Up / Login">  <a href="register.html">
+        <i class="fa-solid fa-user"></i>
+    <span id="user-text-mini" style="margin-left:8px"></span></a></div>
+    <div style="width:12px"></div>
+    
+    <div id="cart-btn" class="icon" title="Cart"><a href="cart.html"><i class="fa-solid fa-cart-shopping"></i></a> <span id="cart-count" style="font-weight:600;margin-left:6px;color:black;border-radius:5px;"></span></div>
+  </div>
+</header>
+
+<!-- 🔍 Mobile Search Box (Below Header) -->
+  <div class="mobile-search">
+    <input type="text" id="mobile-search-input" placeholder="Search products..." />
+    <i class="fa-solid fa-search search-icon"></i>
+  </div>
+
+<main>
+  <!-- SPA pages placeholders -->
+  <section id="page-product" class="page">
+      
+      <style>
+          #page-product{
+              display: none;
+          }
+      </style>
+      
+    <div class="grid">
+      <div>
+        <div class="card product">
+          <img id="product-image" src="https://ae-pic-a1.aliexpress-media.com/kf/S713063387541481fa26002920ae4505dC.jpg_960x960q75.jpg_.avif" alt="product image">
+          <h1 id="product-title"></h1>
+          <div class="price" id="product-price">$$9.84</div>
+          <p class="product-desc">High quality product. Use the Add to cart button to store this item in your cart. Cart persists across pages and sessions.</p>
+          <div style="margin-top:12px;display:flex;gap:10px">
+            <button id="add-to-cart" class="btn">Add to cart</button>
+            <button id="buy-now" class="btn ghost">Buy Now</button>
+          </div>
+        </div>
+        <div style="margin-top:14px" class="card">
+          <h3>Product details</h3>
+          <ul style="color:var(--muted)">
+            <li>Weight: 200g</li>
+            <li>Made with care</li>
+            <li>30-day returns</li>
+          </ul>
+        </div>
+      </div>
+      <aside>
+        <div class="card">
+          <h3>Your Cart</h3>
+          <div class="cart-list" id="cart-list"></div>
+          <div style="margin-top:12px;display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div style="color:var(--muted)">Subtotal</div>
+              <div style="font-weight:700;font-size:18px" id="cart-subtotal">$0.00</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <button id="goto-cart" class="btn">Go to cart page</button>
+              <button id="checkout-now" class="btn ghost">Checkout (PayPal)</button>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+  <!-- Cart Page -->
+  <section id="page-cart" class="page hidden">
+         <style>
+          #page-cart{
+              display: none;
+          }
+      </style>
+    <div class="card">
+      <h2>Your Cart</h2>
+      <div id="cart-full-list" class="cart-list"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+        <div>
+          <div style="color:var(--muted)">Total</div>
+          <div style="font-weight:700;font-size:20px" id="cart-total">$0.00</div>
+        </div>
+        <div>
+          <div id="paypal-container"></div>
+          <div style="margin-top:8px"><button id="continue-shopping" class="btn ghost">Continue shopping</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<style>
+          #page-login{
+              display: none;
+          }
+      </style>
+
+  <!-- Login / Signup Page -->
+  <section id="page-login" class="page hidden">
+    <div class="card" style="max-width:480px;margin:auto">
+      <h2 id="auth-title">Sign Up</h2>
+      <form id="auth-form">
+        <input id="auth-name" type="text" placeholder="Full name (for sign up)">
+        <input id="auth-email" type="email" placeholder="Email" required>
+        <input id="auth-password" type="password" placeholder="Password" required>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button type="submit" class="btn">Submit</button>
+          <button type="button" id="auth-toggle" class="btn ghost">Switch to Login</button>
+        </div>
+        <div style="margin-top:8px;color:var(--muted)"></div>
+      </form>
+    </div>
+  </section>
+
+
+<style>
+          #page-dashboard{
+              display: none;
+          }
+      </style>
+  <!-- Dashboard Page -->
+  <section id="page-dashboard" class="page hidden">
+    <div class="card" style="max-width:700px;margin:auto">
+      <h2>Dashboard</h2>
+      <div id="dashboard-welcome">Welcome</div>
+      <div style="margin-top:12px"><button id="logout-btn" class="btn ghost">Logout</button></div>
+      <div style="margin-top:12px"><button class="btn ghost"> <a href="index.html">SHOP NOW</a></button></div>
+    
+    
+    </div>
+  </section>
+</main>
+
+<div id="modal-root" class="hidden"></div>
+
+<div class="call-order">
+    CALL TO ORDER 08085995394  08109538280
+</div>
+<div class="promo-section">
+    <div class="promo-cards" id="promoCards">
+      <div class="singles"><a href="apparel.html"><img src="https://www.image2url.com/r2/default/images/1791140526604-faa9a024-32fb-461d-893b-063689071939.jpg" alt=""></a></div>
+      <div class="singles"><a href="Electronics.html"><img src="https://www.image2url.com/r2/default/images/1791140621395-30068c04-e27e-4280-b422-85b72640ab39.jpg" alt=""></a></div>
+      <div class="singles"><a href="Groceries.html"><img src="https://www.image2url.com/r2/default/images/1791141824195-abdfdfec-5778-47c2-8ae1-f94307f690bd.jpg" alt=""></a></div>
+      <div class="singles"><a href="femalewear.html"><img src="https://www.image2url.com/r2/default/images/1791140763983-793cb6b7-cc9c-4daf-aa07-1a8c9a968723.jpg" alt=""></a></div>
+      <div class="singles"><a href="mencloths.html"><img src="https://www.image2url.com/r2/default/images/1791203718684-7c39d42d-8a6e-4957-905a-b8643ed873cf.jpg" alt=""></a></div>
+      <div class="singles"><a href="shoe.html"><img src="https://www.image2url.com/r2/default/images/1791140937869-cf50715c-5444-49d4-9a86-993f118d3ced.jpg" alt=""></a></div>
+      <div class="singles"><a href="homeapp.html"><img src="https://www.image2url.com/r2/default/images/1791141013887-32edd122-ae2f-4d7a-bbd2-28e9594a3e11.jpg" alt=""></a></div>
+       <div class="singles"><a href="automobile.html"><img src="https://www.image2url.com/r2/default/images/1791141098290-745ea7e1-1b46-4358-a10d-744dab40efbc.jpg" alt=""></a></div>
+       <div class="singles"><a href="accessory.html"><img src="https://www.image2url.com/r2/default/images/1791141174750-17499abd-7942-4309-9878-00bd805ee836.jpg" alt=""></a></div>
+       <div class="singles"><a href="powerbank.html"><img src="https://ng.jumia.is/cms/0-5-TechWeek/2026/CPR/techweek-jara/660x330.jpg" alt=""></a></div>
+       <div class="singles"><a href="kids.html"><img src="https://ng.jumia.is/cms/0-1-weekly-cps/0-2026/JBP-ADV/0-0-1-brand-days/March/28-unilever/660x330_1.png" alt=""></a></div>
+       <div class="singles"><a href="books.html"><img src="https://ng.jumia.is/cms/0-1-weekly-cps/0-2026/Fashion-push/Mens-fashion/660x330.jpg" alt=""></a></div>
+       <div class="singles"><a href="phonestore.html"><img src="https://ng.jumia.is/cms/0-1-weekly-cps/0-2026/0-3-march/Phone-plug/660x330.jpg" alt=""></a></div>
+       <div class="singles"><a href="Agriculture.html"><img src="https://ng.jumia.is/cms/0-1-weekly-cps/0-2026/March/Easter/Mobile-Homepage-Slider_-660x330.gif" alt=""></a></div>
+      </div>
+     </div>
+
+    <!-- Progress Line -->
+    <div class="slide-progress">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+  </div>
+       <div class="section">
+    <div class="promo" id="promoCards">
+     <div class="single"><a href="product1.html"><img src="https://ng.jumia.is/cms/0-0-0-sandbox/thumbnails/awoof_220x220.png" alt=""></a></div>
+      <div class="single"><a href="product2.html"><img src="https://ng.jumia.is/cms/0-0-0-sandbox/thumbnails/clearance_220x220.png" alt=""></a></div>
+      <div class="single"><a href="product3.html"><img src="1000088759-min.png.jpg" alt=""></a></div>
+      <div class="single"><a href="product4.html"><img src="https://sc04.alicdn.com/kf/H8179eff7209143c2bd231c191b7a374bn.jpg" alt=""></a></div>
+      <div class="single"><a href="product5.html"><img src="1000088143-min.png.jpg" alt=""></a></div>
+      <div class="single"><a href="product6.html"><img src="1000088752-min.png.jpg" alt=""></a></div>
+      <div class="single"><a href="product7.html"><img src="1000088142-min.png.jpg" alt=""></a></div>
+       <div class="single"><a href="product8.html"><img src="https://ae-pic-a1.aliexpress-media.com/kf/Se170f93d2b3e4d7691968f463046328bA.jpg_960x960q75.jpg_.avif" alt=""></a></div>
+      <div class="single"><a href="product9.html"><img src="1000088141-min.png.jpg" alt=""></a></div>
+         </div>
+       </div>
+       
+         <div class="flash-sale">
+      <div class="flash">
+          <h6>Flash Sales</h6>
+  <p>TIME LEFT:</p><span>04h:26m:43s</span>
+      <h4 class="more">
+         <a href="#">See All</a>
+      </h4>
+      </div>
+  </div>
+  
+  <div class="promo-section">
+    <div class="promo-cards" id="promoCards">
+     <div class="singlet"><a href="power-oil-75cl.html"><img src="https://www.pricepally.com/_next/image?url=https%3A%2F%2Fpp-new-node-medusa-prod-bucket.s3.us-east-1.amazonaws.com%2F75cl_lite-1755778942396.jpg&w=750&q=75" alt="Cheap and Affordable Vegetabe oil in Nigeria, Lagos, Abuja and 36 state"></a><h1>Power Oil 75cl</h1><p>$3.01</p><p>2.03k+ Sold</p> <span>-32</span></div>
+      <div class="singlet"><a href="big-bullrice50kg.html"><img src="data:image/webp;base64,UklGRmoeAABXRUJQVlA4IF4eAABwhQCdASoAAQABPnU2lkgkoyIhpvSrSJAOiUL07XTw6OxvpJ91/vvPC5b71/YOoZ+77vIyXYt/B9Y3+y9WnmEfqz6g/SN/af+T6hf2c/bD3iv956zPQL/sP+J60b0B/249OX9x/hs/uP/N9Kb//38DsB8+fwD3F+LjBnat9tf4nrp7ZfkRqI+uf85wTu7eYL7DfTf+f6Z803xT7AH879BPAX+2/739i/gD/Pn7Be8X/peUj669gz9fPTn9k/7y+zV+4xpkrTqcgxAiG+mcnl36NpnyHGMT3yZN/8UT6l7vQ4eRiChHFCosa8MobfOi1dXqRDijAGByuCNM/fanwVEcz+J0aSLGDO0C93HQV2mGavvHJ9I5yM4LhuS8aD1ib+5fgI6R7MT34jo6c7LTQCgHFdDeIxHqyf/vZ3rlZuACoBP01Q4bsCkk2fPBmtVjxT6aiWFkBhvNLcWsxCWb8PVBZqRfReAQco+m5uO/29Mc+ldh2GbTNTzc0KdZGUDIkec5tbdaw1Obb5yUwbAkXTb7zuCyHrdODZVlHniM5ny+kzdImIPjOnAAYm92Lfsrr24qnrLO9c/oAgJld01a8c/HsISiWFI3+84nbUvVi9L0t5u7tv7MYkmDP70O7OBp2DT+UQaXdgU21t2w4fw8Io9euY+XfyiJ4MV+CzoONzy8nVwFoohFKI6UyOF/w5EFYMPbVQD4nkXgoyL/1OZbN5psxeUv1CjhzJ5mFxHhXZP5iycvhcgqqY7G/2Ahy0W1xCU2SNFAtB/7qi4ODMVBs7xc4YVLXfLG4xu4/Dq5otU873sXKooIPB3sqBp/iiJNOrA6iQun/na1Ml2j9bwyXBr97dTkj+8+zB7n/+zI0lujwbdHIEpBXamd2te4B0MmIA7G1bhlkl+1BV14hfSP+pg9YKO80/eSGSw2ajjZsQk66lG2Z6FNWFkBbTtUK3dxv5v8xwiW/Ae3oT7cXSRcxVQMsiKdrtn+jXx85skzFzNo6H9XiDr03tBvMZvN3AOBHy60HJlHxdb4EuJ2/sct7kU+jhtVroBYv27o2lzegd6JzZMSVcs9AkAj/2DpzNtuQZ0BF1Yksn23y29idACJLwvgmE++boXW0sPgZ3XtEoer+v599VdFJW13f8oxsRQ2zwpo5IVPEx6lFv7X9B1+9qW1uOeVOo2SrDOPKv6fL0IXjgMsq2eImGxbXpZf8u7CrF0xJSRHSKYNAvYJqG+VVfz4kkLRSEB6BuO3YQ0CR7UKGaTHOhKAeHqqugeQd6mLdJV6ctvfeIlDs7jg0jG/Cuz6tg3fX2zxAuaUBYGyX6kJsa1ZiErIpLx7fmc5aH3dI0+o/yQWtMkBVLGMBGxvzanOVjtPvDUsgcq7Lo/IrZAK3SxuaZkx1WPdclzDQ+BuzWjvxv70U+8aOTL/hKRFU85mLMXkAAD++7beeQrUwlW8u4LHRcPZSkoI94V2PzdzcWuDv2HdtPrdrAA/ITrBV0R+PAloMzRtKlvJVTozw9ABJ+S5jB5Dkn7qzfDsV1E5JJ6G9Mrx2NQUmbngb/blHyLDQAHMrkMYgMUpXbWdju+ic621aXcnVB+yuoZ8zo5IsHscUR0QJS3dnWPJfQmSnftrV1G4w+CPcfquCUw3pzRBMloXj23aATvR/CRb11ZOCJWQLS+KXZYsY71bHT94GCY5zcHHgcRa31ESc4XUTcT4KiPZHToXs1CRafnM1huk3LOdd5w8v2j+SOC6ejy2NgpY2jTa1U6zWn/nhHqCfj+zpssEcyBtCmp2PfjNEANjt2Hrlibe6XFuV2OIjJj4bceanIv6cWwbeqTNRXz1mpuuS/KbjQ8Ll7cJkNzZjd7HIYZJdPHlVi8MhMC5NRIJcR1ypjHhlUrFkBD9ksM95gJdOnwy/ziYHcHjO6RgsmVPX5yo2EPALMpRSLY/X2z+EAfx9FIrEMMt+cvzrgqpNcmIsuog/b9mze/l5NOazY7ajyzHF7Fg5Sk5qtscAx4MDgFjIdUarX9OEBLWXDHdXzF+SYYelLr7y6uGOZ4Eaw2SMQcAii+wP4rhQyo2W/3CbdkpIj2pRXxxh1QmjBAbPEO+e3dQ+1A0DkOWE7uzvoVs1bGczYhCU1Ja0yLaiNpEA2P4512mOpD2LnFCqaXcB5ZNtr5f5Nv83THZtFNaY0wD6rjigv7oKYn/Ms8TFBKswBUPXXFGrBntZXVdPlG3A0dgCl1S955SREAfDczEXhw3RgJJezkbh9clpVohX9F51XlKasIKs8mNwsdClBWOEtM6sUtU4SpP6H9VERH08aoT6P8HkBxqC8UBs4mb3pQ7Gi3p8E2Dvn244DsAWcsWBjO7yeH50o8ozVw+ngC/NjMfGgVuAm8UPW+A+TSE8W2oWh9aDF9X1caHKsirtbtwzoGQkFub+37ARxW7MZoCLZyBu8LNW2i0kuI/VcgY7+LgDvk71I3/26B4GiiS68w0Uab3MqlYFXV+rzV3yuf90Kil5FD1ZtGWAKIoSoRi591+i13fCXM7cPNye1GWk0U8lWjtO/fQqmYMd0Gty1NKpZiMUaL43FYP37zFGPfT3rybjdXQHfhUgIj8vKs9STWjxLpvKXkMQJa1hK0PDQbJHSDQiYupxjZ+PzuM7/3GUKP4Z4bnTBdil0vpOJy415BP7P+ty+YfFLk9sJ1Jgs3TFrguqPWyDoeJ0BhRLyTHwJrU/d/cG9jj/X39Zhwszy2En23FoJ8NBgBWczcNMHoyqyGgiViHAdrucz5wC4Jm0AW8LKEv+fP4z4t6H3+DfBqQSfzo4iopNOFNv7T4K7csAG1GYcIN4S3MqsK2bj7u8Iep0Jsbw2eC5wBIqhHso+WVN+tSb+16tuKMBdMKDCzP70XkETzvfD82N5McRCz3PmpNeiZMEbb+8Ajpq753rmSu0E1y55MLmWhUy+LgOKDf1vhGAJspF9hqnNGbUBzZkXw7U2CxJF76L72E2UkE/0JrlD2nE5rwv0loPfHfZDhby8PqdlfLLJtbyzxyhrP/5hmtYnX/1zvEQnXzHHwii/yWYAkS/X2+cSr1Zrv5FTPFikaPga0iBYvAyiuTWvgBrh79fvNydr84P9bpjKUsNp/iAjxCe5dsWPu6IU2Gr5hTPW3LmXHYFnl1BheRoKE/8JPLbqxiAQhcI5njqiwaLkcNVOLP7cUGNmjgT2orOEoIJPp9ZXQSHZf4GmVWRt/uM1dXskyXjWpjQzG9z6S7dIaMMSlCBpzo3AcbhSAfESZkW7ALEQ1pLW/6bQfKVTPbuwEclm2qtuv3HTf0R+x76OCQ8ahi47FgFT1AwykYoZI/ubILcOBYTlarbLCYX79zawbuefIwGCUh5Jw0Rmv5EqvbooU+GfKor23E37+v5C+r6wefFpHYI556tBkBtsKgMZCCPUEjcTSpAxz3v8Z9dPwROuMLmuawVbabBCvn+4VSMfztbWjuHyjF4EbAUBzbAIQgAav4w+WpUpmzM4vhBnQo3y/fIoO0CHtu3YpHO+W0ax1Uq9cNqdSup4i5vBCrd7W8huY/o9O1LxD++1b649sb84ceFsaRiO3pGH7CklPa/ax+4I0voQyN2iFu7Rk3i9spKjzvMfc7+GHGzfJ7XkxwPP+rk0kFZPQ3psw/s6UaVFpdHUenqkivNSz6yxBWrYsFv6JO6R3conN2bp0HOZlT9onpcZ9e/FPQ9O93w9KuS+ODPw6IeuNOZT5de1Dxbq76dkA+k4Zy/wkzJKohd0UW96q5wYzeoZvpEzu/lw9nYa/hr3ob2r8eO43653HeXZvWzNZj5dF0caB3JONMWH5fZlHL6wVcwgzxHvoYweMvNOT1t6TLpswE9TyaQ/Qn9+GNvHt6/ETff+rSsk5wpvuJ6yZ1yODPopS9Y84a0XcuuyhHxT40v+SA3K8QjTg+64PI+gNqIpR/+FtxcPOyY/UHFiMYKZB9l6G+l0+kgPx3hW/ZA9aXXf8/SlYZAr2Fd6TLWvEupt/TqISGQgMEB6qzYOvMFexvjC+OoTrJRyW+l4/G67rscSL/Cd4IfNNN2NQ3eG/EC8UXn0157pket36HVSZaYoOj2C5oRdVoirGgHS35HGgBny6P6J9tmpSJuJ4eWq0qGCOmwqQ1PMRxnIYNtct8a0Wv6k5kZeX3U1kTBlhsvrHxUaqsnQL7jHQl9mkUQO58q2DY6EYn2yK4EcZ9V3bW+TZATCTlM+BHydtzfNysl2oIZmXSLqCPg3A3FIXORu9EMa5oN48inFe9Ha1gnF3598F7GhGYucAiJV+EfUAoe5aEKXhgT0x33xxf3xHMnXKPaVTM6K5sJIFBsfTx1sEBQ3azQ9QxRZqIoPslp2IXd9yHdPCNKv/rn8Ic9GayrUi2QWgZ2GlcOr+Ki3aSZtreIv3jNgOUkqwiJpMqfUbTM8KhU/UWvzLMQjqSmQ9EVoBais/KLJsCFN4AoleCk8X3SJOBjuMOvKO/uxQGkNZM52dHzj35A232ht0wNm/hcQHKzybG+6l/szb+FbKg+FdJJVf6pVvKxfP1+zufThsMJO7X92TTmcVrsHOrApiYGOHnPi4lofB8bbfBXbZTqz5T/xfeGBtQqBNgqRFj6yFo0FZImOmRMY7P2GKG1BhuZtbxsBlkJjBXklbSm1B1mVXOpcivnALFKxd0OqlhlH9pl0v2k4pfffbfr5lC1EbfKZjF70PV9KEgMOMuxQDp/oc9Nwg/tYNi//Z+nDkCG87qMgBxYwn31TyXO4UBubLMlkyFujVytCpAZLUqcwHanS8+7Vp2k1ExjihLAlIxb0JJD5TAIkjv3cnRUc7FHboFrtAeWI5Zb8maNi7I337iCDMFfbMD3nHNvgxe2qgnym6P+K3ddIZGgHIgAAMHUvbIVOQ3Li9v/+ACxIkCyID9YraNdhY310SZrjTJwuiQryVrgiweEbz0TxrvT0P882a+zYcRUFCr5EC8enGMr519ObgC1xh6oF2n44AB8eY3DS2GEDG48eKc7YuyZ2XwNzt84JrdRzA/bzeBT5erQyHfvVtGRtd5h0QlFwFfiaPwreJV5XcYbqwncWhJ/AQeF06EVbD11ltC5ZLwjuhGPGY0t4BQUMWKNADavREuCmPCAaEk66CN6GudL25cShh0dMpBlWKK9t0LqZs+JogawLMvgDgJHPURKwOPqtQdgWCvKg0KcOEhUGQbeGL2NQBseUa9OpmKydBDO30nXNK68kAbjvwEnxLHvvtE0dyC5Km4DMxPY9aaFCJklfAiRm/ISu8qYwnWavSSk8bu8x7Iq1qQCuxafcik6jWy5sYqNytQAAP5ELuVX+MkHMLt0ruP5ftf7XLjgpA4fLx04C2SnqtH0KNQT9pAQnJspAAIcA9WetdyIEuA4SgKYip6OHX7O8Lqv53uiVP3pyXLLAgVE/Rnv4Hd4chnBZ4NhPi3rpQZ0p+ra1HyIrRu+6+sJnhr3IpBroVcMeSFo/5itV+y7C+ddJ4C9CCOvSnVDiF3/o01iMLV/0JmRByEu2JrzC2VqTLqUshX1Z8XjEbbw2qdaFvnG9NH3f55fq3XOYbxWmMm7rS3P3Xsrh8dH2Nky3lqR92RBIRvETb6JJ0Pe/GGm4mJEKPxRVvzxZgV4AQGwxa2QzJtGIFRCdEFCZLTwxFH1DEo/6Yz7IscixELO5vyVzb29hrCNxVT2WVXJf+7iPlANVoS3ul3quwk7C+on6/ywuBeDd1SzpsccUQH4XIdoY3zenebr9DlL17fkaLO+aIZ51qFqsQVzO6ug8GsI/PdEN21ZwC+B7MtcwA3lRFddk+L0F6t8uhpRlugiSDWvlv+N6BVoq+5U6PunNjlnjRmOtYW82HM/5UyrRM+fbJRKcKwczMZjufGs/2cJjZAeXeV+9oHAyIZVSjG2sFfHxIp87lu7g63Q7DVf58g0Oym9tVgvpIuL5+/U0Kh/zmqml3Aml7OkbMzgBKZ/JjM0+oEb8FhL0x3VaOxK6pS9/Cwf5bK+VzWnN+OcWcTpZZozbxMJk0oM/dSIoeJ+BxzhiqA80HLTUdh8pL1zaXFPUfsXZz9y8TRlhPswoAiWARHkuoyak+rWYHh17ir5W5QhSUGAI/elx64tex+NcPJPKEh8PwuJ49xuj8WHQFu42UPrlWqb4E6HxBlgxTdFEYLSrca5ypueP0v+lHue/vz4HnPNHbDrbrXlJYhgADvzn68/YzzaY2/9MNNxqcCrJ9kzrjqUmuxhPDHDuRRGjOwvDXzkKG0WfDI0FWmwDKZvtPmUR4ZgU5v3Q0rae0Cd3xKUzAI1Vtwt+7Fg9KHxaXCI86GjhuukdOAN4TxXdMU4Wps98qCXH6NpKqAroa6oYl5ngARXwO5pdAPLZ9n9XRyX4Ex6H5bG4FSE8ahf/FbePY3rRb3pWRStPLebyOBJ+7VJCDVwQL+ym0o0jIPopG+DMWON+fZ2qJldNxm953/tQwVB1AtqHbn2jTkvKJ19ib2itVxGlAC3dyY7n8haSBuxaaI9LS753oqBXOONd+4r4cGRvI77S8V3ZZnYY30cZwqzj47pyiZzNl7slBQpcaKyKyK527hWlDodJlXkbb2mPSf5q9jVs76f0xlvlSfogKVeko1QR90Gn6JDxGCxjlpgr6F/7fgResO9JwsrP2T/vytcN8CzNSiG/44uMvRKCy0/RBZ2wxazrF8hwdkWo9aVZ0O/83NjOcjo8na1Ncz95mUjvJKec7fTPId06GZ4MuD7A6FV4ZGC1exH0FbazXN+KIqyUPYKqSK//uT2zr21UOvJR5qFvzE1gFC/X7Wmb+irdNcjBwTQUER4j3E/+Eq8RXsQtzKo7wzIbjpq+1ddE3tDMD7/S04pZTbKg2eEfV+0l396jV8NjqQdfFU5ZV6k52w6Fo4F4TFQX9/ENQsw8t1IYHpCWacOFstJn7jR8Nv1oHpCF+5u64KxcPC6msiwd1BuvzfudNtVUWLoRRtsFmIkX0/MNOtDQTb4DjG5UGy1GGdhrNJ7+N2ZDmjJdeou17qDfOSsMPLbg/5Vnv7Vv3hWW8uEmeUhvfQz6NXP/EEiL0YGltwzUrfPR4XcriuYa/jDj/EmB+LN/eiuJEtubqbazM9m/4iKYYX6coBHc/cgFIDGl+GvCR4hfvyFKp5arSNT6RXjyjQ77oCyWpxB5Btv6H+cX6xhPQ1f0Bzb+OrH9Ibcjq500JDyQthUhG/9JsdkAeLy0pSd7QpVeEsHM8PQXeUTqqzzEngDYTj9jdwIdR6f5RQCZwi1cvu4CuFazDv/0p+vZrTV4/ujfgmWQ/0fwTx4GJWFj8smUYzIVECvQeAR046Bm8OGu1Vv1au+WVYL9gSjYm2o0KDbb4d5jby5wua7FAd9pGl9OCZpsLKP8zVhrNj8YEa7zVarwvN3GcY2NxiQz4buVQOjAWJXyEaWZez6f2d6gQky/obiNxyxGWRvqoEhkEHq
