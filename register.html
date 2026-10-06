@@ -4,7 +4,7 @@
 <head>  
 <meta charset="utf-8" />  
 <meta name="viewport" content="width=device-width,initial-scale=1" />  
-<title>NEOSTORE — Product / Cart / Auth Demo</title>  <!-- PayPal JS SDK (LIVE client-id) -->  <script src="https://www.paypal.com/sdk/js?client-id=Aey_vJzSIErk6JUHmkIU41JQ4W1vA2FlfBNf5Vtkg7j4YLaWHkFtw4WSPI0SWiCzhaNKqPt2oGuVIF1n&components=buttons&currency=USD"></script>  <style>  
+<title>ZONGO — Product / Cart / Auth Demo</title>  <!-- PayPal JS SDK (LIVE client-id) -->  <script src="https://www.paypal.com/sdk/js?client-id=Aey_vJzSIErk6JUHmkIU41JQ4W1vA2FlfBNf5Vtkg7j4YLaWHkFtw4WSPI0SWiCzhaNKqPt2oGuVIF1n&components=buttons&currency=USD"></script>  <style>  
   /* ====== Basic Styling ====== */  
   :root {--accent:#0ea5a4; --muted:#6b7280; --bg:#f8fafc;}  
   *{box-sizing:border-box;}  
@@ -236,6 +236,59 @@ beauty products, home essentials, and more.
 </div></div><div class="footer-bottom">
 <p>© 2026 ZONGO.SHOP. ALL RIGHTS RESERVED.</p>
 </div></footer>
+
+
+  <style>
+
+.site-footer{
+background:#111;
+color:#eee;
+margin-top:50px;
+}
+
+.footer-container{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+gap:25px;
+max-width:1100px;
+margin:auto;
+padding:40px 20px;
+}
+
+.footer-box h3{
+color:#fff;
+margin-bottom:10px;
+font-size:16px;
+}
+
+.footer-box ul{
+list-style:none;
+padding:0;
+}
+
+.footer-box ul li{
+margin:6px 0;
+}
+
+.footer-box a{
+color:#bbb;
+text-decoration:none;
+font-size:14px;
+}
+
+.footer-box a:hover{
+color:#fff;
+}
+
+.footer-bottom{
+text-align:center;
+padding:15px;
+background:#000;
+font-size:14px;
+}
+
+  </style>
+  
   
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
